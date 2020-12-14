@@ -16,7 +16,12 @@ int RegularCrossroad::CountSides() const
   return sides.count();
 }
 
-CrossroadSide *RegularCrossroad::GetSide() const
+CrossroadSide *RegularCrossroad::GetSide1() const
 {
   return sides.count() > 0 ? *sides.begin() : nullptr;
+}
+
+CrossroadSide *RegularCrossroad::GetSide2() const
+{
+  return sides.count() > 0 ? sides.value(315.0) : nullptr;
 }

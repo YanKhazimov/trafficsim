@@ -18,8 +18,10 @@ int main(int argc, char *argv[])
   }, Qt::QueuedConnection);
   
   RegularCrossroad crossroad;
-  CrossroadSide side(2, 3, 10, 10, 40);
-  crossroad.AddSide(0, &side);
+  CrossroadSide side1(2, 3, 10, 10, 40);
+  CrossroadSide side2(3, 1, 10, 10, 40);
+  crossroad.AddSide(90, &side1);
+  crossroad.AddSide(315, &side2);
   engine.rootContext()->setContextProperty("crossroad", &crossroad);
   
   engine.load(url);

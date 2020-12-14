@@ -26,6 +26,8 @@ public:
   CrossroadSide(QObject* parent = nullptr);
   CrossroadSide(int inLanesCount, int outLanesCount, int inOffset = 0, int outOffset = 0, int midOffset = 0, QObject* parent = nullptr);
 
+  Q_INVOKABLE int GetLength(int laneWidth) const;
+
 signals:
   void inLanesChanged();
   void outLanesChanged();

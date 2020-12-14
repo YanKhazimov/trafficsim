@@ -8,6 +8,7 @@ ApplicationWindow {
     width: 1280
     height: 720
     title: qsTr("Hello World")
+    color: "#666666"
 
     Crossroad {
         id: crossroadId
@@ -25,7 +26,7 @@ ApplicationWindow {
         running: true
         target: car
         property: "x"
-        to: crossroadId.x + crossroadId.width - crossroad.Side.InOffset - car.width
+        to: crossroadId.x + crossroadId.width - crossroad.Side1.InOffset - car.width
         duration: 3000
         easing.type: Easing.OutInCubic
     }

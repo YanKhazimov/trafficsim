@@ -1,5 +1,12 @@
 #include "CrossroadSide.h"
 
+int CrossroadSide::GetLength(int laneWidth) const
+{
+  return inOffset + inLanes.size() * laneWidth +
+      midOffset + outLanes.size() * laneWidth +
+      outOffset;
+}
+
 int CrossroadSide::CountInLanes() const
 {
   return inLanes.size();

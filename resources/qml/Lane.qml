@@ -6,31 +6,36 @@ Shape {
     id: root
     property point start
     property int length: 100
+    property real angle: Math.PI / 2
+    property color color: Colors.lane
+    property int w: Sizes.laneWidth
+    property bool markup: true
+
     vendorExtensionsEnabled: true
 
     ShapePath {
         id: markupWide
-        strokeColor: Colors.markup
-        strokeWidth: Sizes.laneWidth
-        startX: start.x
-        startY: start.y - strokeWidth/2
+        strokeColor: root.markup ? Colors.markup : root.color
+        strokeWidth: root.w
+        startX: start.x + strokeWidth/2 * Math.cos(angle)
+        startY: start.y - strokeWidth/2 * Math.sin(angle)
 
         PathLine {
-            x: markupWide.startX
-            y: start.y - root.length + markupWide.strokeWidth/2
+            x: start.x + (length - markupWide.strokeWidth/2) * Math.cos(angle)
+            y: start.y - (length - markupWide.strokeWidth/2) * Math.sin(angle)
         }
     }
 
     ShapePath {
         id: markupExcluded
-        strokeColor: Colors.lane
-        strokeWidth: Sizes.laneWidth - 2
-        startX: start.x
-        startY: start.y - strokeWidth/2
+        strokeColor: root.color
+        strokeWidth: root.markup ? Sizes.laneWidth - 2 : 0
+        startX: start.x + (strokeWidth/2) * Math.cos(angle)
+        startY: start.y - (strokeWidth/2) * Math.sin(angle)
 
         PathLine {
-            x: markupExcluded.startX
-            y: start.y - root.length + markupExcluded.strokeWidth/2
+            x: start.x + (length - markupExcluded.strokeWidth/2) * Math.cos(angle)
+            y: start.y - (length - markupExcluded.strokeWidth/2) * Math.sin(angle)
         }
     }
 }
