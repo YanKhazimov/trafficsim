@@ -17,11 +17,19 @@ int main(int argc, char *argv[])
       QCoreApplication::exit(-1);
   }, Qt::QueuedConnection);
   
+  qmlRegisterUncreatableType<CrossroadSide>("abc", 1, 0, "CrossroadSideModel", "");
+
   RegularCrossroad crossroad;
-  CrossroadSide side1(2, 3, 10, 10, 40);
-  CrossroadSide side2(3, 1, 10, 10, 40);
-  crossroad.AddSide(90, &side1);
-  crossroad.AddSide(315, &side2);
+  //CrossroadSide side1(90.0, 2, 3, 10, 10, 40);
+  //CrossroadSide side2(315.0, 3, 1, 10, 10, 40);
+  CrossroadSide side0(90.0, 2, 1, 100, 10, 10);
+  CrossroadSide side1(0.0, 2, 2, 10, 10, 10);
+  CrossroadSide side2(270.0, 1, 1, 100, 10, 10);
+  CrossroadSide side3(180.0, 2, 2, 10, 10, 10);
+  crossroad.AddSide(&side0);
+  crossroad.AddSide(&side1);
+  crossroad.AddSide(&side2);
+  crossroad.AddSide(&side3);
   engine.rootContext()->setContextProperty("crossroad", &crossroad);
   
   engine.load(url);

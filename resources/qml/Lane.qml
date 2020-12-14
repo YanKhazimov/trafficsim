@@ -29,7 +29,7 @@ Shape {
     ShapePath {
         id: markupExcluded
         strokeColor: root.color
-        strokeWidth: root.markup ? Sizes.laneWidth - 2 : 0
+        strokeWidth: root.markup ? root.w - 2 : 0
         startX: start.x + (strokeWidth/2) * Math.cos(angle)
         startY: start.y - (strokeWidth/2) * Math.sin(angle)
 

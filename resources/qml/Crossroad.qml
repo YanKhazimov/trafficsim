@@ -5,7 +5,7 @@ import "Constants"
 Rectangle {
     id: root
     implicitHeight: 300
-    implicitWidth: crossroad.Side1.GetLength(Sizes.laneWidth)
+    implicitWidth: crossroad.Sides[0]._GetLength(Sizes.laneWidth)
 
     color: Colors.lane
 
@@ -14,80 +14,30 @@ Rectangle {
         text: root.width
         color: "white"
     }
-// side 1
-    Lane {
-        start: Qt.point(0, 0)
-        length: root.width
-        angle: 0
-        color: "white"
-        w: 1
-        markup: false
+
+    // side 0
+    CrossroadSide {
+        x: root.width / 2
+        y: 0
+        model: crossroad.Sides[0]
     }
 
-    Repeater {
-        model: crossroad.Side1.InLanesCount
-        delegate: Lane {
-            start: Qt.point(crossroad.Side1.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index, 0)
-            length: 100
-        }
+    // side 1
+    CrossroadSide {
+        x: root.width
+        y: root.height / 2
+        model: crossroad.Sides[1]
     }
 
-    Lane {
-        color: "green"
-        start: Qt.point(crossroad.Side1.InOffset + Sizes.laneWidth * crossroad.Side1.InLanesCount + crossroad.Side1.MidOffset/2, 0)
-        w: crossroad.Side1.MidOffset
+    CrossroadSide {
+        x: root.width / 2
+        y: root.height
+        model: crossroad.Sides[2]
     }
 
-    Repeater {
-        model: crossroad.Side1.OutLanesCount
-        delegate: Lane {
-            start: Qt.point(root.width - crossroad.Side1.OutOffset - Sizes.laneWidth/2 - Sizes.laneWidth * index, 0)
-            length: 100
-        }
-    }
-    // side 2
-
-    Repeater {
-        model: crossroad.Side2.InLanesCount
-        delegate: Lane {
-            start: Qt.point(side2.start.x +
-                            (crossroad.Side2.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.cos(Math.PI * 5/4),
-                            side2.start.y -
-                            (crossroad.Side2.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.sin(Math.PI * 5/4)
-                            )
-            length: 100
-            angle: -Math.PI / 4
-        }
-    }
-
-    Lane {
-        color: "green"
-        start: Qt.point(side2.start.x +
-                        (crossroad.Side2.InOffset + Sizes.laneWidth * crossroad.Side2.InLanesCount + crossroad.Side2.MidOffset/2) * Math.cos(Math.PI * 5/4),
-                        side2.start.y -
-                        (crossroad.Side2.InOffset + Sizes.laneWidth * crossroad.Side2.InLanesCount + crossroad.Side2.MidOffset/2) * Math.sin(Math.PI * 5/4))
-        w: crossroad.Side2.MidOffset
-        angle: -Math.PI / 4
-    }
-
-    Repeater {
-        model: crossroad.Side2.OutLanesCount
-        delegate: Lane {
-            start: Qt.point(side2.start.x +
-                            (crossroad.Side2.GetLength(Sizes.laneWidth) - crossroad.Side2.OutOffset - Sizes.laneWidth/2 - Sizes.laneWidth * index) * Math.cos(Math.PI * 5/4),
-                            side2.start.y -
-                            (crossroad.Side2.GetLength(Sizes.laneWidth) - crossroad.Side2.OutOffset - Sizes.laneWidth/2 - Sizes.laneWidth * index) * Math.sin(Math.PI * 5/4))
-            length: 100
-            angle: -Math.PI / 4
-        }
-    }
-    Lane {
-        id: side2
-        start: Qt.point(root.width, root.height/2)
-        length: crossroad.Side2.GetLength(Sizes.laneWidth)
-        angle: Math.PI * 5/4
-        color: "white"
-        w: 1
-        markup: false
+    CrossroadSide {
+        x: 0
+        y: root.height / 2
+        model: crossroad.Sides[3]
     }
 }

@@ -26,7 +26,7 @@ ApplicationWindow {
         running: true
         target: car
         property: "x"
-        to: crossroadId.x + crossroadId.width - crossroad.Side1.InOffset - car.width
+        to: crossroadId.x + crossroadId.width - crossroad.Sides[0].InOffset - car.width
         duration: 3000
         easing.type: Easing.OutInCubic
     }

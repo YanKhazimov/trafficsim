@@ -7,5 +7,6 @@
         <file>qml/Constants/qmldir</file>
         <file>qml/Constants/Colors.qml</file>
         <file>qml/Lane.qml</file>
+        <file>qml/CrossroadSide.qml</file>
     </qresource>
 </RCC>

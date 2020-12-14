@@ -10,17 +10,15 @@ class RegularCrossroad : public QObject
   Q_DISABLE_COPY(RegularCrossroad)
 
   Q_PROPERTY(int SidesCount READ CountSides NOTIFY sidesChanged)
-  Q_PROPERTY(CrossroadSide* Side1 READ GetSide1 CONSTANT)
-  Q_PROPERTY(CrossroadSide* Side2 READ GetSide2 CONSTANT)
+  Q_PROPERTY(QList<CrossroadSide*> Sides READ GetSides CONSTANT)
 
-  QMap<qreal, CrossroadSide*> sides;
+  QList<CrossroadSide*> sides;
 
 public:
   RegularCrossroad(QObject* parent = nullptr);
-  bool AddSide(qreal angle, CrossroadSide* side);
+  bool AddSide(CrossroadSide* side);
   int CountSides() const;
-  CrossroadSide* GetSide1() const;
-  CrossroadSide* GetSide2() const;
+  QList<CrossroadSide*> GetSides() const;
 
 signals:
   void sidesChanged();

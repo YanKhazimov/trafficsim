@@ -1,6 +1,7 @@
 #include "CrossroadSide.h"
+#include <QtMath>
 
-int CrossroadSide::GetLength(int laneWidth) const
+int CrossroadSide::_GetLength(int laneWidth) const
 {
   return inOffset + inLanes.size() * laneWidth +
       midOffset + outLanes.size() * laneWidth +
@@ -17,13 +18,18 @@ int CrossroadSide::CountOutLanes() const
   return outLanes.size();
 }
 
+qreal CrossroadSide::GetNormal() const
+{
+  return normal;
+}
+
 CrossroadSide::CrossroadSide(QObject* parent)
   : QObject(parent)
 {
 }
 
-CrossroadSide::CrossroadSide(int inLanesCount, int outLanesCount, int _inOffset, int _outOffset, int _midOffset, QObject* parent)
-  : QObject(parent), inOffset(_inOffset), outOffset(_outOffset), midOffset(_midOffset)
+CrossroadSide::CrossroadSide(qreal _normal, int inLanesCount, int outLanesCount, int _inOffset, int _outOffset, int _midOffset, QObject* parent)
+  : QObject(parent), normal(qDegreesToRadians(_normal)), inOffset(_inOffset), outOffset(_outOffset), midOffset(_midOffset)
 {
   inLanes.resize(inLanesCount);
   outLanes.resize(outLanesCount);
