@@ -5,7 +5,7 @@ import "Constants"
 Rectangle {
     id: root
     implicitHeight: 300
-    implicitWidth: crossroad.Sides[0]._GetLength(Sizes.laneWidth)
+    implicitWidth: 300//crossroad.Sides[0]._GetLength(Sizes.laneWidth)
 
     color: Colors.lane
 
@@ -15,29 +15,24 @@ Rectangle {
         color: "white"
     }
 
-    // side 0
-    CrossroadSide {
-        x: root.width / 2
-        y: 0
-        model: crossroad.Sides[0]
+    function atStopLine(sideNumber, inLaneNumber) {
+        if (sideNumber >= crossroad.Sides.length) {
+            console.error("Crossroad does not have side", sideNumber)
+            return Qt.point(0, 0)
+        }
+
+        var local = sidesRepeater.itemAt(sideNumber).atStopLine(inLaneNumber)
+        return Qt.point(sidesRepeater.itemAt(sideNumber).x + local.x,
+                        sidesRepeater.itemAt(sideNumber).y + local.y)
     }
 
-    // side 1
-    CrossroadSide {
-        x: root.width
-        y: root.height / 2
-        model: crossroad.Sides[1]
-    }
-
-    CrossroadSide {
-        x: root.width / 2
-        y: root.height
-        model: crossroad.Sides[2]
-    }
-
-    CrossroadSide {
-        x: 0
-        y: root.height / 2
-        model: crossroad.Sides[3]
+    Repeater {
+        id: sidesRepeater
+        model: crossroad.Sides
+        delegate: CrossroadSide {
+            model: modelData
+            x: root.width/2 + root.width/2 * Math.cos(modelData.Normal)
+            y: root.height/2 - root.height/2 * Math.sin(modelData.Normal)
+        }
     }
 }

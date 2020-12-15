@@ -20,12 +20,10 @@ int main(int argc, char *argv[])
   qmlRegisterUncreatableType<CrossroadSide>("abc", 1, 0, "CrossroadSideModel", "");
 
   RegularCrossroad crossroad;
-  //CrossroadSide side1(90.0, 2, 3, 10, 10, 40);
-  //CrossroadSide side2(315.0, 3, 1, 10, 10, 40);
-  CrossroadSide side0(90.0, 2, 1, 100, 10, 10);
-  CrossroadSide side1(0.0, 2, 2, 10, 10, 10);
-  CrossroadSide side2(270.0, 1, 1, 100, 10, 10);
-  CrossroadSide side3(180.0, 2, 2, 10, 10, 10);
+  CrossroadSide side0(95.0, 2, 1, 100, 10, 10);
+  CrossroadSide side1(5.0, 2, 2, 10, 10, 10);
+  CrossroadSide side2(275.0, 1, 1, 100, 10, 10);
+  CrossroadSide side3(185.0, 2, 2, 10, 10, 10);
   crossroad.AddSide(&side0);
   crossroad.AddSide(&side1);
   crossroad.AddSide(&side2);
