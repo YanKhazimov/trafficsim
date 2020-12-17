@@ -15,11 +15,14 @@ class CrossroadSide : public QObject
   Q_PROPERTY(int OutOffset MEMBER outOffset CONSTANT)
   Q_PROPERTY(int MidOffset MEMBER midOffset CONSTANT)
   Q_PROPERTY(qreal Normal READ GetNormal CONSTANT)
+  Q_PROPERTY(int StartX MEMBER startX CONSTANT)
+  Q_PROPERTY(int StartY MEMBER startY CONSTANT)
 
   qreal normal;
   QVector<Lane> inLanes;
   QVector<Lane> outLanes;
   int inOffset, outOffset, midOffset;
+  int startX, startY;
 
   int CountInLanes() const;
   int CountOutLanes() const;
@@ -27,7 +30,8 @@ class CrossroadSide : public QObject
 
 public:
   CrossroadSide(QObject* parent = nullptr);
-  CrossroadSide(qreal normal, int inLanesCount, int outLanesCount, int inOffset = 0, int outOffset = 0, int midOffset = 0, QObject* parent = nullptr);
+  CrossroadSide(int startX, int startY, qreal normal, int inLanesCount, int outLanesCount,
+                int inOffset = 0, int outOffset = 0, int midOffset = 0, QObject* parent = nullptr);
 
   Q_INVOKABLE int _GetLength(int laneWidth) const;
 

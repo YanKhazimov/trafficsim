@@ -8,5 +8,10 @@
         <file>qml/Constants/Colors.qml</file>
         <file>qml/Lane.qml</file>
         <file>qml/CrossroadSide.qml</file>
+        <file>qml/ControlPanel.qml</file>
+        <file>images/plus.svg</file>
+        <file>qml/CrossroadConstructor.qml</file>
+        <file>images/hammer.svg</file>
+        <file>qml/DrawArea.qml</file>
     </qresource>
 </RCC>

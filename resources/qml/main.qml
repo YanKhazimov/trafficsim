@@ -11,23 +11,40 @@ ApplicationWindow {
     title: qsTr("Hello World")
     color: "#666666"
 
-    Crossroad {
-        id: crossroadId
-        anchors.centerIn: parent
-    }
+    Rectangle {
+        id: displayArea
+        anchors.right: controlPanel.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.margins: 50
+        color: "white"
 
+        DrawArea {
+            anchors.fill: parent
+
+            Crossroad {
+                id: crossroadId
+                anchors.centerIn: parent
+            }
+        }
+    }
+/*
     Image {
         id: car
         source: "qrc:/images/car.png"
         sourceSize.width: Sizes.laneWidth
     }
 
+    property int side: 0
+    property int inLane: 1
+
     PropertyAnimation {
         running: true
         target: car
         property: "x"
-        to: crossroadId.x + crossroadId.atStopLine(0, 0).x +
-            car.height/2 * Math.cos(crossroad.Sides[0].Normal) -
+        to: crossroadId.x + crossroadId.atStopLine(side, inLane).x +
+            car.height/2 * Math.cos(crossroad.Sides[side].Normal) -
             car.width/2
         duration: 3000
         easing.type: Easing.OutInCubic
@@ -37,8 +54,8 @@ ApplicationWindow {
         running: true
         target: car
         property: "y"
-        to: crossroadId.y + crossroadId.atStopLine(0, 0).y -
-            car.height/2 * Math.sin(crossroad.Sides[0].Normal) -
+        to: crossroadId.y + crossroadId.atStopLine(side, inLane).y -
+            car.height/2 * Math.sin(crossroad.Sides[side].Normal) -
             car.height/2
         duration: 3000
         easing.type: Easing.OutInCubic
@@ -48,8 +65,16 @@ ApplicationWindow {
         running: true
         target: car
         property: "rotation"
-        to: (Math.PI/2 - crossroad.Sides[0].Normal + Math.PI) / Math.PI * 180
+        to: (Math.PI/2 - crossroad.Sides[side].Normal + Math.PI) / Math.PI * 180
         duration: 3000
         easing.type: Easing.InBack
+    }
+*/
+    ControlPanel {
+        id: controlPanel
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 300
     }
 }

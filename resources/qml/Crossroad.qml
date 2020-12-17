@@ -4,19 +4,14 @@ import "Constants"
 
 Rectangle {
     id: root
-    implicitHeight: 300
-    implicitWidth: 300//crossroad.Sides[0]._GetLength(Sizes.laneWidth)
-
-    color: Colors.lane
-
-    Text {
-        id: name
-        text: root.width
-        color: "white"
-    }
+    implicitHeight: 5
+    implicitWidth: 5
+    radius: 5/2
+    border.color: Colors.lane
+    border.width: 2
 
     function atStopLine(sideNumber, inLaneNumber) {
-        if (sideNumber >= crossroad.Sides.length) {
+        if (sideNumber >= engine.Crossroad.Sides.length) {
             console.error("Crossroad does not have side", sideNumber)
             return Qt.point(0, 0)
         }
@@ -28,11 +23,11 @@ Rectangle {
 
     Repeater {
         id: sidesRepeater
-        model: crossroad.Sides
+        model: engine.Crossroad.Sides
         delegate: CrossroadSide {
             model: modelData
-            x: root.width/2 + root.width/2 * Math.cos(modelData.Normal)
-            y: root.height/2 - root.height/2 * Math.sin(modelData.Normal)
+            x: modelData.StartX
+            y: modelData.StartY
         }
     }
 }

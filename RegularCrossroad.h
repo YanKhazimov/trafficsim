@@ -9,16 +9,16 @@ class RegularCrossroad : public QObject
   Q_OBJECT
   Q_DISABLE_COPY(RegularCrossroad)
 
-  Q_PROPERTY(int SidesCount READ CountSides NOTIFY sidesChanged)
-  Q_PROPERTY(QList<CrossroadSide*> Sides READ GetSides CONSTANT)
+  Q_PROPERTY(QList<CrossroadSide*> Sides READ GetSides NOTIFY sidesChanged)
 
   QList<CrossroadSide*> sides;
 
 public:
   RegularCrossroad(QObject* parent = nullptr);
-  bool AddSide(CrossroadSide* side);
+  Q_INVOKABLE bool AddSide(int startX, int startY, qreal normal, int inLanesCount, int outLanesCount, int inOffset = 0, int outOffset = 0, int midOffset = 0);
   int CountSides() const;
   QList<CrossroadSide*> GetSides() const;
+  virtual ~RegularCrossroad();
 
 signals:
   void sidesChanged();

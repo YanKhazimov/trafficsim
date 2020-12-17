@@ -10,7 +10,7 @@ Shape {
     property color color: Colors.lane
     property int w: Sizes.laneWidth
     property bool markup: true
-    //antialiasing: true
+    antialiasing: true
 
     vendorExtensionsEnabled: true
 

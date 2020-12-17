@@ -7,6 +7,10 @@ Item {
     id: root
     property CrossroadSideModel model
 
+    readonly property point start: crossroadLine.start
+    readonly property point end: Qt.point(start.x + crossroadLine.length * Math.cos(crossroadLine.angle),
+                                      start.y- crossroadLine.length * Math.sin(crossroadLine.angle))
+
     function atStopLine(inLaneNumber) {
         if (inLaneNumber >= model.InLanesCount) {
             console.error("Crossroad side does not have lane", inLaneNumber)
@@ -54,12 +58,12 @@ Item {
     Lane {
         id: stopLine
         length: root.model.InLanesCount * Sizes.laneWidth
-        start: Qt.point((-model._GetLength(Sizes.laneWidth)/2 + root.model.InOffset) * Math.cos(crossroadLine.angle)
+        start: Qt.point(crossroadLine.start.x + root.model.InOffset * Math.cos(crossroadLine.angle)
                             + 15 * Math.cos(root.model.Normal),
-                        (model._GetLength(Sizes.laneWidth)/2 - root.model.InOffset) * Math.sin(crossroadLine.angle)
+                        crossroadLine.start.y- root.model.InOffset * Math.sin(crossroadLine.angle)
                             - 15 * Math.sin(root.model.Normal))
         angle: root.model.Normal - Math.PI / 2
-        color: "white"
+        color: Colors.markup
         w: 1
         markup: false
     }
@@ -67,18 +71,27 @@ Item {
     Lane {
         id: crossroadLine
         length: model._GetLength(Sizes.laneWidth)
-        start: Qt.point(-length/2 * Math.cos(angle),
-                        length/2 * Math.sin(angle))
+        start: Qt.point(-length/2 * Math.cos(angle), length/2 * Math.sin(angle))
         angle: root.model.Normal - Math.PI / 2
-        color: "yellow"
+        color: "green"
         w: 1
         markup: false
     }
 
     Rectangle {
         id: origin
-        width: 3
-        height: 3
-        color: "cyan"
+        x: -4
+        y:-4
+        width: 8
+        height: 8
+        radius: 4
+
+        ColorAnimation on color {
+            from: "blue"
+            to: "yellow"
+            duration: 2000
+            loops: Animation.Infinite
+            running: true
+        }
     }
 }

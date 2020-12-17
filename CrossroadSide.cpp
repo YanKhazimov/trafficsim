@@ -28,8 +28,9 @@ CrossroadSide::CrossroadSide(QObject* parent)
 {
 }
 
-CrossroadSide::CrossroadSide(qreal _normal, int inLanesCount, int outLanesCount, int _inOffset, int _outOffset, int _midOffset, QObject* parent)
-  : QObject(parent), normal(qDegreesToRadians(_normal)), inOffset(_inOffset), outOffset(_outOffset), midOffset(_midOffset)
+CrossroadSide::CrossroadSide(int _startX, int _startY, qreal _normal, int inLanesCount, int outLanesCount,
+                             int _inOffset, int _outOffset, int _midOffset, QObject* parent)
+  : QObject(parent), normal(qDegreesToRadians(_normal)), inOffset(_inOffset), outOffset(_outOffset), midOffset(_midOffset), startX(_startX), startY(_startY)
 {
   inLanes.resize(inLanesCount);
   outLanes.resize(outLanesCount);
