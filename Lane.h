@@ -1,8 +1,12 @@
-#ifndef LANE_H
-#define LANE_H
+#pragma once
 
-class Lane {
+#include <QObject>
 
+class Lane : public QObject
+{
+  Q_OBJECT
+  Q_DISABLE_COPY(Lane)
+
+public:
+  explicit Lane(QObject *parent = nullptr);
 };
-
-#endif // LANE_H

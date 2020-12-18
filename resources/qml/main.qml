@@ -18,9 +18,11 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.margins: 50
-        color: "white"
+        color: "#BBBBBB"
 
         DrawArea {
+            id: drawArea
+            enabled: controlPanel.crossroadConstructionMode
             anchors.fill: parent
 
             Crossroad {
@@ -76,5 +78,7 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: 300
+
+        onCrossroadValidated: crossroadId.fill();
     }
 }

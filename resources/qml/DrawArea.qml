@@ -5,7 +5,8 @@ import "Constants"
 MouseArea {
     id: root
 
-    cursorShape: Qt.CrossCursor
+    clip: true
+    cursorShape: enabled ? Qt.CrossCursor : Qt.ArrowCursor
     pressAndHoldInterval: 100
 
     onPressed: {
@@ -29,7 +30,7 @@ MouseArea {
 
         sideDirectionPreview.visible = false
         // construct
-        engine.Crossroad.AddSide(sideDirectionPreview.startX - crossroadId.x, sideDirectionPreview.startY - crossroadId.y,
+        engine.Crossroad.AddSide(Sizes.laneWidth, sideDirectionPreview.startX - crossroadId.x, sideDirectionPreview.startY - crossroadId.y,
                                  sideDirectionPreview.getDirection(), 2, 1, 100, 10, 10)
     }
 
@@ -47,10 +48,10 @@ MouseArea {
 
         function getDirection() {
             if (endX == startX)
-                return endY > startY ? 270 : 90
+                return endY > startY ? (Math.PI * 3 / 2) : (Math.PI / 2)
 
-            var arctan = 180.0 / Math.PI * Math.atan(-(endY - startY)/(endX - startX))
-            return (endX > startX) ? arctan : (arctan + 180)
+            var arctan = Math.atan(-(endY - startY)/(endX - startX))
+            return (endX > startX) ? arctan : (arctan + Math.PI)
         }
 
         ShapePath {

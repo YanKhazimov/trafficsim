@@ -12,6 +12,7 @@ set(SOURCE_FILES
     "RegularCrossroad.cpp"
     "CrossroadSide.cpp"
     "QmlPresenter.cpp"
+    "Lane.cpp"
     )
 
 add_executable(${PROJECT_NAME} "main.cpp" ${SOURCE_FILES} "resources/qml.qrc")

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.15
 import QtQuick.Shapes 1.12
 import "Constants"
 
@@ -21,6 +21,15 @@ Rectangle {
                         sidesRepeater.itemAt(sideNumber).y + local.y)
     }
 
+    function fill() {
+        insides.path = []
+
+        for (var i = 0; i < sidesRepeater.count * 2; ++i)
+            insides.path.push(insides.getPoint(i))
+
+        polyline.path = insides.path
+    }
+
     Repeater {
         id: sidesRepeater
         model: engine.Crossroad.Sides
@@ -28,6 +37,40 @@ Rectangle {
             model: modelData
             x: modelData.StartX
             y: modelData.StartY
+        }
+    }
+
+    Shape {
+        id: insides
+        antialiasing: true
+
+        function getPoint(index) {
+            if (index < 0 || index >= sidesRepeater.count * 2) {
+                console.log("Cannot get point", index)
+                return Qt.point(0, 0)
+            }
+
+            var side = index / 2
+
+            return index % 2 === 0 ?
+                        Qt.point(sidesRepeater.itemAt(side).x + sidesRepeater.itemAt(side).end.x,
+                                 sidesRepeater.itemAt(side).y + sidesRepeater.itemAt(side).end.y) :
+                        Qt.point(sidesRepeater.itemAt(side).x + sidesRepeater.itemAt(side).start.x,
+                                 sidesRepeater.itemAt(side).y + sidesRepeater.itemAt(side).start.y)
+        }
+        property var path: []
+
+        ShapePath {
+            id: pathStart
+            fillColor: Colors.lane
+            strokeColor: Colors.lane
+            strokeWidth: 1
+            startX: 0
+            startY: 0
+
+            PathPolyline {
+                id: polyline
+            }
         }
     }
 }

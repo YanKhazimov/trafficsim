@@ -13,5 +13,8 @@
         <file>qml/CrossroadConstructor.qml</file>
         <file>images/hammer.svg</file>
         <file>qml/DrawArea.qml</file>
+        <file>images/edit.svg</file>
+        <file>images/remove.svg</file>
+        <file>images/crossroad.svg</file>
     </qresource>
 </RCC>
