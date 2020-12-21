@@ -30,16 +30,6 @@ Rectangle {
         polyline.path = insides.path
     }
 
-    Repeater {
-        id: sidesRepeater
-        model: engine.Crossroad.Sides
-        delegate: CrossroadSide {
-            model: modelData
-            x: modelData.StartX
-            y: modelData.StartY
-        }
-    }
-
     Shape {
         id: insides
         antialiasing: true
@@ -63,7 +53,7 @@ Rectangle {
         ShapePath {
             id: pathStart
             fillColor: Colors.lane
-            strokeColor: Colors.lane
+            strokeColor: "transparent"
             strokeWidth: 1
             startX: 0
             startY: 0
@@ -71,6 +61,16 @@ Rectangle {
             PathPolyline {
                 id: polyline
             }
+        }
+    }
+
+    Repeater {
+        id: sidesRepeater
+        model: engine.Crossroad.Sides
+        delegate: CrossroadSide {
+            model: modelData
+            x: modelData.StartX
+            y: modelData.StartY
         }
     }
 }

@@ -47,7 +47,6 @@ public:
                 int inOffset = 0, int outOffset = 0, int midOffset = 0, QObject* parent = nullptr);
 
   qreal GetNormal() const;
-  Q_INVOKABLE int _GetLength(int laneWidth) const;
   Q_INVOKABLE bool AddInLane();
   Q_INVOKABLE bool RemoveInLane();
   Q_INVOKABLE bool AddOutLane();

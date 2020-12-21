@@ -78,14 +78,13 @@ Item {
         markup: false
     }
 
-    Rectangle {
+    Image {
         id: origin
-        x: -4
-        y:-4
-        width: 8
-        height: 8
-        radius: 4
-        color: "blue"
+        source: "qrc:/images/gear.svg"
+        x: -10
+        y:-10
+        width: 20
+        height: 20
     }    
 
     Rectangle {

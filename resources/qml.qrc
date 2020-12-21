@@ -11,10 +11,13 @@
         <file>qml/ControlPanel.qml</file>
         <file>images/plus.svg</file>
         <file>qml/CrossroadConstructor.qml</file>
-        <file>images/hammer.svg</file>
         <file>qml/DrawArea.qml</file>
         <file>images/edit.svg</file>
         <file>images/remove.svg</file>
         <file>images/crossroad.svg</file>
+        <file>images/gear.svg</file>
+        <file>qml/TSButton.qml</file>
+        <file>images/done.svg</file>
+        <file>images/minus.svg</file>
     </qresource>
 </RCC>

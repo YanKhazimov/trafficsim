@@ -10,7 +10,7 @@ Rectangle {
 
     function showConstructor() {
         constructorPanel.visible = true
-        addButton.icon.source = "qrc:/images/hammer.svg"
+        addButton.img = "qrc:/images/done.svg"
         addButton.callback = construct
     }
 
@@ -19,18 +19,19 @@ Rectangle {
         root.crossroadValidated()
 
         constructorPanel.visible = false
-        addButton.icon.source = "qrc:/images/crossroad.svg"
+        addButton.img = "qrc:/images/crossroad.svg"
         addButton.callback = showConstructor
     }
 
-    Button {
+    TSButton {
         id: addButton
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 20
-        icon.source: "qrc:/images/crossroad.svg"
-        property var callback: showConstructor
-        onClicked: callback()
+        width: 50
+        height: 50
+        img: "qrc:/images/crossroad.svg"
+        callback: showConstructor
     }
 
     CrossroadConstructor {
@@ -39,6 +40,7 @@ Rectangle {
         anchors.top: addButton.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.bottom: parent.bottom
         anchors.margins: 20
     }
 }

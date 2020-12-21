@@ -6,7 +6,7 @@ import "Constants"
 ApplicationWindow {
     id: root
     visible: true
-    width: 1280
+    width: 1024
     height: 720
     title: qsTr("Hello World")
     color: "#666666"
