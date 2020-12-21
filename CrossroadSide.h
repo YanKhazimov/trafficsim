@@ -21,7 +21,11 @@ class CrossroadSide : public QObject
   Q_PROPERTY(qreal NormalRadians READ getNormalInRadians NOTIFY parametersChanged)
   Q_PROPERTY(int StartX MEMBER startX NOTIFY parametersChanged)
   Q_PROPERTY(int StartY MEMBER startY NOTIFY parametersChanged)
+
   Q_PROPERTY(bool IsHighlighted MEMBER isHighlighted NOTIFY isHighlightedChanged)
+  Q_PROPERTY(bool IsHighlightedX MEMBER isHighlightedX NOTIFY isHighlightedXChanged)
+  Q_PROPERTY(bool IsHighlightedY MEMBER isHighlightedY NOTIFY isHighlightedYChanged)
+  Q_PROPERTY(bool IsHighlightedR MEMBER isHighlightedR NOTIFY isHighlightedRChanged)
 
   const int laneWidth;
   int normal; // rounded in degrees
@@ -30,7 +34,10 @@ class CrossroadSide : public QObject
   int inOffset, outOffset, midOffset;
   int startX, startY;
 
-  bool isHighlighted;
+  bool isHighlighted = false;
+  bool isHighlightedX = false;
+  bool isHighlightedY = false;
+  bool isHighlightedR = false;
 
   QList<Lane*> getInLanes() const;
   QList<Lane*> getOutLanes() const;
@@ -55,5 +62,8 @@ public:
 signals:
   void parametersChanged();
   void isHighlightedChanged();
+  void isHighlightedXChanged();
+  void isHighlightedYChanged();
+  void isHighlightedRChanged();
 };
 Q_DECLARE_METATYPE(CrossroadSide*)

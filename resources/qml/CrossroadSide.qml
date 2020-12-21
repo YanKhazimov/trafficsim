@@ -82,21 +82,13 @@ Item {
         id: origin
         source: "qrc:/images/gear.svg"
         x: -10
-        y:-10
+        y: -10
         width: 20
         height: 20
-    }    
+    }
 
-    Rectangle {
-        id: highlighter
-        x: -root.model.Length/2
-        y: -root.model.Length/2
-        width: root.model.Length
-        height: root.model.Length
-        radius: root.model.Length/2
-        border.width: 2
-        border.color: "#DDDDDD"
-        color: "transparent"
-        visible: root.model.IsHighlighted
+    CrossroadSideHighlighter {
+        model: root.model
+        crossroadSideItem: root
     }
 }

@@ -19,5 +19,6 @@
         <file>qml/TSButton.qml</file>
         <file>images/done.svg</file>
         <file>images/minus.svg</file>
+        <file>qml/CrossroadSideHighlighter.qml</file>
     </qresource>
 </RCC>

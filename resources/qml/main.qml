@@ -31,7 +31,7 @@ ApplicationWindow {
             }
         }
     }
-/*
+
     Image {
         id: car
         source: "qrc:/images/car.png"
@@ -41,37 +41,6 @@ ApplicationWindow {
     property int side: 0
     property int inLane: 1
 
-    PropertyAnimation {
-        running: true
-        target: car
-        property: "x"
-        to: crossroadId.x + crossroadId.atStopLine(side, inLane).x +
-            car.height/2 * Math.cos(crossroad.Sides[side].Normal) -
-            car.width/2
-        duration: 3000
-        easing.type: Easing.OutInCubic
-    }
-
-    PropertyAnimation {
-        running: true
-        target: car
-        property: "y"
-        to: crossroadId.y + crossroadId.atStopLine(side, inLane).y -
-            car.height/2 * Math.sin(crossroad.Sides[side].Normal) -
-            car.height/2
-        duration: 3000
-        easing.type: Easing.OutInCubic
-    }
-
-    PropertyAnimation {
-        running: true
-        target: car
-        property: "rotation"
-        to: (Math.PI/2 - crossroad.Sides[side].Normal + Math.PI) / Math.PI * 180
-        duration: 3000
-        easing.type: Easing.InBack
-    }
-*/
     ControlPanel {
         id: controlPanel
         anchors.right: parent.right
@@ -79,6 +48,16 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         width: 300
 
-        onCrossroadValidated: crossroadId.fill();
+        onCrossroadValidated: {
+            crossroadId.fill()
+
+            car.x = displayArea.x + crossroadId.x + crossroadId.atStopLine(side, inLane).x +
+               car.height/2 * Math.cos(engine.Crossroad.Sides[side].NormalRadians) -
+               car.width/2
+            car.y = displayArea.y + crossroadId.y + crossroadId.atStopLine(side, inLane).y -
+               car.height/2 * Math.sin(engine.Crossroad.Sides[side].NormalRadians) -
+               car.height/2
+            car.rotation = (Math.PI/2 - engine.Crossroad.Sides[side].NormalRadians + Math.PI) / Math.PI * 180
+        }
     }
 }

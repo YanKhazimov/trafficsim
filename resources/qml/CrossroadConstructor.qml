@@ -25,6 +25,12 @@ ScrollView {
                 radius: 10
                 color: parent.containsMouse ? "#DDDDDD" : "grey"
 
+                Behavior on height {
+                    PropertyAnimation {
+                        id: heightAnimation
+                    }
+                }
+
                 Text {
                     id: infoText
                     visible: !delegateMouseArea.inEditMode
@@ -71,185 +77,252 @@ ScrollView {
 
                 ColumnLayout {
                     id: editorLayout
-                    visible: delegateMouseArea.inEditMode
+                    visible: delegateMouseArea.inEditMode && !heightAnimation.running
                     anchors.left: parent.left
+                    anchors.right: parent.right
                     anchors.top: editButton.bottom
                     anchors.margins: 5
-                    anchors.right: parent.right
 
-                    RowLayout {
-                        spacing: 10
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/minus.svg"
-                            callback: function() { modelData.StartX = modelData.StartX - 1 }
+                    MouseArea {
+                        id: rowMouseAreaX
+                        hoverEnabled: true
+                        Layout.fillWidth: true
+                        height: childrenRect.height
+
+                        Binding {
+                            target: modelData
+                            property: "IsHighlightedX"
+                            value: rowMouseAreaX.containsMouse
                         }
-                        Text {
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignHCenter
-                            text: "x: " + modelData.StartX
-                            font.pointSize: 14
-                        }
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/plus.svg"
-                            callback: function() { modelData.StartX = modelData.StartX + 1 }
+
+                        RowLayout {
+                            spacing: 10
+                            width: parent.width
+
+                            TSButton {
+                                img: "qrc:/images/minus.svg"
+                                callback: function() { modelData.StartX = modelData.StartX - 1 }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "x: " + modelData.StartX
+                                font.pointSize: 14
+                            }
+                            TSButton {
+                                img: "qrc:/images/plus.svg"
+                                callback: function() { modelData.StartX = modelData.StartX + 1 }
+                            }
                         }
                     }
 
-                    RowLayout {
-                        spacing: 10
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/minus.svg"
-                            callback: function() { modelData.StartY = modelData.StartY - 1 }
+                    MouseArea {
+                        id: rowMouseAreaY
+                        hoverEnabled: true
+                        Layout.fillWidth: true
+                        height: childrenRect.height
+
+                        Binding {
+                            target: modelData
+                            property: "IsHighlightedY"
+                            value: rowMouseAreaY.containsMouse
                         }
-                        Text {
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignHCenter
-                            text: "y: " + modelData.StartY
-                            font.pointSize: 14
-                        }
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/plus.svg"
-                            callback: function() { modelData.StartY = modelData.StartY + 1 }
+
+                        RowLayout {
+                            spacing: 10
+                            width: parent.width
+
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/minus.svg"
+                                callback: function() { modelData.StartY = modelData.StartY - 1 }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "y: " + modelData.StartY
+                                font.pointSize: 14
+                            }
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/plus.svg"
+                                callback: function() { modelData.StartY = modelData.StartY + 1 }
+                            }
                         }
                     }
 
-                    RowLayout {
-                        spacing: 10
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/minus.svg"
-                            callback: function() { modelData.NormalDegrees = modelData.NormalDegrees - 1 }
+                    MouseArea {
+                        id: rowMouseAreaR
+                        hoverEnabled: true
+                        Layout.fillWidth: true
+                        height: childrenRect.height
+
+                        Binding {
+                            target: modelData
+                            property: "IsHighlightedR"
+                            value: rowMouseAreaR.containsMouse
                         }
-                        Text {
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignHCenter
-                            text: "angle: " + modelData.NormalDegrees + "\u00B0"
-                            font.pointSize: 14
-                        }
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/plus.svg"
-                            callback: function() { modelData.NormalDegrees = modelData.NormalDegrees + 1 }
+
+                        RowLayout {
+                            spacing: 10
+                            width: parent.width
+
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/minus.svg"
+                                callback: function() { modelData.NormalDegrees = modelData.NormalDegrees - 1 }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "angle: " + modelData.NormalDegrees + "\u00B0"
+                                font.pointSize: 14
+                            }
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/plus.svg"
+                                callback: function() { modelData.NormalDegrees = modelData.NormalDegrees + 1 }
+                            }
                         }
                     }
 
-                    RowLayout {
-                        spacing: 10
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/minus.svg"
-                            callback: function() { modelData.RemoveInLane() }
-                        }
-                        Text {
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignHCenter
-                            text: "in lanes: " + modelData.InLanesCount
-                            font.pointSize: 14
-                        }
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/plus.svg"
-                            callback: function() { modelData.AddInLane() }
+                    MouseArea {
+                        hoverEnabled: true
+                        Layout.fillWidth: true
+                        height: childrenRect.height
+
+                        RowLayout {
+                            spacing: 10
+                            width: parent.width
+
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/minus.svg"
+                                callback: function() { modelData.RemoveInLane() }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "in lanes: " + modelData.InLanesCount
+                                font.pointSize: 14
+                            }
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/plus.svg"
+                                callback: function() { modelData.AddInLane() }
+                            }
                         }
                     }
 
-                    RowLayout {
-                        spacing: 10
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/minus.svg"
-                            callback: function() { modelData.RemoveOutLane() }
-                        }
-                        Text {
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignHCenter
-                            text: "out lanes: " + modelData.OutLanesCount
-                            font.pointSize: 14
-                        }
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/plus.svg"
-                            callback: function() { modelData.AddOutLane() }
+                    MouseArea {
+                        hoverEnabled: true
+                        Layout.fillWidth: true
+                        height: childrenRect.height
+
+                        RowLayout {
+                            spacing: 10
+                            width: parent.width
+
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/minus.svg"
+                                callback: function() { modelData.RemoveOutLane() }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "out lanes: " + modelData.OutLanesCount
+                                font.pointSize: 14
+                            }
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/plus.svg"
+                                callback: function() { modelData.AddOutLane() }
+                            }
                         }
                     }
 
-                    RowLayout {
-                        spacing: 10
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/minus.svg"
-                            callback: function() { modelData.InOffset = modelData.InOffset - 1 }
-                        }
-                        Text {
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignHCenter
-                            text: "in margin: " + modelData.InOffset
-                            font.pointSize: 14
-                        }
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/plus.svg"
-                            callback: function() { modelData.InOffset = modelData.InOffset + 1 }
+                    MouseArea {
+                        hoverEnabled: true
+                        Layout.fillWidth: true
+                        height: childrenRect.height
+
+                        RowLayout {
+                            spacing: 10
+                            width: parent.width
+
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/minus.svg"
+                                callback: function() { modelData.InOffset = modelData.InOffset - 1 }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "in margin: " + modelData.InOffset
+                                font.pointSize: 14
+                            }
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/plus.svg"
+                                callback: function() { modelData.InOffset = modelData.InOffset + 1 }
+                            }
                         }
                     }
 
-                    RowLayout {
-                        spacing: 10
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/minus.svg"
-                            callback: function() { modelData.OutOffset = modelData.OutOffset - 1 }
-                        }
-                        Text {
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignHCenter
-                            text: "out margin: " + modelData.OutOffset
-                            font.pointSize: 14
-                        }
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/plus.svg"
-                            callback: function() { modelData.OutOffset = modelData.OutOffset + 1 }
+                    MouseArea {
+                        hoverEnabled: true
+                        Layout.fillWidth: true
+                        height: childrenRect.height
+
+                        RowLayout {
+                            spacing: 10
+                            width: parent.width
+
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/minus.svg"
+                                callback: function() { modelData.OutOffset = modelData.OutOffset - 1 }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "out margin: " + modelData.OutOffset
+                                font.pointSize: 14
+                            }
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/plus.svg"
+                                callback: function() { modelData.OutOffset = modelData.OutOffset + 1 }
+                            }
                         }
                     }
 
-                    RowLayout {
-                        spacing: 10
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/minus.svg"
-                            callback: function() { modelData.MidOffset = modelData.MidOffset - 1 }
-                        }
-                        Text {
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignHCenter
-                            text: "mid margin: " + modelData.MidOffset
-                            font.pointSize: 14
-                        }
-                        TSButton {
-                            visible: delegateMouseArea.inEditMode
-                            Layout.maximumWidth: height
-                            img: "qrc:/images/plus.svg"
-                            callback: function() { modelData.MidOffset = modelData.MidOffset + 1 }
+                    MouseArea {
+                        hoverEnabled: true
+                        Layout.fillWidth: true
+                        height: childrenRect.height
+
+                        RowLayout {
+                            spacing: 10
+                            width: parent.width
+
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/minus.svg"
+                                callback: function() { modelData.MidOffset = modelData.MidOffset - 1 }
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "mid margin: " + modelData.MidOffset
+                                font.pointSize: 14
+                            }
+                            TSButton {
+                                Layout.maximumWidth: height
+                                img: "qrc:/images/plus.svg"
+                                callback: function() { modelData.MidOffset = modelData.MidOffset + 1 }
+                            }
                         }
                     }
                 }
