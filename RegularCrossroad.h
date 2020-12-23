@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QTextStream>
 
 class RegularCrossroad : public QObject
 {
@@ -21,6 +22,8 @@ public:
   int CountSides() const;
   QList<CrossroadSide*> GetSides() const;
   virtual ~RegularCrossroad();
+  void Serialize(QTextStream& stream) const;
+  bool Deserialize(QTextStream& stream);
 
 signals:
   void sidesChanged();

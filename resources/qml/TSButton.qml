@@ -20,6 +20,9 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-        onClicked: if (root.callback !== undefined) root.callback()
+        onClicked: {
+            if (root.callback !== undefined)
+                root.callback()
+        }
     }
 }

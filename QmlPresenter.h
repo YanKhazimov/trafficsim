@@ -14,9 +14,10 @@ class QmlPresenter : public QObject
   RegularCrossroad* getCrossroad() const;
 
   std::unique_ptr<RegularCrossroad> crossroad;
+
 public:
   explicit QmlPresenter(QObject *parent = nullptr);
 
-signals:
-
+  Q_INVOKABLE void SaveCrossroad();
+  Q_INVOKABLE bool OpenCrossroad();
 };

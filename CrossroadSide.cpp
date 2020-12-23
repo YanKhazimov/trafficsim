@@ -35,6 +35,13 @@ bool CrossroadSide::RemoveOutLane()
   return true;
 }
 
+void CrossroadSide::Serialize(QTextStream &stream) const
+{
+  stream << laneWidth << " " << startX << " " << startY << " " << GetNormal()
+         << " " << inLanes.count() << " " << outLanes.count()
+         << " " << inOffset << " " << outOffset << " " << midOffset << Qt::endl;
+}
+
 QList<Lane*> CrossroadSide::getInLanes() const
 {
   return inLanes.toList();
@@ -85,9 +92,9 @@ CrossroadSide::CrossroadSide(QObject* parent)
 {
 }
 
-CrossroadSide::CrossroadSide(int _laneWidth, int _startX, int _startY, qreal _normal, int inLanesCount, int outLanesCount,
+CrossroadSide::CrossroadSide(int _laneWidth, int _startX, int _startY, int _normal, int inLanesCount, int outLanesCount,
                              int _inOffset, int _outOffset, int _midOffset, QObject* parent)
-  : QObject(parent), laneWidth(_laneWidth), normal(static_cast<int>(qRadiansToDegrees(_normal) + 360) % 360), inOffset(_inOffset), outOffset(_outOffset), midOffset(_midOffset), startX(_startX), startY(_startY)
+  : QObject(parent), laneWidth(_laneWidth), normal(_normal), inOffset(_inOffset), outOffset(_outOffset), midOffset(_midOffset), startX(_startX), startY(_startY)
 {
   inLanes.resize(inLanesCount);
   outLanes.resize(outLanesCount);

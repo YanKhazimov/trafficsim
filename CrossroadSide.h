@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVector>
+#include <QTextStream>
 
 class CrossroadSide : public QObject
 {
@@ -50,7 +51,7 @@ class CrossroadSide : public QObject
 
 public:
   CrossroadSide(QObject* parent = nullptr);
-  CrossroadSide(int laneWidth, int startX, int startY, qreal normal, int inLanesCount, int outLanesCount,
+  CrossroadSide(int laneWidth, int startX, int startY, int normal, int inLanesCount, int outLanesCount,
                 int inOffset = 0, int outOffset = 0, int midOffset = 0, QObject* parent = nullptr);
 
   qreal GetNormal() const;
@@ -58,6 +59,8 @@ public:
   Q_INVOKABLE bool RemoveInLane();
   Q_INVOKABLE bool AddOutLane();
   Q_INVOKABLE bool RemoveOutLane();
+
+  void Serialize(QTextStream& stream) const;
 
 signals:
   void parametersChanged();

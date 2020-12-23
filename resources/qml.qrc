@@ -20,5 +20,7 @@
         <file>images/done.svg</file>
         <file>images/minus.svg</file>
         <file>qml/CrossroadSideHighlighter.qml</file>
+        <file>images/save.svg</file>
+        <file>images/open.svg</file>
     </qresource>
 </RCC>

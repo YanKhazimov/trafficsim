@@ -38,8 +38,8 @@ ApplicationWindow {
         sourceSize.width: Sizes.laneWidth
     }
 
-    property int side: 0
-    property int inLane: 1
+    property int side: 2
+    property int inLane: 0
 
     ControlPanel {
         id: controlPanel

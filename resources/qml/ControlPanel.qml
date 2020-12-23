@@ -19,7 +19,7 @@ Rectangle {
         root.crossroadValidated()
 
         constructorPanel.visible = false
-        addButton.img = "qrc:/images/crossroad.svg"
+        addButton.img = "qrc:/images/edit.svg"
         addButton.callback = showConstructor
     }
 
@@ -30,8 +30,36 @@ Rectangle {
         anchors.margins: 20
         width: 50
         height: 50
-        img: "qrc:/images/crossroad.svg"
+        img: "qrc:/images/edit.svg"
         callback: showConstructor
+    }
+
+    TSButton {
+        id: saveButton
+        anchors.top: parent.top
+        anchors.right: addButton.left
+        anchors.margins: 20
+        width: 50
+        height: 50
+        visible: constructorPanel.visible
+        img: "qrc:/images/save.svg"
+        callback: function() {
+            engine.SaveCrossroad()
+        }
+    }
+
+    TSButton {
+        id: openButton
+        anchors.top: parent.top
+        anchors.right: addButton.left
+        anchors.margins: 20
+        width: 50
+        height: 50
+        visible: !constructorPanel.visible
+        img: "qrc:/images/open.svg"
+        callback: function() {
+            engine.OpenCrossroad()
+        }
     }
 
     CrossroadConstructor {
