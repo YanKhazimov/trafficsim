@@ -37,12 +37,12 @@ ScrollView {
                     anchors.left: parent.left
                     anchors.top: parent.top
                     anchors.margins: 5
-                    text: "Side #%1 (%2 IN : %3 OUT)".arg(index + 1).arg(modelData.InLanesCount).arg(modelData.OutLanesCount)
+                    text: "Side #%1 (%4\u00B0, %2 IN : %3 OUT)".arg(index + 1).arg(RoleSideData.InLanesCount).arg(RoleSideData.OutLanesCount).arg(RoleSideData.NormalDegrees)
                     color: "white"
                 }
 
                 Binding {
-                    target: modelData
+                    target: RoleSideData
                     property: "IsHighlighted"
                     value: delegateMouseArea.containsMouse
                 }
@@ -55,7 +55,6 @@ ScrollView {
                         top: parent.top; topMargin: -10
                     }
 
-                    width: height
                     img: delegateMouseArea.inEditMode ? "qrc:/images/done.svg" : "qrc:/images/edit.svg"
                     callback: function() {
                         delegateMouseArea.inEditMode = !delegateMouseArea.inEditMode
@@ -68,7 +67,6 @@ ScrollView {
                         top: parent.top; topMargin: -10
                     }
 
-                    width: height
                     img: "qrc:/images/remove.svg"
                     callback: function() {
                         engine.Crossroad.RemoveSide(index)
@@ -90,7 +88,7 @@ ScrollView {
                         height: childrenRect.height
 
                         Binding {
-                            target: modelData
+                            target: RoleSideData
                             property: "IsHighlightedX"
                             value: rowMouseAreaX.containsMouse
                         }
@@ -101,17 +99,17 @@ ScrollView {
 
                             TSButton {
                                 img: "qrc:/images/minus.svg"
-                                callback: function() { modelData.StartX = modelData.StartX - 1 }
+                                callback: function() { RoleSideData.StartX = RoleSideData.StartX - 1 }
                             }
                             Text {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "x: " + modelData.StartX
+                                text: "x: " + RoleSideData.StartX
                                 font.pointSize: 14
                             }
                             TSButton {
                                 img: "qrc:/images/plus.svg"
-                                callback: function() { modelData.StartX = modelData.StartX + 1 }
+                                callback: function() { RoleSideData.StartX = RoleSideData.StartX + 1 }
                             }
                         }
                     }
@@ -123,7 +121,7 @@ ScrollView {
                         height: childrenRect.height
 
                         Binding {
-                            target: modelData
+                            target: RoleSideData
                             property: "IsHighlightedY"
                             value: rowMouseAreaY.containsMouse
                         }
@@ -135,18 +133,18 @@ ScrollView {
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/minus.svg"
-                                callback: function() { modelData.StartY = modelData.StartY - 1 }
+                                callback: function() { RoleSideData.StartY = RoleSideData.StartY - 1 }
                             }
                             Text {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "y: " + modelData.StartY
+                                text: "y: " + RoleSideData.StartY
                                 font.pointSize: 14
                             }
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/plus.svg"
-                                callback: function() { modelData.StartY = modelData.StartY + 1 }
+                                callback: function() { RoleSideData.StartY = RoleSideData.StartY + 1 }
                             }
                         }
                     }
@@ -158,7 +156,7 @@ ScrollView {
                         height: childrenRect.height
 
                         Binding {
-                            target: modelData
+                            target: RoleSideData
                             property: "IsHighlightedR"
                             value: rowMouseAreaR.containsMouse
                         }
@@ -170,18 +168,18 @@ ScrollView {
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/minus.svg"
-                                callback: function() { modelData.NormalDegrees = modelData.NormalDegrees - 1 }
+                                callback: function() { RoleSideData.NormalDegrees = RoleSideData.NormalDegrees - 1 }
                             }
                             Text {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "angle: " + modelData.NormalDegrees + "\u00B0"
+                                text: "angle: " + RoleSideData.NormalDegrees + "\u00B0"
                                 font.pointSize: 14
                             }
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/plus.svg"
-                                callback: function() { modelData.NormalDegrees = modelData.NormalDegrees + 1 }
+                                callback: function() { RoleSideData.NormalDegrees = RoleSideData.NormalDegrees + 1 }
                             }
                         }
                     }
@@ -198,18 +196,18 @@ ScrollView {
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/minus.svg"
-                                callback: function() { modelData.RemoveInLane() }
+                                callback: function() { RoleSideData.RemoveInLane() }
                             }
                             Text {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "in lanes: " + modelData.InLanesCount
+                                text: "in lanes: " + RoleSideData.InLanesCount
                                 font.pointSize: 14
                             }
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/plus.svg"
-                                callback: function() { modelData.AddInLane() }
+                                callback: function() { RoleSideData.AddInLane() }
                             }
                         }
                     }
@@ -226,18 +224,18 @@ ScrollView {
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/minus.svg"
-                                callback: function() { modelData.RemoveOutLane() }
+                                callback: function() { RoleSideData.RemoveOutLane() }
                             }
                             Text {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "out lanes: " + modelData.OutLanesCount
+                                text: "out lanes: " + RoleSideData.OutLanesCount
                                 font.pointSize: 14
                             }
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/plus.svg"
-                                callback: function() { modelData.AddOutLane() }
+                                callback: function() { RoleSideData.AddOutLane() }
                             }
                         }
                     }
@@ -254,18 +252,18 @@ ScrollView {
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/minus.svg"
-                                callback: function() { modelData.InOffset = modelData.InOffset - 1 }
+                                callback: function() { RoleSideData.InOffset = RoleSideData.InOffset - 1 }
                             }
                             Text {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "in margin: " + modelData.InOffset
+                                text: "in margin: " + RoleSideData.InOffset
                                 font.pointSize: 14
                             }
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/plus.svg"
-                                callback: function() { modelData.InOffset = modelData.InOffset + 1 }
+                                callback: function() { RoleSideData.InOffset = RoleSideData.InOffset + 1 }
                             }
                         }
                     }
@@ -282,18 +280,18 @@ ScrollView {
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/minus.svg"
-                                callback: function() { modelData.OutOffset = modelData.OutOffset - 1 }
+                                callback: function() { RoleSideData.OutOffset = RoleSideData.OutOffset - 1 }
                             }
                             Text {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "out margin: " + modelData.OutOffset
+                                text: "out margin: " + RoleSideData.OutOffset
                                 font.pointSize: 14
                             }
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/plus.svg"
-                                callback: function() { modelData.OutOffset = modelData.OutOffset + 1 }
+                                callback: function() { RoleSideData.OutOffset = RoleSideData.OutOffset + 1 }
                             }
                         }
                     }
@@ -310,18 +308,18 @@ ScrollView {
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/minus.svg"
-                                callback: function() { modelData.MidOffset = modelData.MidOffset - 1 }
+                                callback: function() { RoleSideData.MidOffset = RoleSideData.MidOffset - 1 }
                             }
                             Text {
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "mid margin: " + modelData.MidOffset
+                                text: "mid margin: " + RoleSideData.MidOffset
                                 font.pointSize: 14
                             }
                             TSButton {
                                 Layout.maximumWidth: height
                                 img: "qrc:/images/plus.svg"
-                                callback: function() { modelData.MidOffset = modelData.MidOffset + 1 }
+                                callback: function() { RoleSideData.MidOffset = RoleSideData.MidOffset + 1 }
                             }
                         }
                     }

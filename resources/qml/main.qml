@@ -11,6 +11,13 @@ ApplicationWindow {
     title: qsTr("Hello World")
     color: "#666666"
 
+    TSButton {
+        width: 40
+        height: 40
+        img: "qrc:/images/next.svg"
+        callback: engine.GoToNextFrame()
+    }
+
     Rectangle {
         id: displayArea
         anchors.right: controlPanel.left
@@ -36,6 +43,7 @@ ApplicationWindow {
         id: car
         source: "qrc:/images/car.png"
         sourceSize.width: Sizes.laneWidth
+        y: 100
     }
 
     property int side: 2
@@ -49,15 +57,13 @@ ApplicationWindow {
         width: 300
 
         onCrossroadValidated: {
-            crossroadId.fill()
-
             car.x = displayArea.x + crossroadId.x + crossroadId.atStopLine(side, inLane).x +
-               car.height/2 * Math.cos(engine.Crossroad.Sides[side].NormalRadians) -
+               car.height/2 * Math.cos(engine.Crossroad.GetSide(side).NormalRadians) -
                car.width/2
             car.y = displayArea.y + crossroadId.y + crossroadId.atStopLine(side, inLane).y -
-               car.height/2 * Math.sin(engine.Crossroad.Sides[side].NormalRadians) -
+               car.height/2 * Math.sin(engine.Crossroad.GetSide(side).NormalRadians) -
                car.height/2
-            car.rotation = (Math.PI/2 - engine.Crossroad.Sides[side].NormalRadians + Math.PI) / Math.PI * 180
+            car.rotation = (Math.PI/2 - engine.Crossroad.GetSide(side).NormalRadians + Math.PI) / Math.PI * 180
         }
     }
 }

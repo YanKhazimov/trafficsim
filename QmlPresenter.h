@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "RegularCrossroad.h"
+#include "Car.h"
 
 class QmlPresenter : public QObject
 {
@@ -14,10 +15,13 @@ class QmlPresenter : public QObject
   RegularCrossroad* getCrossroad() const;
 
   std::unique_ptr<RegularCrossroad> crossroad;
+  std::unique_ptr<Car> car;
 
 public:
   explicit QmlPresenter(QObject *parent = nullptr);
 
   Q_INVOKABLE void SaveCrossroad();
   Q_INVOKABLE bool OpenCrossroad();
+
+  Q_INVOKABLE void GoToNextFrame();
 };

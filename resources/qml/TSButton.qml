@@ -2,7 +2,7 @@ import QtQuick 2.15
 
 Rectangle {
     id: root
-    color: mouseArea.containsMouse ? "#DDDDDD" : "#CCCCCC"
+    color: mouseArea.containsPress ? "#EEEEEE" : mouseArea.containsMouse ? "#DDDDDD" : "#CCCCCC"
     implicitWidth: 30
     implicitHeight: 30
     radius: 10

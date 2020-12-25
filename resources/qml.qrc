@@ -22,5 +22,6 @@
         <file>qml/CrossroadSideHighlighter.qml</file>
         <file>images/save.svg</file>
         <file>images/open.svg</file>
+        <file>images/next.svg</file>
     </qresource>
 </RCC>

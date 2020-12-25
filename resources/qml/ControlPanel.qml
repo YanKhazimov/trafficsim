@@ -23,49 +23,46 @@ Rectangle {
         addButton.callback = showConstructor
     }
 
-    TSButton {
-        id: addButton
+    Row {
+        id: buttonsRow
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 20
-        width: 50
-        height: 50
-        img: "qrc:/images/edit.svg"
-        callback: showConstructor
-    }
+        spacing: 20
 
-    TSButton {
-        id: saveButton
-        anchors.top: parent.top
-        anchors.right: addButton.left
-        anchors.margins: 20
-        width: 50
-        height: 50
-        visible: constructorPanel.visible
-        img: "qrc:/images/save.svg"
-        callback: function() {
-            engine.SaveCrossroad()
+        TSButton {
+            id: addButton
+            width: 40
+            height: 40
+            img: "qrc:/images/edit.svg"
+            callback: showConstructor
         }
-    }
 
-    TSButton {
-        id: openButton
-        anchors.top: parent.top
-        anchors.right: addButton.left
-        anchors.margins: 20
-        width: 50
-        height: 50
-        visible: !constructorPanel.visible
-        img: "qrc:/images/open.svg"
-        callback: function() {
-            engine.OpenCrossroad()
+        TSButton {
+            id: saveButton
+            width: 40
+            height: 40
+            img: "qrc:/images/save.svg"
+            callback: function() {
+                engine.SaveCrossroad()
+            }
+        }
+
+        TSButton {
+            id: openButton
+            width: 40
+            height: 40
+            img: "qrc:/images/open.svg"
+            callback: function() {
+                engine.OpenCrossroad()
+            }
         }
     }
 
     CrossroadConstructor {
         id: constructorPanel
         visible: false
-        anchors.top: addButton.bottom
+        anchors.top: buttonsRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom

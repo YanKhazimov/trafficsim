@@ -1,33 +1,33 @@
 #include "RegularCrossroad.h"
+#include "DataRoles.h"
 #include <QtMath>
 #include <QDebug>
 
 RegularCrossroad::RegularCrossroad(QObject* parent)
   : QObject(parent)
 {
+  QObject::connect(&sides, &CrossroadSidesModel::rowsInserted, this, &RegularCrossroad::sidesChanged);
+  QObject::connect(&sides, &CrossroadSidesModel::rowsRemoved, this, &RegularCrossroad::sidesChanged);
 }
 
 bool RegularCrossroad::AddSide(int laneWidth, int startX, int startY, qreal normal, int inLanesCount, int outLanesCount,
                                int inOffset, int outOffset, int midOffset)
 {
   bool validSideParams = true;
-  sides.append(new CrossroadSide(laneWidth, startX, startY, static_cast<int>(qRadiansToDegrees(normal) + 360) % 360, inLanesCount, outLanesCount, inOffset, outOffset, midOffset));
-  std::sort(sides.begin(), sides.end(), [](CrossroadSide* left, CrossroadSide* right) {
-    return left->GetNormal() < right->GetNormal();
-  });
-  emit sidesChanged();
+
+  sides.AddSide(laneWidth, startX, startY, static_cast<int>(qRadiansToDegrees(normal) + 360) % 360, inLanesCount, outLanesCount, inOffset, outOffset, midOffset);
+
   return validSideParams;
 }
 
 bool RegularCrossroad::RemoveSide(int index)
 {
-  if (index < 0 || index >= sides.size())
-    return false;
+  return sides.RemoveSide(index);
+}
 
-  delete sides[index];
-  sides.removeAt(index);
-  emit sidesChanged();
-  return true;
+CrossroadSide* RegularCrossroad::GetSide(int index)
+{
+  return sides.data(sides.index(index, 0), DataRoles::CrossroadSideData).value<CrossroadSide*>();
 }
 
 bool RegularCrossroad::Validate() const
@@ -37,25 +37,19 @@ bool RegularCrossroad::Validate() const
 
 int RegularCrossroad::CountSides() const
 {
-  return sides.count();
+  return sides.rowCount();
 }
 
-QList<CrossroadSide*> RegularCrossroad::GetSides() const
+CrossroadSidesModel* RegularCrossroad::GetSides()
 {
-  return sides;
-}
-
-RegularCrossroad::~RegularCrossroad()
-{
-  for (auto side: sides)
-    delete side;
+  return &sides;
 }
 
 void RegularCrossroad::Serialize(QTextStream &stream) const
 {
-  stream << CountSides() << Qt::endl;
-  for (CrossroadSide* side : GetSides())
-    side->Serialize(stream);
+  stream << sides.rowCount() << Qt::endl;
+  for (int i = 0; i < sides.rowCount(); ++i)
+    sides.data(sides.index(i, 0), DataRoles::CrossroadSideData).value<CrossroadSide*>()->Serialize(stream);
 }
 
 bool RegularCrossroad::Deserialize(QTextStream &stream)
@@ -64,9 +58,12 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
   int sidesCount = stream.readLine().toInt(&result);
   if (!result)
   {
-    qDebug() << "Can't deserialize crossroad";
+    qWarning() << "Can't deserialize crossroad";
     return false;
   }
+
+  for (int i = sides.rowCount() - 1; i >= 0; --i)
+    RemoveSide(i);
 
   for (int i = 0; i < sidesCount; ++i)
   {
@@ -91,12 +88,11 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
 
   if (!result)
   {
-    qDebug() << "Invalid crossroad parameters";
+    qWarning() << "Invalid crossroad parameters";
 
-    for (int i = sidesCount; i >= 0; --i)
+    for (int i = sidesCount - 1; i >= 0; --i)
       RemoveSide(i);
   }
 
-  emit sidesChanged();
   return result;
 }

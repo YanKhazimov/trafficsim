@@ -68,9 +68,19 @@ Rectangle {
         id: sidesRepeater
         model: engine.Crossroad.Sides
         delegate: CrossroadSide {
-            model: modelData
+            model: RoleSideData
             x: modelData.StartX
             y: modelData.StartY
+        }
+    }
+
+
+    Connections {
+        target: engine.Crossroad
+        function onSidesChanged() {
+            sidesRepeater.model = []
+            sidesRepeater.model = engine.Crossroad.Sides
+            crossroadId.fill()
         }
     }
 }

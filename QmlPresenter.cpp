@@ -11,6 +11,7 @@ RegularCrossroad *QmlPresenter::getCrossroad() const
 QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
 {
   crossroad = std::make_unique<RegularCrossroad>();
+  car = std::make_unique<Car>();
 }
 
 void QmlPresenter::SaveCrossroad()
@@ -29,7 +30,7 @@ bool QmlPresenter::OpenCrossroad()
   QFile file("crossroad.txt");
   if (!file.open(QIODevice::ReadOnly))
   {
-    qDebug() << "Can't open file" << file.fileName();
+    qWarning() << "Can't open file" << file.fileName();
     return false;
   }
 
@@ -38,4 +39,9 @@ bool QmlPresenter::OpenCrossroad()
 
   file.close();
   return result;
+}
+
+void QmlPresenter::GoToNextFrame()
+{
+  car->Move();
 }
