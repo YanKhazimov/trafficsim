@@ -8,6 +8,11 @@ RegularCrossroad *QmlPresenter::getCrossroad() const
   return crossroad.get();
 }
 
+Car* QmlPresenter::getCar() const
+{
+  return car.get();
+}
+
 QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
 {
   crossroad = std::make_unique<RegularCrossroad>();

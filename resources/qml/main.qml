@@ -15,7 +15,9 @@ ApplicationWindow {
         width: 40
         height: 40
         img: "qrc:/images/next.svg"
-        callback: engine.GoToNextFrame()
+        callback: function () {
+            engine.GoToNextFrame()
+        }
     }
 
     Rectangle {
@@ -43,7 +45,9 @@ ApplicationWindow {
         id: car
         source: "qrc:/images/car.png"
         sourceSize.width: Sizes.laneWidth
-        y: 100
+        y: engine.Car.Y
+        x: engine.Car.X
+        rotation: engine.Car.DirectionDegrees
     }
 
     property int side: 2
@@ -57,13 +61,18 @@ ApplicationWindow {
         width: 300
 
         onCrossroadValidated: {
-            car.x = displayArea.x + crossroadId.x + crossroadId.atStopLine(side, inLane).x +
+            engine.Car.X = displayArea.x + crossroadId.x + crossroadId.atStopLine(side, inLane).x +
                car.height/2 * Math.cos(engine.Crossroad.GetSide(side).NormalRadians) -
                car.width/2
-            car.y = displayArea.y + crossroadId.y + crossroadId.atStopLine(side, inLane).y -
+            engine.Car.Y = displayArea.y + crossroadId.y + crossroadId.atStopLine(side, inLane).y -
                car.height/2 * Math.sin(engine.Crossroad.GetSide(side).NormalRadians) -
                car.height/2
-            car.rotation = (Math.PI/2 - engine.Crossroad.GetSide(side).NormalRadians + Math.PI) / Math.PI * 180
+            engine.Car.DirectionDegrees = (Math.PI/2 - engine.Crossroad.GetSide(side).NormalRadians + Math.PI) / Math.PI * 180
+        }
+        onCrossroadImageSaveRequested: {
+            displayArea.grabToImage(function(grabResult) {
+                grabResult.saveToFile("crossroad.png")
+            }, Qt.size(displayArea.width, displayArea.height))
         }
     }
 }

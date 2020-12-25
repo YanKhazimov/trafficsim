@@ -26,5 +26,6 @@ Car::Car(QObject *parent) : QObject(parent)
 
 void Car::Move()
 {
-
+  x += 50;
+  emit parametersChanged();
 }

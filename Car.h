@@ -14,9 +14,9 @@ class Car : public QObject
   Q_PROPERTY(int Width MEMBER width CONSTANT)
   Q_PROPERTY(int Height MEMBER height CONSTANT)
 
-  int direction; // rounded in degrees
+  int direction = 0; // rounded in degrees
   int width, height;
-  int x, y;
+  int x = 0, y = 0;
 
   int getDirection() const;
   qreal getDirectionInRadians() const;

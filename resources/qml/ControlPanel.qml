@@ -7,6 +7,7 @@ Rectangle {
 
     readonly property bool crossroadConstructionMode: constructorPanel.visible
     signal crossroadValidated()
+    signal crossroadImageSaveRequested()
 
     function showConstructor() {
         constructorPanel.visible = true
@@ -45,6 +46,7 @@ Rectangle {
             img: "qrc:/images/save.svg"
             callback: function() {
                 engine.SaveCrossroad()
+                root.crossroadImageSaveRequested()
             }
         }
 

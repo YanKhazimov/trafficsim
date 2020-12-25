@@ -11,8 +11,10 @@ class QmlPresenter : public QObject
   Q_DISABLE_COPY(QmlPresenter)
 
   Q_PROPERTY(RegularCrossroad* Crossroad READ getCrossroad CONSTANT)
+  Q_PROPERTY(Car* Car READ getCar CONSTANT)
 
   RegularCrossroad* getCrossroad() const;
+  Car* getCar() const;
 
   std::unique_ptr<RegularCrossroad> crossroad;
   std::unique_ptr<Car> car;
