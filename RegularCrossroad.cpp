@@ -32,6 +32,9 @@ RegularCrossroad::RegularCrossroad(QObject* parent)
 {
   QObject::connect(&sides, &CrossroadSidesModel::rowsInserted, this, &RegularCrossroad::sidesChanged);
   QObject::connect(&sides, &CrossroadSidesModel::rowsRemoved, this, &RegularCrossroad::sidesChanged);
+  QObject::connect(&sides, &CrossroadSidesModel::rowsInserted, &passages, &CrossroadPassagesModel::onSidesInserted);
+  QObject::connect(&sides, &CrossroadSidesModel::rowsRemoved, &passages, &CrossroadPassagesModel::onSidesRemoved);
+
   QObject::connect(&passages, &CrossroadPassagesModel::rowsInserted, this, &RegularCrossroad::passagesChanged);
   QObject::connect(&passages, &CrossroadPassagesModel::rowsRemoved, this, &RegularCrossroad::passagesChanged);
 }
@@ -79,16 +82,23 @@ void RegularCrossroad::Serialize(QTextStream &stream) const
 
 bool RegularCrossroad::Deserialize(QTextStream &stream)
 {
+  // first removing current passages
+  for (int i = passages.rowCount() - 1; i >= 0; --i)
+    RemovePassage(i);
+
+  // then removing current sides
+  for (int i = sides.rowCount() - 1; i >= 0; --i)
+    RemoveSide(i);
+
   bool result = true;
+
+  // first adding new sides
   int sidesCount = stream.readLine().toInt(&result);
   if (!result)
   {
     qWarning() << "Can't deserialize crossroad";
     return false;
   }
-
-  for (int i = sides.rowCount() - 1; i >= 0; --i)
-    RemoveSide(i);
 
   for (int i = 0; i < sidesCount; ++i)
   {
@@ -111,10 +121,8 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
     result &= AddSide(laneWidth, startX, startY, qDegreesToRadians(double(normal)), inLanesCount, outLanesCount, inOffset, outOffset, midOffset);
   }
 
+  // then adding new passages
   int passagesCount = stream.readLine().toInt(&result);
-
-  for (int i = passages.rowCount() - 1; i >= 0; --i)
-    RemovePassage(i);
 
   for (int i = 0; i < passagesCount; ++i)
   {
@@ -136,10 +144,10 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
   {
     qWarning() << "Invalid crossroad parameters";
 
-    for (int i = passagesCount - 1; i >= 0; --i)
+    for (int i = passages.rowCount() - 1; i >= 0; --i)
       RemovePassage(i);
 
-    for (int i = sidesCount - 1; i >= 0; --i)
+    for (int i = sides.rowCount() - 1; i >= 0; --i)
       RemoveSide(i);
   }
 

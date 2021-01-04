@@ -56,3 +56,51 @@ bool CrossroadPassagesModel::RemovePassage(int index)
 
   return true;
 }
+
+void CrossroadPassagesModel::onSidesInserted(const QModelIndex &parent, int first, int last)
+{
+  Q_UNUSED(parent);
+  if (first != last)
+    qWarning() << "inserted" << last - first + 1 << "sides";
+
+  for (auto& passage : passages)
+  {
+    if (passage->inSideIndex >= first)
+      passage->SetInLane(passage->inSideIndex + (last - first + 1), passage->inLaneIndex);
+
+    if (passage->outSideIndex >= first)
+      passage->SetOutLane(passage->outSideIndex + (last - first + 1), passage->outLaneIndex);
+  }
+}
+
+void CrossroadPassagesModel::onSidesRemoved(const QModelIndex &parent, int first, int last)
+{
+  Q_UNUSED(parent);
+  if (first != last)
+    qWarning() << "removed" << last - first + 1 << "sides";
+
+  for (int i = passages.count() - 1; i >= 0; --i)
+  {
+    if (passages[i]->inSideIndex >= first && passages[i]->inSideIndex <= last)
+    {
+      beginRemoveRows(QModelIndex(), i, i);
+      passages.removeAt(i);
+      endRemoveRows();
+      continue;
+    }
+
+    if (passages[i]->outSideIndex >= first && passages[i]->outSideIndex <= last)
+    {
+      beginRemoveRows(QModelIndex(), i, i);
+      passages.removeAt(i);
+      endRemoveRows();
+      continue;
+    }
+
+    if (passages[i]->inSideIndex > last)
+      passages[i]->SetInLane(passages[i]->inSideIndex - (last - first + 1), passages[i]->inLaneIndex);
+
+    if (passages[i]->outSideIndex > last)
+      passages[i]->SetOutLane(passages[i]->outSideIndex - (last - first + 1), passages[i]->outLaneIndex);
+  }
+}

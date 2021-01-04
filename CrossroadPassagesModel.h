@@ -20,4 +20,8 @@ public:
 
   void AddPassage(Passage* newPassage);
   bool RemovePassage(int index);
+
+public slots:
+  void onSidesInserted(const QModelIndex &parent, int first, int last);
+  void onSidesRemoved(const QModelIndex &parent, int first, int last);
 };
