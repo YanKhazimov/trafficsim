@@ -152,7 +152,22 @@ ScrollView {
                         id: infoText
                         text: "Passage #%1 (from %2:%3 to %4:%5)".arg(index + 1).arg(RolePassageData.InSideIndex).arg(RolePassageData.InLaneIndex).arg(RolePassageData.OutSideIndex).arg(RolePassageData.OutLaneIndex)
                         color: "white"
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors {
+                            left: parent.left; leftMargin: Sizes.minMargin
+                            verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    TSButton {
+                        anchors {
+                            right: parent.right; rightMargin: 10
+                            top: parent.top; topMargin: -10
+                        }
+
+                        img: "qrc:/images/remove.svg"
+                        callback: function() {
+                            engine.Crossroad.RemovePassage(index)
+                        }
                     }
                 }
             }

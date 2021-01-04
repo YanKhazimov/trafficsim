@@ -1,5 +1,6 @@
 #pragma once
 #include <QObject>
+#include <QTextStream>
 
 class Passage : public QObject
 {
@@ -27,6 +28,8 @@ public:
   void SetInLane(int sideIndex, int laneIndex);
   void SetOutLane(int sideIndex, int laneIndex);
   void Reset();
+
+  void Serialize(QTextStream& stream) const;
 
 signals:
   void parametersChanged();

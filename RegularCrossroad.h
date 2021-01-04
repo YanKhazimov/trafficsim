@@ -24,10 +24,13 @@ class RegularCrossroad : public QObject
   Passage* getPassageUnderConstruction();
   CrossroadPassagesModel* getPassages();
 
+  bool AddPassage(int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex);
+
 public:
   RegularCrossroad(QObject* parent = nullptr);
   Q_INVOKABLE bool AddSide(int laneWidth, int startX, int startY, qreal normal, int inLanesCount, int outLanesCount, int inOffset = 0, int outOffset = 0, int midOffset = 0);
   Q_INVOKABLE bool RemoveSide(int index);
+  Q_INVOKABLE bool RemovePassage(int index);
   Q_INVOKABLE CrossroadSide* GetSide(int index);
   Q_INVOKABLE bool Validate() const;
   void Serialize(QTextStream& stream) const;

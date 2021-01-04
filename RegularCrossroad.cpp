@@ -1,5 +1,6 @@
 #include "RegularCrossroad.h"
 #include "DataRoles.h"
+#include <memory>
 #include <QtMath>
 #include <QDebug>
 
@@ -11,6 +12,19 @@ Passage *RegularCrossroad::getPassageUnderConstruction()
 CrossroadPassagesModel *RegularCrossroad::getPassages()
 {
   return &passages;
+}
+
+bool RegularCrossroad::AddPassage(int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex)
+{
+  bool validPassageParams = true;
+  std::unique_ptr<Passage> newPassage = std::make_unique<Passage>(inSideIndex, inLaneIndex, outSideIndex, outLaneIndex);
+  passages.AddPassage(newPassage.get());
+  return validPassageParams;
+}
+
+bool RegularCrossroad::RemovePassage(int index)
+{
+  return passages.RemovePassage(index);
 }
 
 RegularCrossroad::RegularCrossroad(QObject* parent)
@@ -57,6 +71,10 @@ void RegularCrossroad::Serialize(QTextStream &stream) const
   stream << sides.rowCount() << Qt::endl;
   for (int i = 0; i < sides.rowCount(); ++i)
     sides.data(sides.index(i, 0), DataRoles::CrossroadSideData).value<CrossroadSide*>()->Serialize(stream);
+
+  stream << passages.rowCount() << Qt::endl;
+  for (int i = 0; i < passages.rowCount(); ++i)
+    passages.data(passages.index(i, 0), DataRoles::CrossroadPassageData).value<Passage*>()->Serialize(stream);
 }
 
 bool RegularCrossroad::Deserialize(QTextStream &stream)
@@ -93,9 +111,33 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
     result &= AddSide(laneWidth, startX, startY, qDegreesToRadians(double(normal)), inLanesCount, outLanesCount, inOffset, outOffset, midOffset);
   }
 
+  int passagesCount = stream.readLine().toInt(&result);
+
+  for (int i = passages.rowCount() - 1; i >= 0; --i)
+    RemovePassage(i);
+
+  for (int i = 0; i < passagesCount; ++i)
+  {
+    QStringList passageParameters = stream.readLine().split(' ', Qt::SkipEmptyParts);
+    if (passageParameters.count() != 4)
+    {
+      result = false;
+      break;
+    }
+
+    int inSideIndex = passageParameters[0].toInt(&result); // add validation
+    int inLaneIndex = passageParameters[1].toInt(&result);
+    int outSideIndex = passageParameters[2].toInt(&result);
+    int outLaneIndex = passageParameters[3].toInt(&result);
+    result &= AddPassage(inSideIndex, inLaneIndex, outSideIndex, outLaneIndex);
+  }
+
   if (!result)
   {
     qWarning() << "Invalid crossroad parameters";
+
+    for (int i = passagesCount - 1; i >= 0; --i)
+      RemovePassage(i);
 
     for (int i = sidesCount - 1; i >= 0; --i)
       RemoveSide(i);

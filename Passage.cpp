@@ -36,3 +36,9 @@ void Passage::Reset()
   outLaneIndex = -1;
   emit parametersChanged();
 }
+
+void Passage::Serialize(QTextStream &stream) const
+{
+  stream << inSideIndex << " " << inLaneIndex << " " <<
+            outSideIndex << " " << outLaneIndex << Qt::endl;
+}
