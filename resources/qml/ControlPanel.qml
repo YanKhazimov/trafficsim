@@ -1,18 +1,21 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Controls 1.4 as QQC1
+import "Constants"
 
 Rectangle {
     id: root
     color: "#BBBBBB"
 
-    readonly property bool crossroadConstructionMode: constructorPanel.visible
+    readonly property bool sideConstructionMode: constructorPanel.visible
+    readonly property bool pathConstructionMode: !sideConstructionMode
     signal crossroadValidated()
     signal crossroadImageSaveRequested()
 
     function showConstructor() {
         constructorPanel.visible = true
-        addButton.img = "qrc:/images/done.svg"
-        addButton.callback = construct
+        editButton.img = "qrc:/images/done.svg"
+        editButton.callback = construct
     }
 
     function construct() {
@@ -20,8 +23,8 @@ Rectangle {
         root.crossroadValidated()
 
         constructorPanel.visible = false
-        addButton.img = "qrc:/images/edit.svg"
-        addButton.callback = showConstructor
+        editButton.img = "qrc:/images/edit.svg"
+        editButton.callback = showConstructor
     }
 
     Row {
@@ -32,7 +35,7 @@ Rectangle {
         spacing: 20
 
         TSButton {
-            id: addButton
+            id: editButton
             width: 40
             height: 40
             img: "qrc:/images/edit.svg"
@@ -61,7 +64,7 @@ Rectangle {
         }
     }
 
-    CrossroadConstructor {
+    QQC1.TabView {
         id: constructorPanel
         visible: false
         anchors.top: buttonsRow.bottom
@@ -69,5 +72,22 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 20
+
+        QQC1.Tab {
+            title: "Sides"
+            CrossroadConstructor {
+                anchors.fill: parent
+                anchors.margins: Sizes.minMargin
+            }
+        }
+
+        QQC1.Tab {
+            title: "Passages"
+            PassageConstructor {
+                id: pathsPanel
+                anchors.fill: parent
+                anchors.margins: Sizes.minMargin
+            }
+        }
     }
 }

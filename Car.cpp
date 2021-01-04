@@ -24,8 +24,9 @@ Car::Car(QObject *parent) : QObject(parent)
 
 }
 
-void Car::Move()
+void Car::Move(QPoint to)
 {
-  x += 50;
+  x = to.x();
+  y = to.y();
   emit parametersChanged();
 }

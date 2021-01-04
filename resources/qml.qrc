@@ -23,5 +23,7 @@
         <file>images/save.svg</file>
         <file>images/open.svg</file>
         <file>images/next.svg</file>
+        <file>qml/PassageConstructor.qml</file>
+        <file>qml/Passage.qml</file>
     </qresource>
 </RCC>

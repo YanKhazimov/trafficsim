@@ -48,5 +48,5 @@ bool QmlPresenter::OpenCrossroad()
 
 void QmlPresenter::GoToNextFrame()
 {
-  car->Move();
+  car->Move({100, 100});
 }

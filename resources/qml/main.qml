@@ -16,7 +16,9 @@ ApplicationWindow {
         height: 40
         img: "qrc:/images/next.svg"
         callback: function () {
-            engine.GoToNextFrame()
+            engine.Car.Move(Qt.point(engine.Car.X + 50, engine.Car.Y))
+            engine.Car.DirectionDegrees = 0
+            //engine.GoToNextFrame()
         }
     }
 
@@ -30,14 +32,14 @@ ApplicationWindow {
         color: "#BBBBBB"
 
         DrawArea {
-            id: drawArea
-            enabled: controlPanel.crossroadConstructionMode
+            id: sideDrawingArea
+            visible: controlPanel.sideConstructionMode
             anchors.fill: parent
+        }
 
-            Crossroad {
-                id: crossroadId
-                anchors.centerIn: parent
-            }
+        Crossroad {
+            id: crossroadId
+            anchors.centerIn: sideDrawingArea
         }
     }
 
@@ -45,8 +47,8 @@ ApplicationWindow {
         id: car
         source: "qrc:/images/car.png"
         sourceSize.width: Sizes.laneWidth
-        y: engine.Car.Y
-        x: engine.Car.X
+        x: displayArea.x + engine.Car.X
+        y: displayArea.y + engine.Car.Y
         rotation: engine.Car.DirectionDegrees
     }
 
@@ -61,10 +63,10 @@ ApplicationWindow {
         width: 300
 
         onCrossroadValidated: {
-            engine.Car.X = displayArea.x + crossroadId.x + crossroadId.atStopLine(side, inLane).x +
+            engine.Car.X = crossroadId.x + crossroadId.atStopLine(side, inLane).x +
                car.height/2 * Math.cos(engine.Crossroad.GetSide(side).NormalRadians) -
                car.width/2
-            engine.Car.Y = displayArea.y + crossroadId.y + crossroadId.atStopLine(side, inLane).y -
+            engine.Car.Y = crossroadId.y + crossroadId.atStopLine(side, inLane).y -
                car.height/2 * Math.sin(engine.Crossroad.GetSide(side).NormalRadians) -
                car.height/2
             engine.Car.DirectionDegrees = (Math.PI/2 - engine.Crossroad.GetSide(side).NormalRadians + Math.PI) / Math.PI * 180

@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Shapes 1.12
-import abc 1.0
+import TrafficSimApp 1.0
 import "Constants"
 
 Item {
@@ -11,14 +11,27 @@ Item {
     readonly property point end: Qt.point(start.x + crossroadLine.length * Math.cos(crossroadLine.angle),
                                       start.y - crossroadLine.length * Math.sin(crossroadLine.angle))
 
+    signal inLaneClicked(int laneIndex)
+    signal outLaneClicked(int laneIndex)
+
     function atStopLine(inLaneNumber) {
         if (inLaneNumber >= model.InLanesCount) {
-            console.error("Crossroad side does not have lane", inLaneNumber)
+            console.error("Crossroad side does not have IN lane", inLaneNumber)
             return Qt.point(0, 0)
         }
 
         return Qt.point(stopLine.start.x + (0.5 + inLaneNumber) * Sizes.laneWidth * Math.cos(stopLine.angle),
                         stopLine.start.y - (0.5 + inLaneNumber) * Sizes.laneWidth * Math.sin(stopLine.angle))
+    }
+
+    function atExit(outLaneNumber) {
+        if (outLaneNumber >= model.OutLanesCount) {
+            console.error("Crossroad side does not have OUT lane", outLaneNumber)
+            return Qt.point(0, 0)
+        }
+
+        return Qt.point(outLanesRepeater.itemAt(outLaneNumber).start.x,
+                        outLanesRepeater.itemAt(outLaneNumber).start.y)
     }
 
     Repeater {
@@ -30,6 +43,29 @@ Item {
                             (root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.sin(crossroadLine.angle)
                             )
             angle: root.model.NormalRadians
+
+            Rectangle {
+                id: inDelegateRect
+                width: 100
+                height: Sizes.laneWidth
+                x: crossroadLine.start.x + (root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.cos(crossroadLine.angle)
+                   + 100 / 2 * Math.cos(root.model.NormalRadians)
+                   - width / 2
+                y: crossroadLine.start.y - (root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.sin(crossroadLine.angle)
+                   - 100 / 2 * Math.sin(root.model.NormalRadians)
+                   - height / 2
+                rotation: -root.model.NormalDegrees
+
+                color: inLaneMouseArea.containsMouse ? "cyan" : "transparent"
+
+                MouseArea {
+                    id: inLaneMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.inLaneClicked(index)
+                }
+            }
         }
     }
 
@@ -45,6 +81,7 @@ Item {
     }
 
     Repeater {
+        id: outLanesRepeater
         model: root.model.OutLanes
         delegate: Lane {
             start: Qt.point(crossroadLine.start.x +
@@ -52,6 +89,29 @@ Item {
                             crossroadLine.start.y -
                             (root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.sin(crossroadLine.angle))
             angle: root.model.NormalRadians
+
+            Rectangle {
+                id: outDelegateRect
+                width: 100
+                height: Sizes.laneWidth
+                x: crossroadLine.start.x + (root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.cos(crossroadLine.angle)
+                   + 100 / 2 * Math.cos(root.model.NormalRadians)
+                   - width / 2
+                y: crossroadLine.start.y - (root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.sin(crossroadLine.angle)
+                   - 100 / 2 * Math.sin(root.model.NormalRadians)
+                   - height / 2
+                rotation: -root.model.NormalDegrees
+
+                color: outLaneMouseArea.containsMouse ? "pink" : "transparent"
+
+                MouseArea {
+                    id: outLaneMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.outLaneClicked(index)
+                }
+            }
         }
     }
 
@@ -60,7 +120,7 @@ Item {
         length: root.model.InLanesCount * Sizes.laneWidth
         start: Qt.point(crossroadLine.start.x + root.model.InOffset * Math.cos(crossroadLine.angle)
                             + 15 * Math.cos(root.model.NormalRadians),
-                        crossroadLine.start.y- root.model.InOffset * Math.sin(crossroadLine.angle)
+                        crossroadLine.start.y - root.model.InOffset * Math.sin(crossroadLine.angle)
                             - 15 * Math.sin(root.model.NormalRadians))
         angle: root.model.NormalRadians - Math.PI / 2
         color: Colors.markup

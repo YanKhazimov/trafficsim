@@ -1,5 +1,7 @@
 #pragma once
 #include "CrossroadSidesModel.h"
+#include "Passage.h"
+#include "CrossroadPassagesModel.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -9,9 +11,18 @@ class RegularCrossroad : public QObject
   Q_OBJECT
   Q_DISABLE_COPY(RegularCrossroad)
 
-  Q_PROPERTY(CrossroadSidesModel* Sides READ GetSides NOTIFY sidesChanged)
+  Q_PROPERTY(CrossroadSidesModel* Sides READ getSides NOTIFY sidesChanged)
+  Q_PROPERTY(Passage* PassageUnderConstruction READ getPassageUnderConstruction CONSTANT)
+  Q_PROPERTY(CrossroadPassagesModel* Passages READ getPassages NOTIFY passagesChanged)
 
   CrossroadSidesModel sides;
+
+  Passage passageUnderConstruction;
+  CrossroadPassagesModel passages;
+
+  CrossroadSidesModel* getSides();
+  Passage* getPassageUnderConstruction();
+  CrossroadPassagesModel* getPassages();
 
 public:
   RegularCrossroad(QObject* parent = nullptr);
@@ -19,12 +30,14 @@ public:
   Q_INVOKABLE bool RemoveSide(int index);
   Q_INVOKABLE CrossroadSide* GetSide(int index);
   Q_INVOKABLE bool Validate() const;
-  int CountSides() const;
-  CrossroadSidesModel* GetSides();
   void Serialize(QTextStream& stream) const;
   bool Deserialize(QTextStream& stream);
+  Q_INVOKABLE void SetNewPassageInLane(int sideIndex, int laneIndex);
+  Q_INVOKABLE void SetNewPassageOutLane(int sideIndex, int laneIndex);
+  Q_INVOKABLE void ConstructPassage();
 
 signals:
   void sidesChanged();
+  void passagesChanged();
 };
 Q_DECLARE_METATYPE(RegularCrossroad*)

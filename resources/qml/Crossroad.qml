@@ -21,6 +21,17 @@ Rectangle {
                         sidesRepeater.itemAt(sideNumber).y + local.y)
     }
 
+    function atExit(sideNumber, outLaneNumber) {
+        if (sideNumber >= engine.Crossroad.Sides.length) {
+            console.error("Crossroad does not have side", sideNumber)
+            return Qt.point(0, 0)
+        }
+
+        var local = sidesRepeater.itemAt(sideNumber).atExit(outLaneNumber)
+        return Qt.point(sidesRepeater.itemAt(sideNumber).x + local.x,
+                        sidesRepeater.itemAt(sideNumber).y + local.y)
+    }
+
     function fill() {
         insides.path = []
 
@@ -71,9 +82,10 @@ Rectangle {
             model: RoleSideData
             x: modelData.StartX
             y: modelData.StartY
+            onInLaneClicked: engine.Crossroad.SetNewPassageInLane(index, laneIndex)
+            onOutLaneClicked: engine.Crossroad.SetNewPassageOutLane(index, laneIndex)
         }
     }
-
 
     Connections {
         target: engine.Crossroad
@@ -81,6 +93,22 @@ Rectangle {
             sidesRepeater.model = []
             sidesRepeater.model = engine.Crossroad.Sides
             crossroadId.fill()
+        }
+        function onPassagesChanged() {
+            passagesRepeater.model = []
+            passagesRepeater.model = engine.Crossroad.Passages
+        }
+    }
+
+    Repeater {
+        id: passagesRepeater
+        model: engine.Crossroad.Passages
+        delegate: Passage {
+            model: RolePassageData
+            startX: root.atStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).x
+            startY: root.atStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).y
+            endX: root.atExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).x
+            endY: root.atExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).y
         }
     }
 }

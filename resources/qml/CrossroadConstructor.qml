@@ -12,7 +12,7 @@ ScrollView {
         spacing: 15
         delegate: MouseArea {
             id: delegateMouseArea
-            width: parent.width
+            width: ListView.view.width
             height: sideInfo.height
             hoverEnabled: true
 

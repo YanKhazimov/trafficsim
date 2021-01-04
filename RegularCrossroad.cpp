@@ -3,11 +3,23 @@
 #include <QtMath>
 #include <QDebug>
 
+Passage *RegularCrossroad::getPassageUnderConstruction()
+{
+  return &passageUnderConstruction;
+}
+
+CrossroadPassagesModel *RegularCrossroad::getPassages()
+{
+  return &passages;
+}
+
 RegularCrossroad::RegularCrossroad(QObject* parent)
   : QObject(parent)
 {
   QObject::connect(&sides, &CrossroadSidesModel::rowsInserted, this, &RegularCrossroad::sidesChanged);
   QObject::connect(&sides, &CrossroadSidesModel::rowsRemoved, this, &RegularCrossroad::sidesChanged);
+  QObject::connect(&passages, &CrossroadPassagesModel::rowsInserted, this, &RegularCrossroad::passagesChanged);
+  QObject::connect(&passages, &CrossroadPassagesModel::rowsRemoved, this, &RegularCrossroad::passagesChanged);
 }
 
 bool RegularCrossroad::AddSide(int laneWidth, int startX, int startY, qreal normal, int inLanesCount, int outLanesCount,
@@ -35,12 +47,7 @@ bool RegularCrossroad::Validate() const
   return true;
 }
 
-int RegularCrossroad::CountSides() const
-{
-  return sides.rowCount();
-}
-
-CrossroadSidesModel* RegularCrossroad::GetSides()
+CrossroadSidesModel* RegularCrossroad::getSides()
 {
   return &sides;
 }
@@ -95,4 +102,20 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
   }
 
   return result;
+}
+
+void RegularCrossroad::SetNewPassageInLane(int sideIndex, int laneIndex)
+{
+  passageUnderConstruction.SetInLane(sideIndex, laneIndex);
+}
+
+void RegularCrossroad::SetNewPassageOutLane(int sideIndex, int laneIndex)
+{
+  passageUnderConstruction.SetOutLane(sideIndex, laneIndex);
+}
+
+void RegularCrossroad::ConstructPassage()
+{
+  passages.AddPassage(&passageUnderConstruction);
+  passageUnderConstruction.Reset();
 }

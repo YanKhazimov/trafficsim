@@ -24,7 +24,7 @@ class Car : public QObject
 
 public:
   explicit Car(QObject *parent = nullptr);
-  void Move();
+  Q_INVOKABLE void Move(QPoint to);
 
 signals:
   void parametersChanged();
