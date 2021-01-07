@@ -7,8 +7,7 @@ Rectangle {
     id: root
     color: "#BBBBBB"
 
-    readonly property bool sideConstructionMode: constructorPanel.visible
-    readonly property bool pathConstructionMode: !sideConstructionMode
+    readonly property bool sideConstructionMode: constructorPanel.visible && constructorPanel.currentIndex === 0
     signal crossroadValidated()
     signal crossroadImageSaveRequested()
 

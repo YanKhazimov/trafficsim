@@ -49,8 +49,10 @@ ScrollView {
                             inRow.visible = !open
                             outRow.visible = !open
 
-                            if (open)
+                            if (open) {
                                 engine.Crossroad.ConstructPassage()
+                                engine.EditorState = EditorState.NotEditing
+                            }
 
                             open = !open
                         }

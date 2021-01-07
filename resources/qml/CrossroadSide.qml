@@ -46,6 +46,7 @@ Item {
 
             Rectangle {
                 id: inDelegateRect
+                visible: engine.EditorState == EditorState.InLaneSelection
                 width: 100
                 height: Sizes.laneWidth
                 x: crossroadLine.start.x + (root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.cos(crossroadLine.angle)
@@ -92,6 +93,7 @@ Item {
 
             Rectangle {
                 id: outDelegateRect
+                visible: engine.EditorState == EditorState.OutLaneSelection
                 width: 100
                 height: Sizes.laneWidth
                 x: crossroadLine.start.x + (root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.cos(crossroadLine.angle)
