@@ -79,7 +79,7 @@ Rectangle {
         id: sidesRepeater
         model: engine.Crossroad.Sides
         delegate: CrossroadSide {
-            model: RoleSideData
+            model: modelData
             x: modelData.StartX
             y: modelData.StartY
             onInLaneClicked: engine.Crossroad.SetNewPassageInLane(index, laneIndex)

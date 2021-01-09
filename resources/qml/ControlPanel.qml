@@ -69,7 +69,7 @@ Rectangle {
         anchors.top: buttonsRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.bottom: carInfo.top
         anchors.margins: 20
 
         QQC1.Tab {
@@ -87,6 +87,17 @@ Rectangle {
                 anchors.fill: parent
                 anchors.margins: Sizes.minMargin
             }
+        }
+    }
+
+    CarInfo {
+        id: carInfo
+        model: engine.SelectedCar
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+            margins: 20
         }
     }
 }

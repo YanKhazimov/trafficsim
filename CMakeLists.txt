@@ -17,6 +17,7 @@ set(SOURCE_FILES
     "Car.cpp"
     "Passage.cpp"
     "CrossroadPassagesModel.cpp"
+    "CarsModel.cpp"
     )
 
 add_executable(${PROJECT_NAME} "main.cpp" ${SOURCE_FILES} "resources/qml.qrc")

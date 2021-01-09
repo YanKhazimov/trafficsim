@@ -16,9 +16,7 @@ ApplicationWindow {
         height: 40
         img: "qrc:/images/next.svg"
         callback: function () {
-            engine.Car.Move(Qt.point(engine.Car.X + 50, engine.Car.Y))
-            engine.Car.DirectionDegrees = 0
-            //engine.GoToNextFrame()
+            engine.GoToNextFrame()
         }
     }
 
@@ -41,15 +39,25 @@ ApplicationWindow {
             id: crossroadId
             anchors.centerIn: sideDrawingArea
         }
-    }
 
-    Image {
-        id: car
-        source: "qrc:/images/car.png"
-        sourceSize.width: Sizes.laneWidth
-        x: displayArea.x + engine.Car.X
-        y: displayArea.y + engine.Car.Y
-        rotation: engine.Car.DirectionDegrees
+        Repeater {
+            model: engine.SelectedCar ? engine.SelectedCar.RoutePoints : []
+            delegate: Rectangle {
+                width: 4
+                height: 4
+                color: "yellow"
+                x: modelData.x
+                y: modelData.y
+            }
+        }
+
+        Repeater {
+            model: engine.Cars
+            delegate: Car {
+                model: modelData
+                onClicked: engine.Cars.Select(index)
+            }
+        }
     }
 
     property int side: 2
@@ -63,13 +71,13 @@ ApplicationWindow {
         width: 300
 
         onCrossroadValidated: {
-            engine.Car.X = crossroadId.x + crossroadId.atStopLine(side, inLane).x +
+            engine.SelectedCar.X = crossroadId.x + crossroadId.atStopLine(side, inLane).x +
                car.height/2 * Math.cos(engine.Crossroad.GetSide(side).NormalRadians) -
                car.width/2
-            engine.Car.Y = crossroadId.y + crossroadId.atStopLine(side, inLane).y -
+            engine.SelectedCar.Y = crossroadId.y + crossroadId.atStopLine(side, inLane).y -
                car.height/2 * Math.sin(engine.Crossroad.GetSide(side).NormalRadians) -
                car.height/2
-            engine.Car.DirectionDegrees = (Math.PI/2 - engine.Crossroad.GetSide(side).NormalRadians + Math.PI) / Math.PI * 180
+            engine.SelectedCar.DirectionDegrees = (Math.PI/2 - engine.Crossroad.GetSide(side).NormalRadians + Math.PI) / Math.PI * 180
         }
         onCrossroadImageSaveRequested: {
             displayArea.grabToImage(function(grabResult) {

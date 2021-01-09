@@ -1,4 +1,5 @@
 #include "QmlPresenter.h"
+#include "DataRoles.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -8,15 +9,24 @@ RegularCrossroad *QmlPresenter::getCrossroad() const
   return crossroad.get();
 }
 
-Car* QmlPresenter::getCar() const
+Car* QmlPresenter::getSelectedCar() const
 {
-  return car.get();
+  return cars.GetSelectedCar();
+}
+
+CarsModel *QmlPresenter::getCars()
+{
+  return &cars;
 }
 
 QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
 {
   crossroad = std::make_unique<RegularCrossroad>();
-  car = std::make_unique<Car>();
+
+  cars.AddCar();
+  cars.AddCar();
+
+  QObject::connect(&cars, &CarsModel::selectionIndexChanged, this, &QmlPresenter::selectedCarChanged);
 }
 
 void QmlPresenter::SaveCrossroad()
@@ -48,5 +58,9 @@ bool QmlPresenter::OpenCrossroad()
 
 void QmlPresenter::GoToNextFrame()
 {
-  car->Move({100, 100});
+  for (int i = 0; i < cars.rowCount(); ++i)
+  {
+    Car* car = cars.index(i, 0).data(DataRoles::CarData).value<Car*>();
+    car->MoveAlongRoute();
+  }
 }

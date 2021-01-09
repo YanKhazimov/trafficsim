@@ -25,5 +25,7 @@
         <file>images/next.svg</file>
         <file>qml/PassageConstructor.qml</file>
         <file>qml/Passage.qml</file>
+        <file>qml/CarInfo.qml</file>
+        <file>qml/Car.qml</file>
     </qresource>
 </RCC>

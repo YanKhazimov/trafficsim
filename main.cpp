@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
   qmlRegisterUncreatableType<CrossroadSide>("TrafficSimApp", 1, 0, "CrossroadSideModel", "");
   qmlRegisterUncreatableType<Passage>("TrafficSimApp", 1, 0, "PassageModel", "");
   qmlRegisterType<QmlPresenter>("TrafficSimApp", 1, 0, "EditorState");
+  qmlRegisterUncreatableType<Car>("TrafficSimApp", 1, 0, "CarModel", "");
 
 
   QmlPresenter qmlPresenter;

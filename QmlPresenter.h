@@ -4,6 +4,7 @@
 
 #include "RegularCrossroad.h"
 #include "Car.h"
+#include "CarsModel.h"
 
 class QmlPresenter : public QObject
 {
@@ -11,14 +12,16 @@ class QmlPresenter : public QObject
   Q_DISABLE_COPY(QmlPresenter)
 
   Q_PROPERTY(RegularCrossroad* Crossroad READ getCrossroad CONSTANT)
-  Q_PROPERTY(Car* Car READ getCar CONSTANT)
+  Q_PROPERTY(Car* SelectedCar READ getSelectedCar NOTIFY selectedCarChanged)
   Q_PROPERTY(EditorState EditorState MEMBER editorState NOTIFY editorStateChanged)
+  Q_PROPERTY(CarsModel* Cars READ getCars NOTIFY carsChanged)
 
   RegularCrossroad* getCrossroad() const;
-  Car* getCar() const;
+  Car* getSelectedCar() const;
+  CarsModel* getCars();
 
   std::unique_ptr<RegularCrossroad> crossroad;
-  std::unique_ptr<Car> car;
+  CarsModel cars;
 
 public:
   enum EditorState {
@@ -40,4 +43,6 @@ private:
 
 signals:
   void editorStateChanged();
+  void carsChanged();
+  void selectedCarChanged();
 };
