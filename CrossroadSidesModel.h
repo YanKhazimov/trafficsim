@@ -21,6 +21,5 @@ public:
   void AddSide(int laneWidth, int startX, int startY, int normal, int inLanesCount, int outLanesCount, int inOffset = 0, int outOffset = 0, int midOffset = 0);
   bool RemoveSide(int index);
 
-signals:
-
+  CrossroadSide* GetSide(int index) const;
 };

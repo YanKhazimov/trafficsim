@@ -1,5 +1,6 @@
 #include "CrossroadSide.h"
 #include <QtMath>
+#include <QDebug>
 
 bool CrossroadSide::AddInLane()
 {
@@ -42,6 +43,43 @@ void CrossroadSide::Serialize(QTextStream &stream) const
          << " " << inOffset << " " << outOffset << " " << midOffset << Qt::endl;
 }
 
+QPoint CrossroadSide::AtStopLine(int laneIndex) const
+{
+  if (laneIndex < 0 || laneIndex >= inLanes.count()) {
+      qWarning() << "Crossroad side does not have IN lane" << laneIndex;
+      return QPoint(0, 0);
+  }
+
+  qreal normalAngle = getNormalInRadians();
+  qreal crossroadLineAngle = normalAngle - M_PI/2;
+  QPoint crossroadLineStart(-getLength()/2 * qCos(crossroadLineAngle), getLength()/2 * qSin(crossroadLineAngle));
+
+  QPoint stopLineStart(crossroadLineStart.x() + inOffset * qCos(crossroadLineAngle)
+                    + 15 * qCos(normalAngle),
+                crossroadLineStart.y() - inOffset * qSin(crossroadLineAngle)
+                    - 15 * qSin(normalAngle));
+
+  return QPoint(stopLineStart.x() + (0.5 + laneIndex) * laneWidth * qCos(crossroadLineAngle),
+                stopLineStart.y() - (0.5 + laneIndex) * laneWidth * qSin(crossroadLineAngle));
+}
+
+QPoint CrossroadSide::AtExit(int laneIndex) const
+{
+  if (laneIndex < 0 || laneIndex >= inLanes.count()) {
+      qWarning() << "Crossroad side does not have OUT lane" << laneIndex;
+      return QPoint(0, 0);
+  }
+
+  qreal normalAngle = getNormalInRadians();
+  qreal crossroadLineAngle = normalAngle - M_PI/2;
+  QPoint crossroadLineStart(-getLength()/2 * qCos(crossroadLineAngle), getLength()/2 * qSin(crossroadLineAngle));
+
+  return QPoint(crossroadLineStart.x() +
+                (inOffset + laneWidth * GetInLanesCount() + midOffset + laneWidth * (0.5 + GetOutLanesCount() - 1 - laneIndex)) * qCos(crossroadLineAngle),
+                crossroadLineStart.y() -
+                (inOffset + laneWidth * GetInLanesCount() + midOffset + laneWidth * (0.5 + GetOutLanesCount() - 1 - laneIndex)) * qSin(crossroadLineAngle));
+}
+
 QList<Lane*> CrossroadSide::getInLanes() const
 {
   return inLanes.toList();
@@ -52,14 +90,24 @@ QList<Lane*> CrossroadSide::getOutLanes() const
   return outLanes.toList();
 }
 
-int CrossroadSide::getInLanesCount() const
+int CrossroadSide::GetInLanesCount() const
 {
   return inLanes.size();
 }
 
-int CrossroadSide::getOutLanesCount() const
+int CrossroadSide::GetOutLanesCount() const
 {
   return outLanes.size();
+}
+
+int CrossroadSide::GetX() const
+{
+  return startX;
+}
+
+int CrossroadSide::GetY() const
+{
+  return startY;
 }
 
 int CrossroadSide::getNormal() const

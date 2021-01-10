@@ -18,6 +18,7 @@ set(SOURCE_FILES
     "Passage.cpp"
     "CrossroadPassagesModel.cpp"
     "CarsModel.cpp"
+    "MapGraph.cpp"
     )
 
 add_executable(${PROJECT_NAME} "main.cpp" ${SOURCE_FILES} "resources/qml.qrc")

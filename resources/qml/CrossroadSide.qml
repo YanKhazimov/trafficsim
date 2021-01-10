@@ -14,26 +14,6 @@ Item {
     signal inLaneClicked(int laneIndex)
     signal outLaneClicked(int laneIndex)
 
-    function atStopLine(inLaneNumber) {
-        if (inLaneNumber >= model.InLanesCount) {
-            console.error("Crossroad side does not have IN lane", inLaneNumber)
-            return Qt.point(0, 0)
-        }
-
-        return Qt.point(stopLine.start.x + (0.5 + inLaneNumber) * Sizes.laneWidth * Math.cos(stopLine.angle),
-                        stopLine.start.y - (0.5 + inLaneNumber) * Sizes.laneWidth * Math.sin(stopLine.angle))
-    }
-
-    function atExit(outLaneNumber) {
-        if (outLaneNumber >= model.OutLanesCount) {
-            console.error("Crossroad side does not have OUT lane", outLaneNumber)
-            return Qt.point(0, 0)
-        }
-
-        return Qt.point(outLanesRepeater.itemAt(outLaneNumber).start.x,
-                        outLanesRepeater.itemAt(outLaneNumber).start.y)
-    }
-
     Repeater {
         model: root.model.InLanes
         delegate: Lane {

@@ -21,6 +21,7 @@ public:
 
   void AddCar();
   Car* GetSelectedCar() const;
+  Car* GetCar(int index) const;
   Q_INVOKABLE void Select(int idx);
 
 signals:

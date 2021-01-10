@@ -4,7 +4,6 @@
 
 CrossroadPassagesModel::CrossroadPassagesModel(QObject *parent) : QAbstractListModel(parent)
 {
-
 }
 
 int CrossroadPassagesModel::rowCount(const QModelIndex &parent) const
@@ -57,25 +56,30 @@ bool CrossroadPassagesModel::RemovePassage(int index)
   return true;
 }
 
-void CrossroadPassagesModel::onSidesInserted(const QModelIndex &parent, int first, int last)
+void CrossroadPassagesModel::RecalculatePassagesOnSidesInserted(int first, int last)
 {
-  Q_UNUSED(parent);
   if (first != last)
     qWarning() << "inserted" << last - first + 1 << "sides";
 
-  for (auto& passage : passages)
+  for (int i = 0; i < passages.count(); ++i)
   {
+    auto& passage = passages[i];
     if (passage->inSideIndex >= first)
+    {
       passage->SetInLane(passage->inSideIndex + (last - first + 1), passage->inLaneIndex);
+      emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
+    }
 
     if (passage->outSideIndex >= first)
+    {
       passage->SetOutLane(passage->outSideIndex + (last - first + 1), passage->outLaneIndex);
+      emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
+    }
   }
 }
 
-void CrossroadPassagesModel::onSidesRemoved(const QModelIndex &parent, int first, int last)
+void CrossroadPassagesModel::RecalculatePassagesOnSidesRemoved(int first, int last)
 {
-  Q_UNUSED(parent);
   if (first != last)
     qWarning() << "removed" << last - first + 1 << "sides";
 
@@ -98,9 +102,15 @@ void CrossroadPassagesModel::onSidesRemoved(const QModelIndex &parent, int first
     }
 
     if (passages[i]->inSideIndex > last)
+    {
       passages[i]->SetInLane(passages[i]->inSideIndex - (last - first + 1), passages[i]->inLaneIndex);
+      emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
+    }
 
     if (passages[i]->outSideIndex > last)
+    {
       passages[i]->SetOutLane(passages[i]->outSideIndex - (last - first + 1), passages[i]->outLaneIndex);
+      emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
+    }
   }
 }

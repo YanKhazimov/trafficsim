@@ -30,10 +30,18 @@ bool RegularCrossroad::RemovePassage(int index)
 RegularCrossroad::RegularCrossroad(QObject* parent)
   : QObject(parent)
 {
-  QObject::connect(&sides, &CrossroadSidesModel::rowsInserted, this, &RegularCrossroad::sidesChanged);
-  QObject::connect(&sides, &CrossroadSidesModel::rowsRemoved, this, &RegularCrossroad::sidesChanged);
-  QObject::connect(&sides, &CrossroadSidesModel::rowsInserted, &passages, &CrossroadPassagesModel::onSidesInserted);
-  QObject::connect(&sides, &CrossroadSidesModel::rowsRemoved, &passages, &CrossroadPassagesModel::onSidesRemoved);
+  QObject::connect(&sides, &CrossroadSidesModel::rowsInserted, [this](const QModelIndex &parent, int first, int last) {
+    Q_UNUSED(parent);
+    emit sidesChanged();
+    emit sidesInserted(this, first, last);
+    passages.RecalculatePassagesOnSidesInserted(first, last);
+  });
+  QObject::connect(&sides, &CrossroadSidesModel::rowsRemoved, [this](const QModelIndex &parent, int first, int last) {
+    Q_UNUSED(parent);
+    emit sidesChanged();
+    emit sidesRemoved(this, first, last);
+    passages.RecalculatePassagesOnSidesRemoved(first, last);
+  });
 
   QObject::connect(&passages, &CrossroadPassagesModel::rowsInserted, this, &RegularCrossroad::passagesChanged);
   QObject::connect(&passages, &CrossroadPassagesModel::rowsRemoved, this, &RegularCrossroad::passagesChanged);
@@ -168,4 +176,33 @@ void RegularCrossroad::ConstructPassage()
 {
   passages.AddPassage(&passageUnderConstruction);
   passageUnderConstruction.Reset();
+}
+
+QPoint RegularCrossroad::AtStopLine(int sideIndex, int laneIndex) const
+{
+  if (sideIndex < 0 || sideIndex >= sides.rowCount()) {
+      qWarning() << "Crossroad does not have side" << sideIndex;
+      return QPoint(0, 0);
+  }
+
+  QPoint local = sides.GetSide(sideIndex)->AtStopLine(laneIndex);
+  return QPoint(sides.GetSide(sideIndex)->GetX() + local.x() + this->x,
+                sides.GetSide(sideIndex)->GetY() + local.y() + this->y);
+}
+
+QPoint RegularCrossroad::AtExit(int sideIndex, int laneIndex) const
+{
+  if (sideIndex < 0 || sideIndex >= sides.rowCount()) {
+      qWarning() << "Crossroad does not have side" << sideIndex;
+      return QPoint(0, 0);
+  }
+
+  QPoint local = sides.GetSide(sideIndex)->AtExit(laneIndex);
+  return QPoint(sides.GetSide(sideIndex)->GetX() + local.x() + this->x,
+                sides.GetSide(sideIndex)->GetY() + local.y() + this->y);
+}
+
+int RegularCrossroad::CountSides() const
+{
+  return sides.rowCount();
 }

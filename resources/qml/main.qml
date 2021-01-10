@@ -38,6 +38,18 @@ ApplicationWindow {
         Crossroad {
             id: crossroadId
             anchors.centerIn: sideDrawingArea
+
+            Binding {
+                target: engine.Crossroad
+                property: "X"
+                value: crossroadId.x
+            }
+
+            Binding {
+                target: engine.Crossroad
+                property: "Y"
+                value: crossroadId.y
+            }
         }
 
         Repeater {
@@ -71,12 +83,11 @@ ApplicationWindow {
         width: 300
 
         onCrossroadValidated: {
-            engine.SelectedCar.X = crossroadId.x + crossroadId.atStopLine(side, inLane).x +
-               car.height/2 * Math.cos(engine.Crossroad.GetSide(side).NormalRadians) -
-               car.width/2
-            engine.SelectedCar.Y = crossroadId.y + crossroadId.atStopLine(side, inLane).y -
-               car.height/2 * Math.sin(engine.Crossroad.GetSide(side).NormalRadians) -
-               car.height/2
+            var viewScale = 1
+            engine.SelectedCar.X = crossroadId.x + engine.Crossroad.AtStopLine(side, inLane).x +
+               engine.SelectedCar.Length * viewScale / 2 * Math.cos(engine.Crossroad.GetSide(side).NormalRadians)
+            engine.SelectedCar.Y = crossroadId.y + engine.Crossroad.AtStopLine(side, inLane).y -
+               engine.SelectedCar.Length * viewScale / 2 * Math.sin(engine.Crossroad.GetSide(side).NormalRadians)
             engine.SelectedCar.DirectionDegrees = (Math.PI/2 - engine.Crossroad.GetSide(side).NormalRadians + Math.PI) / Math.PI * 180
         }
         onCrossroadImageSaveRequested: {

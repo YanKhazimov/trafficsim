@@ -57,3 +57,11 @@ bool CrossroadSidesModel::RemoveSide(int index)
 
   return true;
 }
+
+CrossroadSide* CrossroadSidesModel::GetSide(int index) const
+{
+  if (index < 0 || index >= sides.size())
+    return nullptr;
+
+  return sides[index].get();
+}

@@ -12,8 +12,8 @@ class CrossroadSide : public QObject
 
   Q_PROPERTY(QList<Lane*> InLanes READ getInLanes NOTIFY parametersChanged)
   Q_PROPERTY(QList<Lane*> OutLanes READ getOutLanes NOTIFY parametersChanged)
-  Q_PROPERTY(int InLanesCount READ getInLanesCount NOTIFY parametersChanged)
-  Q_PROPERTY(int OutLanesCount READ getOutLanesCount NOTIFY parametersChanged)
+  Q_PROPERTY(int InLanesCount READ GetInLanesCount NOTIFY parametersChanged)
+  Q_PROPERTY(int OutLanesCount READ GetOutLanesCount NOTIFY parametersChanged)
   Q_PROPERTY(int InOffset MEMBER inOffset NOTIFY parametersChanged) // ensure not negative
   Q_PROPERTY(int OutOffset MEMBER outOffset NOTIFY parametersChanged) // ensure not negative
   Q_PROPERTY(int MidOffset MEMBER midOffset NOTIFY parametersChanged) // ensure not negative
@@ -29,11 +29,11 @@ class CrossroadSide : public QObject
   Q_PROPERTY(bool IsHighlightedR MEMBER isHighlightedR NOTIFY isHighlightedRChanged)
 
   const int laneWidth;
+  int startX, startY;
   int normal; // rounded in degrees
   QVector<Lane*> inLanes;
   QVector<Lane*> outLanes;
   int inOffset, outOffset, midOffset;
-  int startX, startY;
 
   bool isHighlighted = false;
   bool isHighlightedX = false;
@@ -42,8 +42,6 @@ class CrossroadSide : public QObject
 
   QList<Lane*> getInLanes() const;
   QList<Lane*> getOutLanes() const;
-  int getInLanesCount() const;
-  int getOutLanesCount() const;
   int getNormal() const;
   void setNormal(int degrees);
   qreal getNormalInRadians() const;
@@ -55,12 +53,19 @@ public:
                 int inOffset = 0, int outOffset = 0, int midOffset = 0, QObject* parent = nullptr);
 
   qreal GetNormal() const;
+  int GetInLanesCount() const;
+  int GetOutLanesCount() const;
+  int GetX() const;
+  int GetY() const;
   Q_INVOKABLE bool AddInLane();
   Q_INVOKABLE bool RemoveInLane();
   Q_INVOKABLE bool AddOutLane();
   Q_INVOKABLE bool RemoveOutLane();
 
   void Serialize(QTextStream& stream) const;
+
+  QPoint AtStopLine(int laneIndex) const;
+  QPoint AtExit(int laneIndex) const;
 
 signals:
   void parametersChanged();

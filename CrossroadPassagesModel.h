@@ -22,6 +22,6 @@ public:
   bool RemovePassage(int index);
 
 public slots:
-  void onSidesInserted(const QModelIndex &parent, int first, int last);
-  void onSidesRemoved(const QModelIndex &parent, int first, int last);
+  void RecalculatePassagesOnSidesInserted(int first, int last);
+  void RecalculatePassagesOnSidesRemoved(int first, int last);
 };

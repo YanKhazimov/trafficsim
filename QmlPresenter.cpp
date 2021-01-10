@@ -26,7 +26,10 @@ QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
   cars.AddCar();
   cars.AddCar();
 
+
   QObject::connect(&cars, &CarsModel::selectionIndexChanged, this, &QmlPresenter::selectedCarChanged);
+  QObject::connect(crossroad.get(), &RegularCrossroad::sidesInserted, &graph, &MapGraph::RecalculateGraphNodesOnSidesInserted);
+  QObject::connect(crossroad.get(), &RegularCrossroad::sidesRemoved, &graph, &MapGraph::RecalculateGraphNodesOnSidesRemoved);
 }
 
 void QmlPresenter::SaveCrossroad()
@@ -53,12 +56,17 @@ bool QmlPresenter::OpenCrossroad()
   bool result = crossroad->Deserialize(stream);
 
   file.close();
+
+  QPoint in20 = crossroad->AtStopLine(2, 0);
+  QPoint exit00 = crossroad->AtExit(0, 0);
+  cars.GetCar(1)->SetRoute({ in20, exit00 });
+
   return result;
 }
 
 void QmlPresenter::GoToNextFrame()
 {
-  for (int i = 0; i < cars.rowCount(); ++i)
+  for (int i = 1; i < cars.rowCount(); ++i)
   {
     Car* car = cars.index(i, 0).data(DataRoles::CarData).value<Car*>();
     car->MoveAlongRoute();

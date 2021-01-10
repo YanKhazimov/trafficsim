@@ -11,9 +11,13 @@ class RegularCrossroad : public QObject
   Q_OBJECT
   Q_DISABLE_COPY(RegularCrossroad)
 
+  Q_PROPERTY(int X MEMBER x NOTIFY positionChanged)
+  Q_PROPERTY(int Y MEMBER y NOTIFY positionChanged)
   Q_PROPERTY(CrossroadSidesModel* Sides READ getSides NOTIFY sidesChanged)
   Q_PROPERTY(Passage* PassageUnderConstruction READ getPassageUnderConstruction CONSTANT)
   Q_PROPERTY(CrossroadPassagesModel* Passages READ getPassages NOTIFY passagesChanged)
+
+  int x = 0, y = 0;
 
   CrossroadSidesModel sides;
 
@@ -38,9 +42,15 @@ public:
   Q_INVOKABLE void SetNewPassageInLane(int sideIndex, int laneIndex);
   Q_INVOKABLE void SetNewPassageOutLane(int sideIndex, int laneIndex);
   Q_INVOKABLE void ConstructPassage();
+  Q_INVOKABLE QPoint AtStopLine(int sideIndex, int laneIndex) const;
+  Q_INVOKABLE QPoint AtExit(int sideIndex, int laneIndex) const;
+  int CountSides() const;
 
 signals:
   void sidesChanged();
+  void sidesInserted(RegularCrossroad* crossroad, int first, int last);
+  void sidesRemoved(RegularCrossroad* crossroad, int first, int last);
   void passagesChanged();
+  void positionChanged();
 };
 Q_DECLARE_METATYPE(RegularCrossroad*)

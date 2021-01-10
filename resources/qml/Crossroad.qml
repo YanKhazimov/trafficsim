@@ -10,28 +10,6 @@ Rectangle {
     border.color: Colors.lane
     border.width: 2
 
-    function atStopLine(sideNumber, inLaneNumber) {
-        if (sideNumber >= engine.Crossroad.Sides.length) {
-            console.error("Crossroad does not have side", sideNumber)
-            return Qt.point(0, 0)
-        }
-
-        var local = sidesRepeater.itemAt(sideNumber).atStopLine(inLaneNumber)
-        return Qt.point(sidesRepeater.itemAt(sideNumber).x + local.x,
-                        sidesRepeater.itemAt(sideNumber).y + local.y)
-    }
-
-    function atExit(sideNumber, outLaneNumber) {
-        if (sideNumber >= engine.Crossroad.Sides.length) {
-            console.error("Crossroad does not have side", sideNumber)
-            return Qt.point(0, 0)
-        }
-
-        var local = sidesRepeater.itemAt(sideNumber).atExit(outLaneNumber)
-        return Qt.point(sidesRepeater.itemAt(sideNumber).x + local.x,
-                        sidesRepeater.itemAt(sideNumber).y + local.y)
-    }
-
     function fill() {
         insides.path = []
 
@@ -105,10 +83,10 @@ Rectangle {
         model: engine.Crossroad.Passages
         delegate: Passage {
             model: RolePassageData
-            startX: root.atStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).x
-            startY: root.atStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).y
-            endX: root.atExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).x
-            endY: root.atExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).y
+            startX: engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).x - root.x
+            startY: engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).y - root.y
+            endX: engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).x - root.x
+            endY: engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).y - root.y
         }
     }
 }

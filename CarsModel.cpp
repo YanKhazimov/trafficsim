@@ -44,10 +44,16 @@ void CarsModel::AddCar()
   endInsertRows();
 }
 
-Car *CarsModel::GetSelectedCar() const
+Car* CarsModel::GetSelectedCar() const
 {
   return selectionIndex >= 0 && selectionIndex < rowCount() ?
         cars[selectionIndex].get() : nullptr;
+}
+
+Car* CarsModel::GetCar(int index) const
+{
+  return index >= 0 && index < rowCount() ?
+        cars[index].get() : nullptr;
 }
 
 void CarsModel::Select(int idx)

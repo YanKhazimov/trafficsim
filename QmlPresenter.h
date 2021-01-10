@@ -5,6 +5,7 @@
 #include "RegularCrossroad.h"
 #include "Car.h"
 #include "CarsModel.h"
+#include "MapGraph.h"
 
 class QmlPresenter : public QObject
 {
@@ -22,6 +23,7 @@ class QmlPresenter : public QObject
 
   std::unique_ptr<RegularCrossroad> crossroad;
   CarsModel cars;
+  MapGraph graph;
 
 public:
   enum EditorState {
