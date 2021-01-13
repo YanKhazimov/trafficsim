@@ -29,6 +29,7 @@ public slots:
   void RecalculateOnSidesRemoved(RegularCrossroad* crossroad, int first, int last);
   void RecalculateOnPassagesInserted(RegularCrossroad* crossroad, int first, int last);
   void RecalculateOnPassagesRemoved(RegularCrossroad* crossroad, int first, int last);
+  void RecalculateOnCrossroadPositionChanged();
 
 signals:
   void nodesChanged();

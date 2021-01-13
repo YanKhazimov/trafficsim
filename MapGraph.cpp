@@ -170,3 +170,17 @@ void MapGraph::RecalculateOnPassagesRemoved(RegularCrossroad *crossroad, int fir
 
   emit edgesChanged();
 }
+
+void MapGraph::RecalculateOnCrossroadPositionChanged()
+{
+  RegularCrossroad* changedCrossroad = qobject_cast<RegularCrossroad*>(sender());
+  if (!changedCrossroad)
+  {
+    qWarning() << "not crossroad changed";
+    return;
+  }
+
+  for (int i = 0; i < nodes.rowCount(); ++i)
+    if (nodes.GetNode(i)->crossroad->GetId() == changedCrossroad->GetId())
+      emit nodes.dataChanged(nodes.index(i, 0), nodes.index(i, 0), { DataRoles::NodePosition });
+}

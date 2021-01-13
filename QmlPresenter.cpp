@@ -38,6 +38,8 @@ QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
   QObject::connect(crossroad.get(), &RegularCrossroad::sidesRemoved, &graph, &MapGraph::RecalculateOnSidesRemoved);
   QObject::connect(crossroad.get(), &RegularCrossroad::passagesInserted, &graph, &MapGraph::RecalculateOnPassagesInserted);
   QObject::connect(crossroad.get(), &RegularCrossroad::passagesRemoved, &graph, &MapGraph::RecalculateOnPassagesRemoved);
+
+  QObject::connect(crossroad.get(), &RegularCrossroad::positionChanged, &graph, &MapGraph::RecalculateOnCrossroadPositionChanged);
 }
 
 void QmlPresenter::SaveCrossroad()
