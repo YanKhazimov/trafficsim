@@ -67,13 +67,13 @@ void CrossroadPassagesModel::RecalculatePassagesOnSidesInserted(int first, int l
     if (passage->inSideIndex >= first)
     {
       passage->SetInLane(passage->inSideIndex + (last - first + 1), passage->inLaneIndex);
-      emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
+      //emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
     }
 
     if (passage->outSideIndex >= first)
     {
       passage->SetOutLane(passage->outSideIndex + (last - first + 1), passage->outLaneIndex);
-      emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
+      //emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
     }
   }
 }
@@ -104,13 +104,13 @@ void CrossroadPassagesModel::RecalculatePassagesOnSidesRemoved(int first, int la
     if (passages[i]->inSideIndex > last)
     {
       passages[i]->SetInLane(passages[i]->inSideIndex - (last - first + 1), passages[i]->inLaneIndex);
-      emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
+      //emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
     }
 
     if (passages[i]->outSideIndex > last)
     {
       passages[i]->SetOutLane(passages[i]->outSideIndex - (last - first + 1), passages[i]->outLaneIndex);
-      emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
+      //emit dataChanged(index(i, 0), index(i, 0), { DataRoles::PassageParameters });
     }
   }
 }

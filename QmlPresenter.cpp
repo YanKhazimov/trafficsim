@@ -19,17 +19,25 @@ CarsModel *QmlPresenter::getCars()
   return &cars;
 }
 
+MapGraph *QmlPresenter::getGraph()
+{
+  return &graph;
+}
+
 QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
 {
-  crossroad = std::make_unique<RegularCrossroad>();
+  crossroad = std::make_unique<RegularCrossroad>("Toreza");
 
-  cars.AddCar();
-  cars.AddCar();
+  cars.AddCar(35, 70, QUrl("qrc:/images/car.png"), 90);
+  cars.AddCar(40, 100, QUrl("qrc:/images/truck.png"), 180);
 
+  graph.RegisterCrossroad(crossroad.get());
 
   QObject::connect(&cars, &CarsModel::selectionIndexChanged, this, &QmlPresenter::selectedCarChanged);
-  QObject::connect(crossroad.get(), &RegularCrossroad::sidesInserted, &graph, &MapGraph::RecalculateGraphNodesOnSidesInserted);
-  QObject::connect(crossroad.get(), &RegularCrossroad::sidesRemoved, &graph, &MapGraph::RecalculateGraphNodesOnSidesRemoved);
+  QObject::connect(crossroad.get(), &RegularCrossroad::sidesInserted, &graph, &MapGraph::RecalculateOnSidesInserted);
+  QObject::connect(crossroad.get(), &RegularCrossroad::sidesRemoved, &graph, &MapGraph::RecalculateOnSidesRemoved);
+  QObject::connect(crossroad.get(), &RegularCrossroad::passagesInserted, &graph, &MapGraph::RecalculateOnPassagesInserted);
+  QObject::connect(crossroad.get(), &RegularCrossroad::passagesRemoved, &graph, &MapGraph::RecalculateOnPassagesRemoved);
 }
 
 void QmlPresenter::SaveCrossroad()
@@ -57,18 +65,12 @@ bool QmlPresenter::OpenCrossroad()
 
   file.close();
 
-  QPoint in20 = crossroad->AtStopLine(2, 0);
-  QPoint exit00 = crossroad->AtExit(0, 0);
-  cars.GetCar(1)->SetRoute({ in20, exit00 });
-
   return result;
 }
 
 void QmlPresenter::GoToNextFrame()
 {
-  for (int i = 1; i < cars.rowCount(); ++i)
-  {
-    Car* car = cars.index(i, 0).data(DataRoles::CarData).value<Car*>();
-    car->MoveAlongRoute();
-  }
+  Car* selectedCar = getSelectedCar();
+  if (selectedCar)
+    selectedCar->MoveAlongRoute();
 }

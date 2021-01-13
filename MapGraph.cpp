@@ -1,33 +1,33 @@
 #include "MapGraph.h"
+#include "DataRoles.h"
 #include <QDebug>
 
-MapGraph::MapGraph()
+NodesModel *MapGraph::getNodes()
+{
+  return &nodes;
+}
+
+MapGraph::MapGraph(QObject *parent) : QObject(parent)
 {
 }
 
-void MapGraph::AddEgde(const QPair<Node, Node> &edge)
+void MapGraph::RegisterCrossroad(RegularCrossroad* crossroad)
 {
-  edges << edge;
+  crossroads.append(crossroad);
+  emit nodesChanged();
+  emit edgesChanged();
 }
 
-QList<Node> MapGraph::Next(const Node &from) const
+QList<Node*> MapGraph::AccessibleNodes(const Node* from) const
 {
-  QList<Node> result;
+  QList<Node*> result;
   for (const auto& edge : edges)
-    if (edge.first == from)
-      result << edge.second;
+    if (*edge.first.get() == *from)
+      result << edge.second.get();
   return result;
 }
 
-bool Node::operator ==(const Node &other) const
-{
-  return type == other.type &&
-      crossroadId == other.crossroadId &&
-      side == other.side &&
-      lane == other.lane;
-}
-
-void MapGraph::RecalculateGraphNodesOnSidesInserted(RegularCrossroad *crossroad, int first, int last)
+void MapGraph::RecalculateOnSidesInserted(RegularCrossroad *crossroad, int first, int last)
 {
   if (first != last)
     qWarning() << "inserted" << last - first + 1 << "sides";
@@ -35,31 +35,31 @@ void MapGraph::RecalculateGraphNodesOnSidesInserted(RegularCrossroad *crossroad,
   // 1. adjust old
 
   // nodes
-  for (int i = 0; i < nodes.count(); ++i)
+  for (int i = 0; i < nodes.rowCount(); ++i)
   {
-    auto& node = nodes[i];
-//    if (node.crossroadId != crossroad->GetId())
-//      continue;
+    Node* node = nodes.GetNode(i);
+    if (node->crossroad->GetId() != crossroad->GetId())
+      continue;
 
-    if (node.side >= first)
-      node.side += (last - first + 1);
+    if (node->side >= first)
+      node->side += (last - first + 1);
   }
 
   // edges
   for (int i = 0; i < edges.count(); ++i)
   {
     auto& startNode = edges[i].first;
-//    if (startNode.crossroadId == crossroad->GetId())
+    if (startNode->crossroad->GetId() == crossroad->GetId())
     {
-      if (startNode.side >= first)
-        startNode.side += (last - first + 1);
+      if (startNode->side >= first)
+        startNode->side += (last - first + 1);
     }
 
-    auto& endNode = edges[i].second;
-//    if (endNode.crossroadId == crossroad->GetId())
+    Node* endNode = edges[i].second.get();
+    if (endNode->crossroad->GetId() == crossroad->GetId())
     {
-      if (endNode.side >= first)
-        endNode.side += (last - first + 1);
+      if (endNode->side >= first)
+        endNode->side += (last - first + 1);
     }
   }
 
@@ -68,60 +68,105 @@ void MapGraph::RecalculateGraphNodesOnSidesInserted(RegularCrossroad *crossroad,
   {
     CrossroadSide* side = crossroad->GetSide(i);
     for (int j = 0; j < side->GetInLanesCount(); ++j)
-      nodes << Node { NodeType::CrossroadIn, -1, i, j };
+      nodes.AddNode(NodeType::CrossroadIn, crossroad, i, j);
     for (int j = 0; j < side->GetOutLanesCount(); ++j)
-      nodes << Node { NodeType::CrossroadOut, -1, i, j };
+      nodes.AddNode(NodeType::CrossroadOut, crossroad, i, j);
   }
+
+  emit nodesChanged();
+  emit edgesChanged();
 }
 
-void MapGraph::RecalculateGraphNodesOnSidesRemoved(RegularCrossroad *crossroad, int first, int last)
+void MapGraph::RecalculateOnSidesRemoved(RegularCrossroad *crossroad, int first, int last)
 {
   if (first != last)
     qWarning() << "removed" << last - first + 1 << "sides";
 
   // nodes
-  for (int i = nodes.count() - 1; i >= 0; --i)
+  for (int i = nodes.rowCount() - 1; i >= 0; --i)
   {
-    auto& node = nodes[i];
-//    if (node.crossroadId != crossroad->GetId())
-//      continue;
-    if (node.side >= first && node.side <= last)
+    Node* node = nodes.GetNode(i);
+    if (node->crossroad->GetId() != crossroad->GetId())
+      continue;
+    if (node->side >= first && node->side <= last)
     {
-      nodes.removeAt(i);
+      nodes.RemoveNode(i);
       continue;
     }
 
-    if (node.side > last)
-      node.side -= last - first + 1;
+    if (node->side > last)
+      node->side -= last - first + 1;
   }
 
   // edges
   for (int i = edges.count() - 1; i >= 0; --i)
   {
-    auto& startNode = edges[i].first;
-//    if (startNode.crossroadId != crossroad->GetId())
-//      continue;
-    if (startNode.side >= first && startNode.side <= last)
+    Node* startNode = edges[i].first.get();
+    if (startNode->crossroad->GetId() != crossroad->GetId())
+      continue;
+    if (startNode->side >= first && startNode->side <= last)
     {
       edges.removeAt(i);
       continue;
     }
 
-    if (startNode.side > last)
-      startNode.side -= last - first + 1;
+    if (startNode->side > last)
+      startNode->side -= last - first + 1;
   }
   for (int i = edges.count() - 1; i >= 0; --i)
   {
-    auto& endNode = edges[i].second;
-//    if (endNode.crossroadId != crossroad->GetId())
-//      continue;
-    if (endNode.side >= first && endNode.side <= last)
+    Node* endNode = edges[i].second.get();
+    if (endNode->crossroad->GetId() != crossroad->GetId())
+      continue;
+    if (endNode->side >= first && endNode->side <= last)
     {
       edges.removeAt(i);
       continue;
     }
 
-    if (endNode.side > last)
-      endNode.side -= last - first + 1;
+    if (endNode->side > last)
+      endNode->side -= last - first + 1;
   }
+
+  emit nodesChanged();
+  emit edgesChanged();
+}
+
+void MapGraph::RecalculateOnPassagesInserted(RegularCrossroad *crossroad, int first, int last)
+{
+  // add new edges
+  for (int i = first; i <= last; ++i)
+  {
+    Passage* passage = crossroad->GetPassage(i);
+    edges << qMakePair<std::shared_ptr<Node>, std::shared_ptr<Node>>(std::make_shared<Node>(NodeType::CrossroadIn,
+                                                                                            crossroad,
+                                                                                            passage->inSideIndex,
+                                                                                            passage->inLaneIndex),
+                                                                     std::make_shared<Node>(NodeType::CrossroadOut,
+                                                                                            crossroad,
+                                                                                            passage->outSideIndex,
+                                                                                            passage->outLaneIndex));
+  }
+
+  emit edgesChanged();
+}
+
+void MapGraph::RecalculateOnPassagesRemoved(RegularCrossroad *crossroad, int first, int last)
+{
+  edges.clear();
+
+  for (int i = 0; i < crossroad->CountPassages(); ++i)
+  {
+    Passage* passage = crossroad->GetPassage(i);
+    edges << qMakePair<std::shared_ptr<Node>, std::shared_ptr<Node>>(std::make_shared<Node>(NodeType::CrossroadIn,
+                                                                                            crossroad,
+                                                                                            passage->inSideIndex,
+                                                                                            passage->inLaneIndex),
+                                                                     std::make_shared<Node>(NodeType::CrossroadOut,
+                                                                                            crossroad,
+                                                                                            passage->outSideIndex,
+                                                                                            passage->outLaneIndex));
+  }
+
+  emit edgesChanged();
 }

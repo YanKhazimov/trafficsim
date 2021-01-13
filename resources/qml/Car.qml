@@ -9,15 +9,19 @@ Item {
 
     Image {
         id: img
-        source: "qrc:/images/car.png"
-        sourceSize.width: Sizes.laneWidth
-        x: root.model.X - root.model.Width/2
-        y: root.model.Y - root.model.Length/2
-        rotation: root.model.DirectionDegrees
+        readonly property int hDimension: root.model.SourceDirection / 90 % 2 === 0 ? root.model.Length : root.model.Width
+        readonly property int vDimension: root.model.SourceDirection / 90 % 2 === 0 ? root.model.Width : root.model.Length
+        source: root.model.Source
+        sourceSize.width: hDimension
+        x: root.model.X - hDimension/2
+        y: root.model.Y - vDimension/2
+        rotation: -root.model.DirectionDegrees + root.model.SourceDirection
     }
 
     MouseArea {
-        anchors.fill: img
+        anchors.centerIn: img
+        width: root.model.Length
+        height: root.model.Length
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: root.clicked()

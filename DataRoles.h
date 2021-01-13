@@ -2,5 +2,8 @@ enum DataRoles {
   CrossroadSideData = Qt::UserRole + 1,
   CrossroadPassageData,
   CarData,
-  PassageParameters
+  PassageParameters,
+  NodeData,
+  IsStartNode,
+  NodePosition
 };

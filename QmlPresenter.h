@@ -16,10 +16,12 @@ class QmlPresenter : public QObject
   Q_PROPERTY(Car* SelectedCar READ getSelectedCar NOTIFY selectedCarChanged)
   Q_PROPERTY(EditorState EditorState MEMBER editorState NOTIFY editorStateChanged)
   Q_PROPERTY(CarsModel* Cars READ getCars NOTIFY carsChanged)
+  Q_PROPERTY(MapGraph* Graph READ getGraph NOTIFY graphChanged)
 
   RegularCrossroad* getCrossroad() const;
   Car* getSelectedCar() const;
   CarsModel* getCars();
+  MapGraph* getGraph();
 
   std::unique_ptr<RegularCrossroad> crossroad;
   CarsModel cars;
@@ -29,7 +31,8 @@ public:
   enum EditorState {
     NotEditing,
     InLaneSelection,
-    OutLaneSelection
+    OutLaneSelection,
+    RouteCreation
   };
   Q_ENUMS(EditorState)
 
@@ -47,4 +50,5 @@ signals:
   void editorStateChanged();
   void carsChanged();
   void selectedCarChanged();
+  void graphChanged();
 };

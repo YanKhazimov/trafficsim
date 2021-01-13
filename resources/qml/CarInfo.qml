@@ -28,26 +28,25 @@ Rectangle {
         }
     }
 
-    TSButton {
-        anchors.right: parent.right
-        anchors.top: parent.top
-        visible: model !== null
-        width: 20
-        height: 20
-        text: "x"
-        callback: function() {
-            engine.Cars.Select(-1)
-        }
-    }
-
     ColumnLayout {
         visible: model !== null
-        width: parent.width
+        anchors.fill: parent
+        anchors.margins: Sizes.minMargin
 
-        Image {
-            id: img
-            source: "qrc:/images/car.png"
-            sourceSize.width: Sizes.laneWidth
+        Item {
+            id: placeholder
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter
+
+            Image {
+                anchors.centerIn: parent
+                source: root.model ? root.model.Source : ""
+                rotation: root.model ? root.model.SourceDirection : 0.0
+                height: root.model ? (root.model.SourceDirection / 90 % 2 === 0 ? undefined : parent.width/2) : undefined
+                width: root.model ? (root.model.SourceDirection / 90 % 2 === 0 ? parent.width/2 : undefined) : undefined
+                fillMode: Image.PreserveAspectFit
+            }
         }
 
         Text {
@@ -63,7 +62,27 @@ Rectangle {
         }
 
         Text {
-            text: root.model ? ("ReachedRoutePoint: " + root.model.ReachedRoutePoint) : ""
+            text: root.model ? ("route completion: %1/%2".arg(root.model.ReachedRoutePoint + 1).arg(root.model.RoutePoints.length)) : ""
+        }
+
+        TSButton {
+            text: "Assign route"
+            callback: function() {
+                engine.EditorState = EditorState.RouteCreation
+            }
+        }
+    }
+
+    TSButton {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        visible: model !== null
+        width: 20
+        height: 20
+        text: "x"
+        callback: function() {
+            engine.Cars.Select(-1)
+            engine.EditorState = EditorState.NotEditing
         }
     }
 }

@@ -17,8 +17,6 @@ class RegularCrossroad : public QObject
   Q_PROPERTY(Passage* PassageUnderConstruction READ getPassageUnderConstruction CONSTANT)
   Q_PROPERTY(CrossroadPassagesModel* Passages READ getPassages NOTIFY passagesChanged)
 
-  int x = 0, y = 0;
-
   CrossroadSidesModel sides;
 
   Passage passageUnderConstruction;
@@ -30,12 +28,16 @@ class RegularCrossroad : public QObject
 
   bool AddPassage(int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex);
 
+  QString id;
+  int x = 0, y = 0;
+
 public:
-  RegularCrossroad(QObject* parent = nullptr);
+  RegularCrossroad(QString id, QObject* parent = nullptr);
   Q_INVOKABLE bool AddSide(int laneWidth, int startX, int startY, qreal normal, int inLanesCount, int outLanesCount, int inOffset = 0, int outOffset = 0, int midOffset = 0);
   Q_INVOKABLE bool RemoveSide(int index);
   Q_INVOKABLE bool RemovePassage(int index);
   Q_INVOKABLE CrossroadSide* GetSide(int index);
+  Passage* GetPassage(int index);
   Q_INVOKABLE bool Validate() const;
   void Serialize(QTextStream& stream) const;
   bool Deserialize(QTextStream& stream);
@@ -45,12 +47,16 @@ public:
   Q_INVOKABLE QPoint AtStopLine(int sideIndex, int laneIndex) const;
   Q_INVOKABLE QPoint AtExit(int sideIndex, int laneIndex) const;
   int CountSides() const;
+  int CountPassages() const;
+  QString GetId() const;
 
 signals:
   void sidesChanged();
   void sidesInserted(RegularCrossroad* crossroad, int first, int last);
   void sidesRemoved(RegularCrossroad* crossroad, int first, int last);
   void passagesChanged();
+  void passagesInserted(RegularCrossroad* crossroad, int first, int last);
+  void passagesRemoved(RegularCrossroad* crossroad, int first, int last);
   void positionChanged();
 };
 Q_DECLARE_METATYPE(RegularCrossroad*)

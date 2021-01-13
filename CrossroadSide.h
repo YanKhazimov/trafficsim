@@ -18,8 +18,8 @@ class CrossroadSide : public QObject
   Q_PROPERTY(int OutOffset MEMBER outOffset NOTIFY parametersChanged) // ensure not negative
   Q_PROPERTY(int MidOffset MEMBER midOffset NOTIFY parametersChanged) // ensure not negative
   Q_PROPERTY(int Length READ getLength NOTIFY parametersChanged)
-  Q_PROPERTY(int NormalDegrees READ getNormal WRITE setNormal NOTIFY parametersChanged)
-  Q_PROPERTY(qreal NormalRadians READ getNormalInRadians NOTIFY parametersChanged)
+  Q_PROPERTY(int NormalDegrees READ GetNormal WRITE setNormal NOTIFY parametersChanged)
+  Q_PROPERTY(qreal NormalRadians READ GetNormalInRadians NOTIFY parametersChanged)
   Q_PROPERTY(int StartX MEMBER startX NOTIFY parametersChanged)
   Q_PROPERTY(int StartY MEMBER startY NOTIFY parametersChanged)
 
@@ -42,9 +42,7 @@ class CrossroadSide : public QObject
 
   QList<Lane*> getInLanes() const;
   QList<Lane*> getOutLanes() const;
-  int getNormal() const;
   void setNormal(int degrees);
-  qreal getNormalInRadians() const;
   int getLength() const;
 
 public:
@@ -52,7 +50,8 @@ public:
   CrossroadSide(int laneWidth, int startX, int startY, int normal, int inLanesCount, int outLanesCount,
                 int inOffset = 0, int outOffset = 0, int midOffset = 0, QObject* parent = nullptr);
 
-  qreal GetNormal() const;
+  int GetNormal() const;
+  qreal GetNormalInRadians() const;
   int GetInLanesCount() const;
   int GetOutLanesCount() const;
   int GetX() const;

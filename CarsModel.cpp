@@ -34,13 +34,12 @@ QHash<int, QByteArray> CarsModel::roleNames() const
   };
 }
 
-void CarsModel::AddCar()
+void CarsModel::AddCar(int width, int length, QUrl source, int sourceDirection)
 {
   int idx = rowCount();
   beginInsertRows(QModelIndex(), idx, idx);
-  cars.insert(idx, std::make_shared<Car>());
+  cars.insert(idx, std::make_shared<Car>(width, length, source, sourceDirection));
   cars[idx]->SetPosition((idx + 1) * 100, 0);
-  cars[idx]->SetRoute({{(idx + 1) * 100, 100}, {(idx + 1) * 100, 200}});
   endInsertRows();
 }
 

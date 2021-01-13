@@ -120,15 +120,6 @@ Item {
         markup: false
     }
 
-    Image {
-        id: origin
-        source: "qrc:/images/gear.svg"
-        x: -10
-        y: -10
-        width: 20
-        height: 20
-    }
-
     CrossroadSideHighlighter {
         model: root.model
         crossroadSideItem: root

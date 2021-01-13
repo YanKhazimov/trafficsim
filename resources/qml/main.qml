@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import TrafficSimApp 1.0
 import "Constants"
 
 ApplicationWindow {
@@ -53,13 +54,41 @@ ApplicationWindow {
         }
 
         Repeater {
+            id: graphNodes
+            model: engine.Graph.Nodes
+            delegate: Rectangle {
+                visible: engine.EditorState == EditorState.RouteCreation
+                width: 10
+                height: 10
+                radius: 5
+                x: RoleNodePosition.x - width/2
+                y: RoleNodePosition.y - height/2
+                color: "white"
+                opacity: 0.5
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: engine.SelectedCar.AddRouteNode(RoleNodeData)
+                }
+            }
+        }
+
+        Repeater {
             model: engine.SelectedCar ? engine.SelectedCar.RoutePoints : []
             delegate: Rectangle {
-                width: 4
-                height: 4
-                color: "yellow"
-                x: modelData.x
-                y: modelData.y
+                width: 10
+                height: 10
+                color: "white"
+                radius: 5
+                x: modelData.x - width/2
+                y: modelData.y - height/2
+
+                Text {
+                    anchors.centerIn: parent
+                    text: index + 1
+                }
             }
         }
 
@@ -84,11 +113,11 @@ ApplicationWindow {
 
         onCrossroadValidated: {
             var viewScale = 1
-            engine.SelectedCar.X = crossroadId.x + engine.Crossroad.AtStopLine(side, inLane).x +
+            engine.SelectedCar.X = engine.Crossroad.AtStopLine(side, inLane).x +
                engine.SelectedCar.Length * viewScale / 2 * Math.cos(engine.Crossroad.GetSide(side).NormalRadians)
-            engine.SelectedCar.Y = crossroadId.y + engine.Crossroad.AtStopLine(side, inLane).y -
+            engine.SelectedCar.Y = engine.Crossroad.AtStopLine(side, inLane).y -
                engine.SelectedCar.Length * viewScale / 2 * Math.sin(engine.Crossroad.GetSide(side).NormalRadians)
-            engine.SelectedCar.DirectionDegrees = (Math.PI/2 - engine.Crossroad.GetSide(side).NormalRadians + Math.PI) / Math.PI * 180
+            engine.SelectedCar.DirectionDegrees = engine.Crossroad.GetSide(side).NormalDegrees + 180
         }
         onCrossroadImageSaveRequested: {
             displayArea.grabToImage(function(grabResult) {

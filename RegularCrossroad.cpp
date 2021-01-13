@@ -27,8 +27,8 @@ bool RegularCrossroad::RemovePassage(int index)
   return passages.RemovePassage(index);
 }
 
-RegularCrossroad::RegularCrossroad(QObject* parent)
-  : QObject(parent)
+RegularCrossroad::RegularCrossroad(QString _id, QObject* parent)
+  : QObject(parent), id(_id)
 {
   QObject::connect(&sides, &CrossroadSidesModel::rowsInserted, [this](const QModelIndex &parent, int first, int last) {
     Q_UNUSED(parent);
@@ -43,8 +43,16 @@ RegularCrossroad::RegularCrossroad(QObject* parent)
     passages.RecalculatePassagesOnSidesRemoved(first, last);
   });
 
-  QObject::connect(&passages, &CrossroadPassagesModel::rowsInserted, this, &RegularCrossroad::passagesChanged);
-  QObject::connect(&passages, &CrossroadPassagesModel::rowsRemoved, this, &RegularCrossroad::passagesChanged);
+  QObject::connect(&passages, &CrossroadPassagesModel::rowsInserted, [this](const QModelIndex &parent, int first, int last) {
+    Q_UNUSED(parent);
+    emit passagesChanged();
+    emit passagesInserted(this, first, last);
+  });
+  QObject::connect(&passages, &CrossroadPassagesModel::rowsRemoved, [this](const QModelIndex &parent, int first, int last) {
+    Q_UNUSED(parent);
+    emit passagesChanged();
+    emit passagesRemoved(this, first, last);
+  });
 }
 
 bool RegularCrossroad::AddSide(int laneWidth, int startX, int startY, qreal normal, int inLanesCount, int outLanesCount,
@@ -64,7 +72,12 @@ bool RegularCrossroad::RemoveSide(int index)
 
 CrossroadSide* RegularCrossroad::GetSide(int index)
 {
-  return sides.data(sides.index(index, 0), DataRoles::CrossroadSideData).value<CrossroadSide*>();
+  return sides.index(index, 0).data(DataRoles::CrossroadSideData).value<CrossroadSide*>();
+}
+
+Passage* RegularCrossroad::GetPassage(int index)
+{
+  return passages.index(index, 0).data(DataRoles::CrossroadPassageData).value<Passage*>();
 }
 
 bool RegularCrossroad::Validate() const
@@ -205,4 +218,14 @@ QPoint RegularCrossroad::AtExit(int sideIndex, int laneIndex) const
 int RegularCrossroad::CountSides() const
 {
   return sides.rowCount();
+}
+
+int RegularCrossroad::CountPassages() const
+{
+  return passages.rowCount();
+}
+
+QString RegularCrossroad::GetId() const
+{
+  return id;
 }

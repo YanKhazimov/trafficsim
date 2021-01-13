@@ -50,7 +50,7 @@ QPoint CrossroadSide::AtStopLine(int laneIndex) const
       return QPoint(0, 0);
   }
 
-  qreal normalAngle = getNormalInRadians();
+  qreal normalAngle = GetNormalInRadians();
   qreal crossroadLineAngle = normalAngle - M_PI/2;
   QPoint crossroadLineStart(-getLength()/2 * qCos(crossroadLineAngle), getLength()/2 * qSin(crossroadLineAngle));
 
@@ -70,7 +70,7 @@ QPoint CrossroadSide::AtExit(int laneIndex) const
       return QPoint(0, 0);
   }
 
-  qreal normalAngle = getNormalInRadians();
+  qreal normalAngle = GetNormalInRadians();
   qreal crossroadLineAngle = normalAngle - M_PI/2;
   QPoint crossroadLineStart(-getLength()/2 * qCos(crossroadLineAngle), getLength()/2 * qSin(crossroadLineAngle));
 
@@ -110,7 +110,7 @@ int CrossroadSide::GetY() const
   return startY;
 }
 
-int CrossroadSide::getNormal() const
+int CrossroadSide::GetNormal() const
 {
   return normal;
 }
@@ -123,7 +123,7 @@ void CrossroadSide::setNormal(int degrees)
   emit parametersChanged();
 }
 
-qreal CrossroadSide::getNormalInRadians() const
+qreal CrossroadSide::GetNormalInRadians() const
 {
   return qDegreesToRadians(static_cast<qreal>(normal));
 }
@@ -146,9 +146,4 @@ CrossroadSide::CrossroadSide(int _laneWidth, int _startX, int _startY, int _norm
 {
   inLanes.resize(inLanesCount);
   outLanes.resize(outLanesCount);
-}
-
-qreal CrossroadSide::GetNormal() const
-{
-  return normal;
 }

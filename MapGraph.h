@@ -3,35 +3,35 @@
 #include <QPair>
 #include <QObject>
 #include "RegularCrossroad.h"
-
-enum class NodeType {
-  None,
-  CrossroadIn,
-  CrossroadOut
-};
-
-struct Node {
-  NodeType type = NodeType::None;
-  int crossroadId = -1;
-  int side = -1;
-  int lane = -1;
-
-  bool operator ==(const Node& other) const;
-};
+#include "NodesModel.h"
+#include <memory>
 
 class MapGraph : public QObject
 {
   Q_OBJECT
 
-  QList<Node> nodes;
-  QList<QPair<Node, Node>> edges;
+  Q_PROPERTY(NodesModel* Nodes READ getNodes NOTIFY nodesChanged)
+
+  NodesModel nodes;
+  QList<QPair<std::shared_ptr<Node>, std::shared_ptr<Node>>> edges;
+
+  QList<RegularCrossroad*> crossroads;
+
+  NodesModel* getNodes();
 
 public:
-  MapGraph();
-  void AddEgde(const QPair<Node, Node>& edge);
-  QList<Node> Next(const Node& from) const;
+  explicit MapGraph(QObject* parent = nullptr);
+  void RegisterCrossroad(RegularCrossroad* crossroad);
+  QList<Node*> AccessibleNodes(const Node* from) const;
 
 public slots:
-  void RecalculateGraphNodesOnSidesInserted(RegularCrossroad* crossroad, int first, int last);
-  void RecalculateGraphNodesOnSidesRemoved(RegularCrossroad* crossroad, int first, int last);
+  void RecalculateOnSidesInserted(RegularCrossroad* crossroad, int first, int last);
+  void RecalculateOnSidesRemoved(RegularCrossroad* crossroad, int first, int last);
+  void RecalculateOnPassagesInserted(RegularCrossroad* crossroad, int first, int last);
+  void RecalculateOnPassagesRemoved(RegularCrossroad* crossroad, int first, int last);
+
+signals:
+  void nodesChanged();
+  void edgesChanged();
 };
+Q_DECLARE_METATYPE(MapGraph*)
