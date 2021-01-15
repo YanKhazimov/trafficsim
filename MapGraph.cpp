@@ -16,6 +16,11 @@ void MapGraph::RegisterCrossroad(RegularCrossroad* crossroad)
   crossroads.append(crossroad);
   emit nodesChanged();
   emit edgesChanged();
+
+  QObject::connect(crossroad, &RegularCrossroad::sideParametersChanged, this, [this, crossroad] (int side) {
+    RecalculateOnSidesRemoved(crossroad, side, side);
+    RecalculateOnSidesInserted(crossroad, side, side);
+  });
 }
 
 QList<Node*> MapGraph::AccessibleNodes(const Node* from) const

@@ -60,8 +60,12 @@ bool RegularCrossroad::AddSide(int laneWidth, int startX, int startY, qreal norm
 {
   bool validSideParams = true;
 
-  sides.AddSide(laneWidth, startX, startY, static_cast<int>(qRadiansToDegrees(normal) + 360) % 360, inLanesCount, outLanesCount, inOffset, outOffset, midOffset);
+  int addedSideIndex = sides.InsertSide(laneWidth, startX, startY,static_cast<int>(qRadiansToDegrees(normal) + 360) % 360,
+                                        inLanesCount, outLanesCount, inOffset, outOffset, midOffset);
 
+  QObject::connect(sides.GetSide(addedSideIndex), &CrossroadSide::parametersChanged, this, [this, addedSideIndex](){
+    emit sideParametersChanged(addedSideIndex);
+  });
   return validSideParams;
 }
 

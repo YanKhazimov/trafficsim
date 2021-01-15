@@ -35,7 +35,7 @@ QHash<int, QByteArray> CrossroadSidesModel::roleNames() const
   };
 }
 
-void CrossroadSidesModel::AddSide(int laneWidth, int startX, int startY, int normal, int inLanesCount, int outLanesCount, int inOffset, int outOffset, int midOffset)
+int CrossroadSidesModel::InsertSide(int laneWidth, int startX, int startY, int normal, int inLanesCount, int outLanesCount, int inOffset, int outOffset, int midOffset)
 {
   int row = 0;
   while (row < rowCount() && sides[row]->GetNormal() < normal)
@@ -44,6 +44,8 @@ void CrossroadSidesModel::AddSide(int laneWidth, int startX, int startY, int nor
   beginInsertRows(QModelIndex(), row, row);
   sides.insert(row, std::make_shared<CrossroadSide>(laneWidth, startX, startY, normal, inLanesCount, outLanesCount, inOffset, outOffset, midOffset));
   endInsertRows();
+
+  return row;
 }
 
 bool CrossroadSidesModel::RemoveSide(int index)

@@ -54,6 +54,7 @@ signals:
   void sidesChanged();
   void sidesInserted(RegularCrossroad* crossroad, int first, int last);
   void sidesRemoved(RegularCrossroad* crossroad, int first, int last);
+  void sideParametersChanged(int side);
   void passagesChanged();
   void passagesInserted(RegularCrossroad* crossroad, int first, int last);
   void passagesRemoved(RegularCrossroad* crossroad, int first, int last);
