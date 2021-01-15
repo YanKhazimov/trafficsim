@@ -24,6 +24,11 @@ MapGraph *QmlPresenter::getGraph()
   return &graph;
 }
 
+int QmlPresenter::getViewScale() const
+{
+  return viewScalePct;
+}
+
 QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
 {
   crossroad = std::make_unique<RegularCrossroad>("Toreza");
@@ -75,4 +80,14 @@ void QmlPresenter::GoToNextFrame()
   Car* selectedCar = getSelectedCar();
   if (selectedCar)
     selectedCar->MoveAlongRoute();
+}
+
+void QmlPresenter::ChangeViewScale(int steps)
+{
+  int newValue = qMax(50, qMin(200, viewScalePct + 10 * steps));
+  if (newValue != viewScalePct)
+  {
+    viewScalePct = newValue;
+    emit viewScaleChanged();
+  }
 }

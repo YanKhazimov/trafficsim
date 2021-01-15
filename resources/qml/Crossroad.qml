@@ -2,19 +2,18 @@ import QtQuick 2.15
 import QtQuick.Shapes 1.12
 import "Constants"
 
-Rectangle {
+Item {
     id: root
-    implicitHeight: 5
-    implicitWidth: 5
-    radius: 5/2
-    border.color: Colors.lane
-    border.width: 2
 
-    function fill() {
+    function fill(reason) {
         insides.path = []
 
-        for (var i = 0; i < sidesRepeater.count * 2; ++i)
-            insides.path.push(insides.getPoint(i))
+        for (var i = 0; i < sidesRepeater.count * 2; ++i) {
+            var point = insides.getPoint(i)
+            if (point === null)
+                return
+            insides.path.push(point)
+        }
 
         polyline.path = insides.path
     }
@@ -29,13 +28,16 @@ Rectangle {
                 return Qt.point(0, 0)
             }
 
-            var side = index / 2
+            var side = Math.floor(index / 2)
+
+            var sideItem = sidesRepeater.itemAt(side)
+            if (sideItem === null) {
+                return null
+            }
 
             return index % 2 === 0 ?
-                        Qt.point(sidesRepeater.itemAt(side).x + sidesRepeater.itemAt(side).end.x,
-                                 sidesRepeater.itemAt(side).y + sidesRepeater.itemAt(side).end.y) :
-                        Qt.point(sidesRepeater.itemAt(side).x + sidesRepeater.itemAt(side).start.x,
-                                 sidesRepeater.itemAt(side).y + sidesRepeater.itemAt(side).start.y)
+                        Qt.point(sideItem.x + sideItem.end.x, sideItem.y + sideItem.end.y) :
+                        Qt.point(sideItem.x + sideItem.start.x, sideItem.y + sideItem.start.y)
         }
         property var path: []
 
@@ -58,10 +60,12 @@ Rectangle {
         model: engine.Crossroad.Sides
         delegate: CrossroadSide {
             model: modelData
-            x: modelData.StartX
-            y: modelData.StartY
+            x: Sizes.scaleMapToView(modelData.StartX)
+            y: Sizes.scaleMapToView(modelData.StartY)
             onInLaneClicked: engine.Crossroad.SetNewPassageInLane(index, laneIndex)
             onOutLaneClicked: engine.Crossroad.SetNewPassageOutLane(index, laneIndex)
+            onXChanged: crossroadId.fill("x")
+            onYChanged: crossroadId.fill("y")
         }
     }
 
@@ -70,7 +74,7 @@ Rectangle {
         function onSidesChanged() {
             sidesRepeater.model = []
             sidesRepeater.model = engine.Crossroad.Sides
-            crossroadId.fill()
+            crossroadId.fill("sides")
         }
         function onPassagesChanged() {
             passagesRepeater.model = []
@@ -83,10 +87,18 @@ Rectangle {
         model: engine.Crossroad.Passages
         delegate: Passage {
             model: RolePassageData
-            startX: engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).x - root.x
-            startY: engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).y - root.y
-            endX: engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).x - root.x
-            endY: engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).y - root.y
+            startX: Sizes.scaleMapToView(engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).x)
+            startY: Sizes.scaleMapToView(engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).y)
+            endX: Sizes.scaleMapToView(engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).x)
+            endY: Sizes.scaleMapToView(engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).y)
         }
+    }
+
+    Rectangle {
+        id: origin
+        implicitHeight: 4
+        implicitWidth: 4
+        anchors.centerIn: parent
+        color: "purple"
     }
 }

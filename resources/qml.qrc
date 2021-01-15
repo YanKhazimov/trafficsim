@@ -27,5 +27,7 @@
         <file>qml/CarInfo.qml</file>
         <file>qml/Car.qml</file>
         <file>images/truck.png</file>
+        <file>qml/MapRuler.qml</file>
+        <file>images/magnifier.svg</file>
     </qresource>
 </RCC>

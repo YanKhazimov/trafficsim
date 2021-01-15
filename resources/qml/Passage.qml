@@ -18,6 +18,8 @@ Shape {
         id: pathStart
         strokeColor: "white"
         strokeWidth: root.model.IsHighlighted ? 3 : 1
+        strokeStyle: ShapePath.DashLine
+        dashPattern: [8, 8]
 
 //        PathLine {
 //        }

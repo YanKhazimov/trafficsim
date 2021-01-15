@@ -29,6 +29,19 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.margins: 50
         color: "#BBBBBB"
+        clip: true
+
+        Component.onCompleted: forceActiveFocus()
+
+        Keys.onRightPressed: engine.ViewCenter.x += 10
+        Keys.onLeftPressed: engine.ViewCenter.x -= 10
+        Keys.onUpPressed: engine.ViewCenter.y -= 10
+        Keys.onDownPressed: engine.ViewCenter.y += 10
+
+        MouseArea {
+            anchors.fill: parent
+            onWheel: engine.ChangeViewScale(wheel.angleDelta.y / 120)
+        }
 
         DrawArea {
             id: sideDrawingArea
@@ -38,19 +51,8 @@ ApplicationWindow {
 
         Crossroad {
             id: crossroadId
-            anchors.centerIn: sideDrawingArea
-
-            Binding {
-                target: engine.Crossroad
-                property: "X"
-                value: crossroadId.x
-            }
-
-            Binding {
-                target: engine.Crossroad
-                property: "Y"
-                value: crossroadId.y
-            }
+            x: displayArea.width / 2 + Sizes.scaleMapToView(engine.Crossroad.X - engine.ViewCenter.x)
+            y: displayArea.height / 2 + Sizes.scaleMapToView(engine.Crossroad.Y - engine.ViewCenter.y)
         }
 
         Repeater {
@@ -61,8 +63,8 @@ ApplicationWindow {
                 width: 10
                 height: 10
                 radius: 5
-                x: RoleNodePosition.x - width/2
-                y: RoleNodePosition.y - height/2
+                x: displayArea.width / 2 + Sizes.scaleMapToView(RoleNodePosition.x) - width/2 - engine.ViewCenter.x
+                y: displayArea.height / 2 + Sizes.scaleMapToView(RoleNodePosition.y) - height/2 - engine.ViewCenter.y
                 color: "white"
                 opacity: 0.5
 
@@ -82,8 +84,8 @@ ApplicationWindow {
                 height: 10
                 color: "white"
                 radius: 5
-                x: modelData.x - width/2
-                y: modelData.y - height/2
+                x: displayArea.width / 2 + Sizes.scaleMapToView(modelData.x) - width/2 - engine.ViewCenter.x
+                y: displayArea.height / 2 + Sizes.scaleMapToView(modelData.y) - height/2 - engine.ViewCenter.y
 
                 Text {
                     anchors.centerIn: parent
@@ -96,13 +98,15 @@ ApplicationWindow {
             model: engine.Cars
             delegate: Car {
                 model: modelData
+                viewCenterOffset: Qt.point(displayArea.width / 2, displayArea.height / 2)
                 onClicked: engine.Cars.Select(index)
             }
         }
     }
 
-    property int side: 2
-    property int inLane: 0
+    MapRuler {
+       mapSource: displayArea
+    }
 
     ControlPanel {
         id: controlPanel
@@ -112,12 +116,6 @@ ApplicationWindow {
         width: 300
 
         onCrossroadValidated: {
-            var viewScale = 1
-            engine.SelectedCar.X = engine.Crossroad.AtStopLine(side, inLane).x +
-               engine.SelectedCar.Length * viewScale / 2 * Math.cos(engine.Crossroad.GetSide(side).NormalRadians)
-            engine.SelectedCar.Y = engine.Crossroad.AtStopLine(side, inLane).y -
-               engine.SelectedCar.Length * viewScale / 2 * Math.sin(engine.Crossroad.GetSide(side).NormalRadians)
-            engine.SelectedCar.DirectionDegrees = engine.Crossroad.GetSide(side).NormalDegrees + 180
         }
         onCrossroadImageSaveRequested: {
             displayArea.grabToImage(function(grabResult) {
