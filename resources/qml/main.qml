@@ -33,10 +33,24 @@ ApplicationWindow {
 
         Component.onCompleted: forceActiveFocus()
 
-        Keys.onRightPressed: engine.ViewCenter.x += 10
-        Keys.onLeftPressed: engine.ViewCenter.x -= 10
-        Keys.onUpPressed: engine.ViewCenter.y -= 10
-        Keys.onDownPressed: engine.ViewCenter.y += 10
+        Keys.onPressed: {
+            event.accepted = true
+
+            if (event.key === Qt.Key_Plus)
+                engine.ChangeViewScale(1)
+            else if (event.key === Qt.Key_Minus)
+                engine.ChangeViewScale(-1)
+            else if (event.key === Qt.Key_Right)
+                engine.ViewCenter.x += 10
+            else if (event.key === Qt.Key_Left)
+                engine.ViewCenter.x -= 10
+            else if (event.key === Qt.Key_Up)
+                engine.ViewCenter.y -= 10
+            else if (event.key === Qt.Key_Down)
+                engine.ViewCenter.y += 10
+            else
+                event.accepted = false
+        }
 
         MouseArea {
             anchors.fill: parent

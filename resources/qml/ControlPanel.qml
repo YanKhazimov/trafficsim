@@ -71,6 +71,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: carInfo.top
         anchors.margins: 20
+        clip: true
 
         QQC1.Tab {
             title: "Sides"
