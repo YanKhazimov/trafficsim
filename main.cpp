@@ -21,7 +21,8 @@ int main(int argc, char *argv[])
   qmlRegisterUncreatableType<Passage>("TrafficSimApp", 1, 0, "PassageModel", "");
   qmlRegisterType<QmlPresenter>("TrafficSimApp", 1, 0, "EditorState");
   qmlRegisterUncreatableType<Car>("TrafficSimApp", 1, 0, "CarModel", "");
-
+  qmlRegisterType<Node>("TrafficSimApp", 1, 0, "NodeType");
+  qmlRegisterUncreatableType<RoadLane>("TrafficSimApp", 1, 0, "RoadLaneModel", "");
 
   QmlPresenter qmlPresenter;
   engine.rootContext()->setContextProperty("engine", &qmlPresenter);

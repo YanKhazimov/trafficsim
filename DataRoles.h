@@ -5,5 +5,7 @@ enum DataRoles {
   PassageParameters,
   NodeData,
   IsStartNode,
-  NodePosition
+  NodePosition,
+  NodeType,
+  RoadLaneData
 };

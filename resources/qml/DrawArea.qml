@@ -31,8 +31,8 @@ MouseArea {
         sideDirectionPreview.visible = false
         // construct
         engine.Crossroad.AddSide(Sizes.laneWidth,
-                                 Sizes.scaleViewToMap(sideDirectionPreview.startX - crossroadId.x),
-                                 Sizes.scaleViewToMap(sideDirectionPreview.startY - crossroadId.y),
+                                 Sizes.scaleToMap(sideDirectionPreview.startX - crossroadId.x),
+                                 Sizes.scaleToMap(sideDirectionPreview.startY - crossroadId.y),
                                  sideDirectionPreview.getDirection(), 2, 1, 0, 0, 10)
     }
 

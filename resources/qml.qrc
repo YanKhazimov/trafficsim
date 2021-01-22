@@ -29,5 +29,7 @@
         <file>images/truck.png</file>
         <file>qml/MapRuler.qml</file>
         <file>images/magnifier.svg</file>
+        <file>images/road.svg</file>
+        <file>qml/RoadLane.qml</file>
     </qresource>
 </RCC>

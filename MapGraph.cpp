@@ -23,6 +23,16 @@ void MapGraph::RegisterCrossroad(RegularCrossroad* crossroad)
   });
 }
 
+void MapGraph::RegisterRoadlane(RoadLane* roadlane)
+{
+  roadlanes.append(roadlane);
+
+  // TODO recalculate
+
+  emit nodesChanged();
+  emit edgesChanged();
+}
+
 QList<Node*> MapGraph::AccessibleNodes(const Node* from) const
 {
   QList<Node*> result;
@@ -73,9 +83,9 @@ void MapGraph::RecalculateOnSidesInserted(RegularCrossroad *crossroad, int first
   {
     CrossroadSide* side = crossroad->GetSide(i);
     for (int j = 0; j < side->GetInLanesCount(); ++j)
-      nodes.AddNode(NodeType::CrossroadIn, crossroad, i, j);
+      nodes.AddNode(Node::NodeType::CrossroadIn, crossroad, i, j);
     for (int j = 0; j < side->GetOutLanesCount(); ++j)
-      nodes.AddNode(NodeType::CrossroadOut, crossroad, i, j);
+      nodes.AddNode(Node::NodeType::CrossroadOut, crossroad, i, j);
   }
 
   emit nodesChanged();
@@ -143,11 +153,11 @@ void MapGraph::RecalculateOnPassagesInserted(RegularCrossroad *crossroad, int fi
   for (int i = first; i <= last; ++i)
   {
     Passage* passage = crossroad->GetPassage(i);
-    edges << qMakePair<std::shared_ptr<Node>, std::shared_ptr<Node>>(std::make_shared<Node>(NodeType::CrossroadIn,
+    edges << qMakePair<std::shared_ptr<Node>, std::shared_ptr<Node>>(std::make_shared<Node>(Node::NodeType::CrossroadIn,
                                                                                             crossroad,
                                                                                             passage->inSideIndex,
                                                                                             passage->inLaneIndex),
-                                                                     std::make_shared<Node>(NodeType::CrossroadOut,
+                                                                     std::make_shared<Node>(Node::NodeType::CrossroadOut,
                                                                                             crossroad,
                                                                                             passage->outSideIndex,
                                                                                             passage->outLaneIndex));
@@ -163,11 +173,11 @@ void MapGraph::RecalculateOnPassagesRemoved(RegularCrossroad *crossroad, int fir
   for (int i = 0; i < crossroad->CountPassages(); ++i)
   {
     Passage* passage = crossroad->GetPassage(i);
-    edges << qMakePair<std::shared_ptr<Node>, std::shared_ptr<Node>>(std::make_shared<Node>(NodeType::CrossroadIn,
+    edges << qMakePair<std::shared_ptr<Node>, std::shared_ptr<Node>>(std::make_shared<Node>(Node::NodeType::CrossroadIn,
                                                                                             crossroad,
                                                                                             passage->inSideIndex,
                                                                                             passage->inLaneIndex),
-                                                                     std::make_shared<Node>(NodeType::CrossroadOut,
+                                                                     std::make_shared<Node>(Node::NodeType::CrossroadOut,
                                                                                             crossroad,
                                                                                             passage->outSideIndex,
                                                                                             passage->outLaneIndex));

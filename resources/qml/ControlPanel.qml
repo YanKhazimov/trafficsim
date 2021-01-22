@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls 1.4 as QQC1
+import TrafficSimApp 1.0
 import "Constants"
 
 Rectangle {
@@ -22,8 +23,39 @@ Rectangle {
         root.crossroadValidated()
 
         constructorPanel.visible = false
-        editButton.img = "qrc:/images/edit.svg"
+        editButton.img = "qrc:/images/crossroad.svg"
         editButton.callback = showConstructor
+    }
+
+    Row {
+        id: roadResultButtonsRow
+        anchors.top: buttonsRow.bottom
+        anchors.left: parent.left
+        anchors.margins: 20
+        spacing: 20
+        visible: false
+
+        TSButton {
+            id: canceButton
+            height: 40
+            text: "Cancel"
+            callback: function() {
+                roadResultButtonsRow.visible = false
+                engine.RoadUnderConstruction.Clear()
+                engine.EditorState = EditorState.NotEditing
+            }
+        }
+
+        TSButton {
+            id: createButton
+            height: 40
+            text: "Create"
+            callback: function() {
+                roadResultButtonsRow.visible = false
+                engine.AddRoad()
+                engine.EditorState = EditorState.NotEditing
+            }
+        }
     }
 
     Row {
@@ -34,10 +66,21 @@ Rectangle {
         spacing: 20
 
         TSButton {
+            id: createRoadButton
+            width: 40
+            height: 40
+            img: "qrc:/images/road.svg"
+            callback: function() {
+                roadResultButtonsRow.visible = true
+                engine.EditorState = EditorState.RoadCreation
+            }
+        }
+
+        TSButton {
             id: editButton
             width: 40
             height: 40
-            img: "qrc:/images/edit.svg"
+            img: "qrc:/images/crossroad.svg"
             callback: showConstructor
         }
 

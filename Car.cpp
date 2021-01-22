@@ -62,9 +62,9 @@ void Car::AddRouteNode(Node* node)
   QPoint carCenter(nodePosition.x() + length/2 * qCos(node->crossroad->GetSide(node->side)->GetNormalInRadians()),
                    nodePosition.y() - length/2 * qSin(node->crossroad->GetSide(node->side)->GetNormalInRadians()));
   int direction = 0;
-  if (node->type == NodeType::CrossroadIn)
+  if (node->type == Node::NodeType::CrossroadIn)
     direction = (sideNormal + 180) % 360;
-  else if (node->type == NodeType::CrossroadOut)
+  else if (node->type == Node::NodeType::CrossroadOut)
     direction = sideNormal;
   else
     qWarning() << "need to define node direction";

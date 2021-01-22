@@ -5,15 +5,15 @@ import "Constants"
 Item {
     id: root
     property CarModel model
-    property point viewCenterOffset: Qt.point(0, 0)
-    x: viewCenterOffset.x - Sizes.scaleMapToView(engine.ViewCenter.x) + Sizes.scaleMapToView(root.model.X)
-    y: viewCenterOffset.y - Sizes.scaleMapToView(engine.ViewCenter.y) + Sizes.scaleMapToView(root.model.Y)
+    property Item viewItem
+    x: Sizes.mapXToView(root.model.X, viewItem)
+    y: Sizes.mapYToView(root.model.Y, viewItem)
     signal clicked()
 
     Image {
         id: img
-        readonly property int hDimension: Sizes.scaleMapToView(root.model.SourceDirection / 90 % 2 === 0 ? root.model.Length : root.model.Width)
-        readonly property int vDimension: Sizes.scaleMapToView(root.model.SourceDirection / 90 % 2 === 0 ? root.model.Width : root.model.Length)
+        readonly property int hDimension: Sizes.scaleToView(root.model.SourceDirection / 90 % 2 === 0 ? root.model.Length : root.model.Width)
+        readonly property int vDimension: Sizes.scaleToView(root.model.SourceDirection / 90 % 2 === 0 ? root.model.Width : root.model.Length)
         source: root.model.Source
         sourceSize.width: hDimension
         x: -hDimension/2

@@ -5,10 +5,10 @@ import "Constants"
 Shape {
     id: root
     property point start
-    property int length: Sizes.scaleMapToView(100)
+    property int length: Sizes.scaleToView(100)
     property real angle: Math.PI / 2
     property color color: Colors.lane
-    property int w: Sizes.scaleMapToView(Sizes.laneWidth)
+    property int w: Sizes.scaleToView(Sizes.laneWidth)
     property bool markup: true
     antialiasing: true
 
@@ -30,7 +30,7 @@ Shape {
     ShapePath {
         id: markupExcluded
         strokeColor: root.color
-        strokeWidth: root.markup ? root.w - Sizes.scaleMapToView(2) : 0
+        strokeWidth: root.markup ? root.w - Sizes.scaleToView(2) : 0
         startX: start.x + strokeWidth/2 * Math.cos(angle)
         startY: start.y - strokeWidth/2 * Math.sin(angle)
 

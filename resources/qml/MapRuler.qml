@@ -7,7 +7,7 @@ Item {
     anchors.fill: mapSource
 
     Text {
-        text: engine.ViewCenter.x - Math.round(Sizes.scaleViewToMap(mapSource.width / 2))
+        text: engine.ViewCenter.x - Math.round(Sizes.scaleToMap(mapSource.width / 2))
         anchors.bottom: parent.top; anchors.bottomMargin: 2 * Sizes.minMargin
         anchors.horizontalCenter: parent.left
         font.pointSize: 12
@@ -37,7 +37,7 @@ Item {
     }
 
     Text {
-        text: engine.ViewCenter.x + Math.round(Sizes.scaleViewToMap(mapSource.width / 2))
+        text: engine.ViewCenter.x + Math.round(Sizes.scaleToMap(mapSource.width / 2))
         anchors.bottom: parent.top; anchors.bottomMargin: 2 * Sizes.minMargin
         anchors.horizontalCenter: parent.right
         font.pointSize: 12
@@ -52,7 +52,7 @@ Item {
     }
 
     Text {
-        text: engine.ViewCenter.y - Math.round(Sizes.scaleViewToMap(mapSource.height / 2))
+        text: engine.ViewCenter.y - Math.round(Sizes.scaleToMap(mapSource.height / 2))
         anchors.left: parent.right; anchors.leftMargin: 2 * Sizes.minMargin
         anchors.verticalCenter: parent.top
         font.pointSize: 12
@@ -82,7 +82,7 @@ Item {
     }
 
     Text {
-        text: engine.ViewCenter.y + Math.round(Sizes.scaleViewToMap(mapSource.height / 2))
+        text: engine.ViewCenter.y + Math.round(Sizes.scaleToMap(mapSource.height / 2))
         anchors.left: parent.right; anchors.leftMargin: 2 * Sizes.minMargin
         anchors.verticalCenter: parent.bottom
         font.pointSize: 12

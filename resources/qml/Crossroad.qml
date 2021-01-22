@@ -60,8 +60,8 @@ Item {
         model: engine.Crossroad.Sides
         delegate: CrossroadSide {
             model: modelData
-            x: Sizes.scaleMapToView(modelData.StartX)
-            y: Sizes.scaleMapToView(modelData.StartY)
+            x: Sizes.scaleToView(modelData.StartX)
+            y: Sizes.scaleToView(modelData.StartY)
             onInLaneClicked: engine.Crossroad.SetNewPassageInLane(index, laneIndex)
             onOutLaneClicked: engine.Crossroad.SetNewPassageOutLane(index, laneIndex)
             onXChanged: crossroadId.fill("x")
@@ -87,10 +87,10 @@ Item {
         model: engine.Crossroad.Passages
         delegate: Passage {
             model: RolePassageData
-            startX: Sizes.scaleMapToView(engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).x)
-            startY: Sizes.scaleMapToView(engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).y)
-            endX: Sizes.scaleMapToView(engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).x)
-            endY: Sizes.scaleMapToView(engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).y)
+            startX: Sizes.scaleToView(engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).x)
+            startY: Sizes.scaleToView(engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).y)
+            endX: Sizes.scaleToView(engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).x)
+            endY: Sizes.scaleToView(engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).y)
         }
     }
 

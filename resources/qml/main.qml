@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import TrafficSimApp 1.0
 import "Constants"
+import QtQuick.Shapes 1.12
 
 ApplicationWindow {
     id: root
@@ -63,22 +64,63 @@ ApplicationWindow {
             anchors.fill: parent
         }
 
+        Repeater {
+            id: roadLanes
+            model: engine.RoadLanes
+            delegate: RoadLane {
+                model: RoleRoadLaneData
+                view: displayArea
+            }
+        }
+
+        Connections {
+            target: engine
+            function onRoadLanesChanged() {
+                roadLanes.model = []
+                roadLanes.model = engine.RoadLanes
+                for (var i = 0; i < roadLanes.count; ++i)
+                    roadLanes.itemAt(i).update()
+            }
+        }
+
         Crossroad {
             id: crossroadId
-            x: displayArea.width / 2 + Sizes.scaleMapToView(engine.Crossroad.X - engine.ViewCenter.x)
-            y: displayArea.height / 2 + Sizes.scaleMapToView(engine.Crossroad.Y - engine.ViewCenter.y)
+            x: Sizes.mapXToView(engine.Crossroad.X, displayArea)
+            y: Sizes.mapYToView(engine.Crossroad.Y, displayArea)
+        }
+
+        MouseArea {
+            id: laneDrawingArea
+            visible: engine.EditorState == EditorState.RoadCreation
+            anchors.fill: parent
+            cursorShape: Qt.CrossCursor
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: {
+                if (mouse.button == Qt.LeftButton)
+                    engine.RoadUnderConstruction.AppendPoint(Sizes.mapPointToModel(Qt.point(mouseX, mouseY), displayArea), NodeType.RoadJoint)
+                else if (mouse.button == Qt.RightButton)
+                    engine.RoadUnderConstruction.RemoveLastPoint()
+            }
+        }
+
+        RoadLane {
+            id: roadUnderConstruction
+            model: engine.RoadUnderConstruction
+            shapeColor: "#88FF0000"
+            view: displayArea
         }
 
         Repeater {
             id: graphNodes
             model: engine.Graph.Nodes
             delegate: Rectangle {
-                visible: engine.EditorState == EditorState.RouteCreation
+                visible: engine.EditorState == EditorState.RouteCreation ||
+                         engine.EditorState == EditorState.RoadCreation
                 width: 10
                 height: 10
                 radius: 5
-                x: displayArea.width / 2 + Sizes.scaleMapToView(RoleNodePosition.x) - width/2 - engine.ViewCenter.x
-                y: displayArea.height / 2 + Sizes.scaleMapToView(RoleNodePosition.y) - height/2 - engine.ViewCenter.y
+                x: Sizes.mapXToView(RoleNodePosition.x, displayArea) - width/2
+                y: Sizes.mapYToView(RoleNodePosition.y, displayArea) - height/2
                 color: "white"
                 opacity: 0.5
 
@@ -86,7 +128,12 @@ ApplicationWindow {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: engine.SelectedCar.AddRouteNode(RoleNodeData)
+                    onClicked: {
+                        if (engine.EditorState == EditorState.RouteCreation)
+                            engine.SelectedCar.AddRouteNode(RoleNodeData)
+                        else if (engine.EditorState == EditorState.RoadCreation)
+                            engine.RoadUnderConstruction.AppendPoint(RoleNodePosition, RoleNodeType)
+                    }
                 }
             }
         }
@@ -98,8 +145,8 @@ ApplicationWindow {
                 height: 10
                 color: "white"
                 radius: 5
-                x: displayArea.width / 2 + Sizes.scaleMapToView(modelData.x) - width/2 - engine.ViewCenter.x
-                y: displayArea.height / 2 + Sizes.scaleMapToView(modelData.y) - height/2 - engine.ViewCenter.y
+                x: Sizes.mapXToView(modelData.x, displayArea) - width/2
+                y: Sizes.mapYToView(modelData.y, displayArea) - height/2
 
                 Text {
                     anchors.centerIn: parent
@@ -112,8 +159,12 @@ ApplicationWindow {
             model: engine.Cars
             delegate: Car {
                 model: modelData
-                viewCenterOffset: Qt.point(displayArea.width / 2, displayArea.height / 2)
+                viewItem: displayArea
                 onClicked: engine.Cars.Select(index)
+
+                x: roadUnderConstruction.interpolatorX
+                y: roadUnderConstruction.interpolatorY
+                rotation: roadUnderConstruction.interpolatorAngle + 45
             }
         }
     }

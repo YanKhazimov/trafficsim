@@ -18,22 +18,22 @@ Item {
         model: root.model.InLanes
         delegate: Lane {
             start: Qt.point(crossroadLine.start.x +
-                            Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.cos(crossroadLine.angle),
+                            Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.cos(crossroadLine.angle),
                             crossroadLine.start.y -
-                            Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.sin(crossroadLine.angle)
+                            Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.sin(crossroadLine.angle)
                             )
             angle: root.model.NormalRadians
 
             Rectangle {
                 id: inDelegateRect
                 visible: engine.EditorState == EditorState.InLaneSelection
-                width: Sizes.scaleMapToView(100)
-                height: Sizes.scaleMapToView(Sizes.laneWidth)
-                x: crossroadLine.start.x + Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.cos(crossroadLine.angle)
-                   + Sizes.scaleMapToView(100 / 2) * Math.cos(root.model.NormalRadians)
+                width: Sizes.scaleToView(100)
+                height: Sizes.scaleToView(Sizes.laneWidth)
+                x: crossroadLine.start.x + Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.cos(crossroadLine.angle)
+                   + Sizes.scaleToView(100 / 2) * Math.cos(root.model.NormalRadians)
                    - width / 2
-                y: crossroadLine.start.y - Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.sin(crossroadLine.angle)
-                   - Sizes.scaleMapToView(100 / 2) * Math.sin(root.model.NormalRadians)
+                y: crossroadLine.start.y - Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth/2 + Sizes.laneWidth * index) * Math.sin(crossroadLine.angle)
+                   - Sizes.scaleToView(100 / 2) * Math.sin(root.model.NormalRadians)
                    - height / 2
                 rotation: -root.model.NormalDegrees
 
@@ -53,10 +53,10 @@ Item {
     Lane {
         color: "green"
         start: Qt.point(crossroadLine.start.x +
-                        Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset/2) * Math.cos(crossroadLine.angle),
+                        Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset/2) * Math.cos(crossroadLine.angle),
                         crossroadLine.start.y -
-                        Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset/2) * Math.sin(crossroadLine.angle))
-        w: Sizes.scaleMapToView(root.model.MidOffset)
+                        Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset/2) * Math.sin(crossroadLine.angle))
+        w: Sizes.scaleToView(root.model.MidOffset)
         markup: false
         angle: root.model.NormalRadians
     }
@@ -66,21 +66,21 @@ Item {
         model: root.model.OutLanes
         delegate: Lane {
             start: Qt.point(crossroadLine.start.x +
-                            Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.cos(crossroadLine.angle),
+                            Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.cos(crossroadLine.angle),
                             crossroadLine.start.y -
-                            Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.sin(crossroadLine.angle))
+                            Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.sin(crossroadLine.angle))
             angle: root.model.NormalRadians
 
             Rectangle {
                 id: outDelegateRect
                 visible: engine.EditorState == EditorState.OutLaneSelection
-                width: Sizes.scaleMapToView(100)
-                height: Sizes.scaleMapToView(Sizes.laneWidth)
-                x: crossroadLine.start.x + Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.cos(crossroadLine.angle)
-                   + Sizes.scaleMapToView(100 / 2) * Math.cos(root.model.NormalRadians)
+                width: Sizes.scaleToView(100)
+                height: Sizes.scaleToView(Sizes.laneWidth)
+                x: crossroadLine.start.x + Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.cos(crossroadLine.angle)
+                   + Sizes.scaleToView(100 / 2) * Math.cos(root.model.NormalRadians)
                    - width / 2
-                y: crossroadLine.start.y - Sizes.scaleMapToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.sin(crossroadLine.angle)
-                   - Sizes.scaleMapToView(100 / 2) * Math.sin(root.model.NormalRadians)
+                y: crossroadLine.start.y - Sizes.scaleToView(root.model.InOffset + Sizes.laneWidth * root.model.InLanesCount + root.model.MidOffset + Sizes.laneWidth * (0.5 + root.model.OutLanesCount - 1 - index)) * Math.sin(crossroadLine.angle)
+                   - Sizes.scaleToView(100 / 2) * Math.sin(root.model.NormalRadians)
                    - height / 2
                 rotation: -root.model.NormalDegrees
 
@@ -99,24 +99,24 @@ Item {
 
     Lane {
         id: stopLine
-        length: root.model.InLanesCount * Sizes.scaleMapToView(Sizes.laneWidth)
-        start: Qt.point(crossroadLine.start.x + Sizes.scaleMapToView(root.model.InOffset) * Math.cos(crossroadLine.angle)
-                            + Sizes.scaleMapToView(15) * Math.cos(root.model.NormalRadians),
-                        crossroadLine.start.y - Sizes.scaleMapToView(root.model.InOffset) * Math.sin(crossroadLine.angle)
-                            - Sizes.scaleMapToView(15) * Math.sin(root.model.NormalRadians))
+        length: root.model.InLanesCount * Sizes.scaleToView(Sizes.laneWidth)
+        start: Qt.point(crossroadLine.start.x + Sizes.scaleToView(root.model.InOffset) * Math.cos(crossroadLine.angle)
+                            + Sizes.scaleToView(15) * Math.cos(root.model.NormalRadians),
+                        crossroadLine.start.y - Sizes.scaleToView(root.model.InOffset) * Math.sin(crossroadLine.angle)
+                            - Sizes.scaleToView(15) * Math.sin(root.model.NormalRadians))
         angle: root.model.NormalRadians - Math.PI / 2
         color: Colors.markup
-        w: Sizes.scaleMapToView(1)
+        w: Sizes.scaleToView(1)
         markup: false
     }
 
     Lane {
         id: crossroadLine
-        length: Sizes.scaleMapToView(root.model.Length)
+        length: Sizes.scaleToView(root.model.Length)
         start: Qt.point(-length/2 * Math.cos(angle), length/2 * Math.sin(angle))
         angle: root.model.NormalRadians - Math.PI / 2
         color: "green"
-        w: Sizes.scaleMapToView(1)
+        w: Sizes.scaleToView(1)
         markup: false
     }
 

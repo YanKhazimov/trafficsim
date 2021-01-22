@@ -3,24 +3,21 @@
 #include <QAbstractListModel>
 #include <QPoint>
 #include <memory>
-#include "Node.h"
+#include "RoadLane.h"
 
-class NodesModel : public QAbstractListModel
+class RoadLanesModel : public QAbstractListModel
 {
   Q_OBJECT
 
-  QList<std::shared_ptr<Node>> nodes;
+  QList<std::shared_ptr<RoadLane>> roadLanes;
 
 public:
-  explicit NodesModel(QObject *parent = nullptr);
+  explicit RoadLanesModel(QObject *parent = nullptr);
 
   // QAbstractListModel
   Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
   Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
   QHash<int, QByteArray> roleNames() const;
 
-  void AddNode(Node::NodeType type, RegularCrossroad *crossroad, int side, int lane);
-  bool RemoveNode(int index);
-
-  Node* GetNode(int index);
+  void AddRoadLane(RoadLane* roadLane);
 };

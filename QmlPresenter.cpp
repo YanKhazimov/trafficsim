@@ -9,6 +9,11 @@ RegularCrossroad *QmlPresenter::getCrossroad() const
   return crossroad.get();
 }
 
+RoadLane *QmlPresenter::getRoadUnderConstruction() const
+{
+  return roadUnderConstruction.get();
+}
+
 Car* QmlPresenter::getSelectedCar() const
 {
   return cars.GetSelectedCar();
@@ -24,6 +29,11 @@ MapGraph *QmlPresenter::getGraph()
   return &graph;
 }
 
+RoadLanesModel* QmlPresenter::getRoadLanes()
+{
+  return &roadLanes;
+}
+
 int QmlPresenter::getViewScale() const
 {
   return viewScalePct;
@@ -32,6 +42,7 @@ int QmlPresenter::getViewScale() const
 QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
 {
   crossroad = std::make_unique<RegularCrossroad>("Toreza");
+  roadUnderConstruction = std::make_unique<RoadLane>();
 
   cars.AddCar(35, 70, QUrl("qrc:/images/car.png"), 90);
   cars.AddCar(40, 100, QUrl("qrc:/images/truck.png"), 180);
@@ -45,6 +56,8 @@ QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
   QObject::connect(crossroad.get(), &RegularCrossroad::passagesRemoved, &graph, &MapGraph::RecalculateOnPassagesRemoved);
 
   QObject::connect(crossroad.get(), &RegularCrossroad::positionChanged, &graph, &MapGraph::RecalculateOnCrossroadPositionChanged);
+
+  QObject::connect(&roadLanes, &RoadLanesModel::rowsInserted, this, &QmlPresenter::roadLanesChanged);
 }
 
 void QmlPresenter::SaveCrossroad()
@@ -90,4 +103,13 @@ void QmlPresenter::ChangeViewScale(int steps)
     viewScalePct = newValue;
     emit viewScaleChanged();
   }
+}
+
+void QmlPresenter::AddRoad()
+{
+  const auto& trajectory = roadUnderConstruction->GetTrajectory();
+  if (!trajectory.empty())
+    roadLanes.AddRoadLane(roadUnderConstruction.get());
+
+  roadUnderConstruction->Clear();
 }

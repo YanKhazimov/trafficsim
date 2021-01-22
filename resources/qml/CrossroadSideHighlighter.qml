@@ -25,13 +25,13 @@ Item {
             }
 
             PathLine {
-                x: crossroadSideItem.end.x + Sizes.scaleMapToView(100) * Math.cos(root.model.NormalRadians)
-                y: crossroadSideItem.end.y - Sizes.scaleMapToView(100) * Math.sin(root.model.NormalRadians)
+                x: crossroadSideItem.end.x + Sizes.scaleToView(100) * Math.cos(root.model.NormalRadians)
+                y: crossroadSideItem.end.y - Sizes.scaleToView(100) * Math.sin(root.model.NormalRadians)
             }
 
             PathLine {
-                x: crossroadSideItem.start.x + Sizes.scaleMapToView(100) * Math.cos(root.model.NormalRadians)
-                y: crossroadSideItem.start.y - Sizes.scaleMapToView(100) * Math.sin(root.model.NormalRadians)
+                x: crossroadSideItem.start.x + Sizes.scaleToView(100) * Math.cos(root.model.NormalRadians)
+                y: crossroadSideItem.start.y - Sizes.scaleToView(100) * Math.sin(root.model.NormalRadians)
             }
 
             PathLine {
