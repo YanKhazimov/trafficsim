@@ -19,7 +19,7 @@ public:
   Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
   QHash<int, QByteArray> roleNames() const;
 
-  void AddNode(Node::NodeType type, RegularCrossroad *crossroad, int side, int lane);
+  void AddNode(Node::NodeType type, RegularCrossroad *crossroad, int side, int lane, QPoint pos = QPoint(), qreal angle = 0.0);
   bool RemoveNode(int index);
 
   Node* GetNode(int index);

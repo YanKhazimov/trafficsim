@@ -52,8 +52,8 @@ public:
 
   explicit QmlPresenter(QObject *parent = nullptr);
 
-  Q_INVOKABLE void SaveCrossroad();
-  Q_INVOKABLE bool OpenCrossroad();
+  Q_INVOKABLE void SaveMap();
+  Q_INVOKABLE bool OpenMap();
 
   Q_INVOKABLE void GoToNextFrame();
 

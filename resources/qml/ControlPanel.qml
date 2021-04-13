@@ -90,7 +90,7 @@ Rectangle {
             height: 40
             img: "qrc:/images/save.svg"
             callback: function() {
-                engine.SaveCrossroad()
+                engine.SaveMap()
                 root.crossroadImageSaveRequested()
             }
         }
@@ -101,7 +101,7 @@ Rectangle {
             height: 40
             img: "qrc:/images/open.svg"
             callback: function() {
-                engine.OpenCrossroad()
+                engine.OpenMap()
             }
         }
     }

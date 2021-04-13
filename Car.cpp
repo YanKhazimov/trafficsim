@@ -58,17 +58,34 @@ void Car::MoveAlongRoute()
 void Car::AddRouteNode(Node* node)
 {
   QPoint nodePosition = node->GetPosition();
-  int sideNormal = node->crossroad->GetSide(node->side)->GetNormal();
-  QPoint carCenter(nodePosition.x() + length/2 * qCos(node->crossroad->GetSide(node->side)->GetNormalInRadians()),
-                   nodePosition.y() - length/2 * qSin(node->crossroad->GetSide(node->side)->GetNormalInRadians()));
-  int direction = 0;
-  if (node->type == Node::NodeType::CrossroadIn)
-    direction = (sideNormal + 180) % 360;
-  else if (node->type == Node::NodeType::CrossroadOut)
-    direction = sideNormal;
-  else
-    qWarning() << "need to define node direction";
-  route.append({ carCenter, direction });
+  QPoint carCenter;
+  qreal direction = node->GetAngle();
+
+  switch (node->type)
+  {
+  case Node::NodeType::CrossroadIn:
+  {
+    carCenter = QPoint(nodePosition.x() - length/2 * qCos(qDegreesToRadians(direction)),
+                        nodePosition.y() + length/2 * qSin(qDegreesToRadians(direction)));
+    break;
+  }
+  case Node::NodeType::CrossroadOut:
+  {
+    carCenter = QPoint(nodePosition.x() + length/2 * qCos(qDegreesToRadians(direction)),
+                        nodePosition.y() - length/2 * qSin(qDegreesToRadians(direction)));
+    break;
+  }
+  case Node::NodeType::RoadJoint:
+  {
+    carCenter = QPoint(nodePosition.x(), nodePosition.y());
+    break;
+  }
+  default:
+    qWarning() << "need to define node direction. route node not added";
+    return;
+  }
+
+  route.append({ carCenter, (int)direction });
   emit routeChanged();
 }
 

@@ -4,6 +4,8 @@
 #include <QPoint>
 #include <memory>
 #include "RoadLane.h"
+#include "RegularCrossroad.h"
+#include "MapGraph.h"
 
 class RoadLanesModel : public QAbstractListModel
 {
@@ -18,6 +20,9 @@ public:
   Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
   Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
   QHash<int, QByteArray> roleNames() const;
+
+  void Serialize(QTextStream& stream) const;
+  bool Deserialize(QTextStream& stream, RegularCrossroad* crossroad, MapGraph* graph);
 
   void AddRoadLane(RoadLane* roadLane);
 };

@@ -7,5 +7,12 @@ enum DataRoles {
   IsStartNode,
   NodePosition,
   NodeType,
-  RoadLaneData
+  RoadLaneData,
+  RoadPointAngle,
+  NodeCrossroad,
+  NodeAngle,
+  RoadPointData,
+  NodeCrossroadSide,
+  NodeCrossroadLane,
+  DistanceAlongRoad
 };

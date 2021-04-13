@@ -11,6 +11,7 @@ Rectangle {
     property alias img: image.source
     property alias text: buttonText.text
     property var callback
+    property alias enabled: mouseArea.enabled
 
     Image {
         id: image
@@ -22,6 +23,7 @@ Rectangle {
         id: buttonText
         anchors.centerIn: parent
         font.pointSize: 12
+        color: root.enabled ? "black" : "#333333"
     }
 
     MouseArea {

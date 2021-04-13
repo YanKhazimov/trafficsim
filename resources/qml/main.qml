@@ -64,15 +64,6 @@ ApplicationWindow {
             anchors.fill: parent
         }
 
-        Repeater {
-            id: roadLanes
-            model: engine.RoadLanes
-            delegate: RoadLane {
-                model: RoleRoadLaneData
-                view: displayArea
-            }
-        }
-
         Connections {
             target: engine
             function onRoadLanesChanged() {
@@ -80,6 +71,15 @@ ApplicationWindow {
                 roadLanes.model = engine.RoadLanes
                 for (var i = 0; i < roadLanes.count; ++i)
                     roadLanes.itemAt(i).update()
+            }
+        }
+
+        Repeater {
+            id: roadLanes
+            model: engine.RoadLanes
+            delegate: RoadLane {
+                model: RoleRoadLaneData
+                view: displayArea
             }
         }
 
@@ -97,7 +97,7 @@ ApplicationWindow {
             acceptedButtons: Qt.LeftButton | Qt.RightButton
             onClicked: {
                 if (mouse.button == Qt.LeftButton)
-                    engine.RoadUnderConstruction.AppendPoint(Sizes.mapPointToModel(Qt.point(mouseX, mouseY), displayArea), NodeType.RoadJoint)
+                    engine.RoadUnderConstruction.AppendNewPoint(Sizes.mapPointToModel(Qt.point(mouseX, mouseY), displayArea), NodeType.RoadJoint)
                 else if (mouse.button == Qt.RightButton)
                     engine.RoadUnderConstruction.RemoveLastPoint()
             }
@@ -132,7 +132,7 @@ ApplicationWindow {
                         if (engine.EditorState == EditorState.RouteCreation)
                             engine.SelectedCar.AddRouteNode(RoleNodeData)
                         else if (engine.EditorState == EditorState.RoadCreation)
-                            engine.RoadUnderConstruction.AppendPoint(RoleNodePosition, RoleNodeType)
+                            engine.RoadUnderConstruction.AppendExistingPoint(RoleNodeSide, RoleNodeLane, RoleNodeType, RoleNodeAngle, RoleNodeCrossroad, RoleNodePosition)
                     }
                 }
             }
@@ -162,9 +162,9 @@ ApplicationWindow {
                 viewItem: displayArea
                 onClicked: engine.Cars.Select(index)
 
-                x: roadUnderConstruction.interpolatorX
-                y: roadUnderConstruction.interpolatorY
-                rotation: roadUnderConstruction.interpolatorAngle + 45
+                //x: roadUnderConstruction.interpolatorX
+                //y: roadUnderConstruction.interpolatorY
+                //rotation: roadUnderConstruction.interpolatorAngle + 45
             }
         }
     }

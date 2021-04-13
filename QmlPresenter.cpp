@@ -42,48 +42,61 @@ int QmlPresenter::getViewScale() const
 QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
 {
   crossroad = std::make_unique<RegularCrossroad>("Toreza");
+  graph.RegisterCrossroad(crossroad.get());
+
   roadUnderConstruction = std::make_unique<RoadLane>();
 
   cars.AddCar(35, 70, QUrl("qrc:/images/car.png"), 90);
   cars.AddCar(40, 100, QUrl("qrc:/images/truck.png"), 180);
 
-  graph.RegisterCrossroad(crossroad.get());
-
   QObject::connect(&cars, &CarsModel::selectionIndexChanged, this, &QmlPresenter::selectedCarChanged);
-  QObject::connect(crossroad.get(), &RegularCrossroad::sidesInserted, &graph, &MapGraph::RecalculateOnSidesInserted);
-  QObject::connect(crossroad.get(), &RegularCrossroad::sidesRemoved, &graph, &MapGraph::RecalculateOnSidesRemoved);
-  QObject::connect(crossroad.get(), &RegularCrossroad::passagesInserted, &graph, &MapGraph::RecalculateOnPassagesInserted);
-  QObject::connect(crossroad.get(), &RegularCrossroad::passagesRemoved, &graph, &MapGraph::RecalculateOnPassagesRemoved);
-
-  QObject::connect(crossroad.get(), &RegularCrossroad::positionChanged, &graph, &MapGraph::RecalculateOnCrossroadPositionChanged);
 
   QObject::connect(&roadLanes, &RoadLanesModel::rowsInserted, this, &QmlPresenter::roadLanesChanged);
 }
 
-void QmlPresenter::SaveCrossroad()
+void QmlPresenter::SaveMap()
 {
-  QFile file("crossroad.txt");
-  if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+  QFile fileToreza("toreza.txt");
+  if (fileToreza.open(QIODevice::WriteOnly | QIODevice::Text))
   {
-    QTextStream stream(&file);
+    QTextStream stream(&fileToreza);
     crossroad->Serialize(stream);
-    file.close();
+    fileToreza.close();
+  }
+  QFile fileLane1("lanes.txt");
+  if (fileLane1.open(QIODevice::WriteOnly | QIODevice::Text))
+  {
+    QTextStream stream(&fileLane1);
+    roadLanes.Serialize(stream);
+    fileLane1.close();
   }
 }
 
-bool QmlPresenter::OpenCrossroad()
+bool QmlPresenter::OpenMap()
 {
-  QFile file("crossroad.txt");
-  if (!file.open(QIODevice::ReadOnly))
+  QFile fileToreza("toreza.txt");
+  if (!fileToreza.open(QIODevice::ReadOnly))
   {
-    qWarning() << "Can't open file" << file.fileName();
+    qWarning() << "Can't open file" << fileToreza.fileName();
     return false;
   }
 
-  QTextStream stream(&file);
+  QTextStream stream(&fileToreza);
   bool result = crossroad->Deserialize(stream);
 
-  file.close();
+  fileToreza.close();
+
+  QFile fileLanes("lanes.txt");
+  if (!fileLanes.open(QIODevice::ReadOnly))
+  {
+    qWarning() << "Can't open file" << fileLanes.fileName();
+    return false;
+  }
+
+  QTextStream streamLanes(&fileLanes);
+  result &= roadLanes.Deserialize(streamLanes, crossroad.get(), &graph);
+
+  fileLanes.close();
 
   return result;
 }
@@ -109,7 +122,10 @@ void QmlPresenter::AddRoad()
 {
   const auto& trajectory = roadUnderConstruction->GetTrajectory();
   if (!trajectory.empty())
+  {
     roadLanes.AddRoadLane(roadUnderConstruction.get());
+    graph.RegisterRoadlane(roadLanes.index(roadLanes.rowCount() - 1, 0).data(DataRoles::RoadLaneData).value<RoadLane*>());
+  }
 
   roadUnderConstruction->Clear();
 }
