@@ -89,10 +89,16 @@ Shape
 
             interpolator.update()
 
-            var distancePreLast = root.model.GetDistanceTo(root.model.rowCount() - 2)
             var distanceLast = root.model.GetDistanceTo(root.model.rowCount() - 1)
-            interpolator.progress = root.model.rowCount() < 2 ? 1 : (distancePreLast / distanceLast)
+            if (size === 1) {
+                interpolator.progress = 1.0
+            }
+            else {
+                var distancePreLast = root.model.GetDistanceTo(root.model.rowCount() - 2)
+                interpolator.progress = distancePreLast / distanceLast
+            }
             engine.RoadUnderConstruction.SetAngle(root.model.rowCount() - 2, root.interpolatorAngle)
+
             interpolator.progress = 1.0
             engine.RoadUnderConstruction.SetAngle(root.model.rowCount() - 1, root.interpolatorAngle)
         }
@@ -150,8 +156,8 @@ Shape
 
     Rectangle {
         visible: anim.running
-        width: 50
-        height: 30
+        width: Sizes.scaleToView(50)
+        height: Sizes.scaleToView(30)
         x: root.interpolatorX - width/2
         y: root.interpolatorY - height/2
         rotation: root.interpolatorAngle

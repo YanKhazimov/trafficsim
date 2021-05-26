@@ -63,12 +63,13 @@ void QmlPresenter::SaveMap()
     crossroad->Serialize(stream);
     fileToreza.close();
   }
-  QFile fileLane1("lanes.txt");
-  if (fileLane1.open(QIODevice::WriteOnly | QIODevice::Text))
+
+  QFile fileLanes("lanes.txt");
+  if (fileLanes.open(QIODevice::WriteOnly | QIODevice::Text))
   {
-    QTextStream stream(&fileLane1);
+    QTextStream stream(&fileLanes);
     roadLanes.Serialize(stream);
-    fileLane1.close();
+    fileLanes.close();
   }
 }
 

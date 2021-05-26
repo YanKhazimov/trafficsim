@@ -13,7 +13,7 @@ QVariant RoadLane::data(const QModelIndex &index, int role) const
 {
   int row = index.row();
   if (row < 0 || row >= rowCount()) {
-    qWarning() << "setting angle for row" << row;
+    qWarning() << "requesting data for road point" << row;
     return QVariant();
   }
 
@@ -129,7 +129,7 @@ void RoadLane::Clear()
 void RoadLane::SetAngle(int row, qreal angle)
 {
   if (row < 0 || row >= rowCount()) {
-    qWarning() << "setting angle for row" << row;
+    qWarning() << "setting angle for road point" << row;
     return;
   }
 
@@ -147,7 +147,7 @@ const QList<std::shared_ptr<RoadPoint>> &RoadLane::GetTrajectory() const
 QPoint RoadLane::GetPoint(int row) const
 {
   if (row < 0 || row >= rowCount()) {
-    qWarning() << "setting angle for row" << row;
+    qWarning() << "getting road point " << row;
     return QPoint();
   }
 
@@ -157,7 +157,7 @@ QPoint RoadLane::GetPoint(int row) const
 qreal RoadLane::GetDistanceTo(int row) const
 {
   if (row < 0 || row >= rowCount()) {
-    qWarning() << "setting angle for row" << row;
+    qWarning() << "getting distance to road point" << row;
     return 0.0;
   }
 
