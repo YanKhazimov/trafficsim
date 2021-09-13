@@ -10,6 +10,18 @@ Item {
     y: Sizes.mapYToView(root.model.Y, viewItem)
     signal clicked()
 
+    Behavior on x {
+        PropertyAnimation {
+            duration: engine.TickMilliseconds
+        }
+    }
+
+    Behavior on y {
+        PropertyAnimation {
+            duration: engine.TickMilliseconds
+        }
+    }
+
     Image {
         id: img
         readonly property int hDimension: Sizes.scaleToView(root.model.SourceDirection / 90 % 2 === 0 ? root.model.Length : root.model.Width)
@@ -19,6 +31,13 @@ Item {
         x: -hDimension/2
         y: -vDimension/2
         rotation: -root.model.DirectionDegrees + root.model.SourceDirection
+
+        Behavior on rotation {
+            RotationAnimation {
+                duration: engine.TickMilliseconds
+                direction: RotationAnimation.Shortest
+            }
+        }
     }
 
     MouseArea {

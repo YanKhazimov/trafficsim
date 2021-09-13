@@ -13,13 +13,64 @@ ApplicationWindow {
     title: qsTr("Hello World")
     color: "#666666"
 
+    function roadLaneLength(laneIndex, accuracy) {
+        if (laneIndex >= 0 && laneIndex < roadLanes.count)
+        {
+            var length = 0.0
+            var lane = roadLanes.itemAt(laneIndex)
+
+            var progress = 0.0
+            lane.interpolatorProgress = progress
+            var intervalStartX = Sizes.mapXToModel(lane.interpolatorX, displayArea)
+            var intervalStartY = Sizes.mapYToModel(lane.interpolatorY, displayArea)
+            var intervalEndX, intervalEndY
+
+            while (progress < 1.0)
+            {
+                progress = Math.min(1.0, progress + accuracy)
+                lane.interpolatorProgress = progress
+                intervalEndX = Sizes.mapXToModel(lane.interpolatorX, displayArea)
+                intervalEndY = Sizes.mapYToModel(lane.interpolatorY, displayArea)
+
+                length += Qt.vector2d(intervalStartX - intervalEndX, intervalStartY - intervalEndY).length()
+
+                intervalStartX = intervalEndX
+                intervalStartY = intervalEndY
+            }
+
+            return length
+        }
+        console.warn("Can't get length for road lane", laneIndex)
+        return 0
+    }
+
+    function roadLaneCoords(laneIndex, laneProgress) {
+        if (laneIndex >= 0 && laneIndex < roadLanes.count)
+        {
+            roadLanes.itemAt(laneIndex).interpolatorProgress = laneProgress
+            var map = {}
+            map["x"] = Sizes.mapXToModel(roadLanes.itemAt(laneIndex).interpolatorX, displayArea)
+            map["y"] = Sizes.mapYToModel(roadLanes.itemAt(laneIndex).interpolatorY, displayArea)
+            map["rotation"] = roadLanes.itemAt(laneIndex).interpolatorAngle
+            return map
+        }
+        console.warn("Can't get coords for road lane", laneIndex)
+        return []
+    }
+
+    Row {
     TSButton {
-        width: 40
-        height: 40
-        img: "qrc:/images/next.svg"
+        text: "Next frame"
         callback: function () {
             engine.GoToNextFrame()
         }
+    }
+    TSButton {
+        text: "Move along lane"
+        callback: function () {
+            engine.MoveAlongLane()
+        }
+    }
     }
 
     Rectangle {
@@ -141,8 +192,8 @@ ApplicationWindow {
         Repeater {
             model: engine.SelectedCar ? engine.SelectedCar.RoutePoints : []
             delegate: Rectangle {
-                width: 10
-                height: 10
+                width: Sizes.laneWidth/2
+                height: Sizes.laneWidth/2
                 color: "white"
                 radius: 5
                 x: Sizes.mapXToView(modelData.x, displayArea) - width/2
@@ -151,6 +202,7 @@ ApplicationWindow {
                 Text {
                     anchors.centerIn: parent
                     text: index + 1
+                    font.pixelSize: Sizes.laneWidth/2
                 }
             }
         }

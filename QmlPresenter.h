@@ -22,6 +22,7 @@ class QmlPresenter : public QObject
   Q_PROPERTY(int ViewScale READ getViewScale NOTIFY viewScaleChanged)
   Q_PROPERTY(RoadLane* RoadUnderConstruction READ getRoadUnderConstruction NOTIFY roadUnderConstructionChanged)
   Q_PROPERTY(RoadLanesModel* RoadLanes READ getRoadLanes NOTIFY roadLanesChanged)
+  Q_PROPERTY(int TickMilliseconds MEMBER _tickMilliseconds CONSTANT)
 
   RegularCrossroad* getCrossroad() const;
   RoadLane* getRoadUnderConstruction() const;
@@ -40,6 +41,10 @@ class QmlPresenter : public QObject
   QPoint viewCenter = QPoint(0, 0);
   int viewScalePct = 100;
 
+  QObject* qmlRoot;
+
+  const int _tickMilliseconds = 500;
+
 public:
   enum EditorState {
     NotEditing,
@@ -56,10 +61,13 @@ public:
   Q_INVOKABLE bool OpenMap();
 
   Q_INVOKABLE void GoToNextFrame();
+  Q_INVOKABLE void MoveAlongLane();
 
   Q_INVOKABLE void ChangeViewScale(int steps);
 
   Q_INVOKABLE void AddRoad();
+
+  void SetQmlRoot(QObject* object);
 
 private:
   EditorState editorState = EditorState::NotEditing;

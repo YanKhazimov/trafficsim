@@ -25,9 +25,13 @@ int main(int argc, char *argv[])
   qmlRegisterUncreatableType<RoadLane>("TrafficSimApp", 1, 0, "RoadLaneModel", "");
 
   QmlPresenter qmlPresenter;
+
   engine.rootContext()->setContextProperty("engine", &qmlPresenter);
-  
+
   engine.load(url);
+
+  QObject *rootObject = engine.rootObjects().first();
+  qmlPresenter.SetQmlRoot(rootObject);
 
   return app.exec();
 }

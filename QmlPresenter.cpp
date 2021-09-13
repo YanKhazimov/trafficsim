@@ -109,6 +109,13 @@ void QmlPresenter::GoToNextFrame()
     selectedCar->MoveAlongRoute();
 }
 
+void QmlPresenter::MoveAlongLane()
+{
+  Car* selectedCar = getSelectedCar();
+  if (selectedCar)
+    selectedCar->MoveAlongRoadLane(qmlRoot);
+}
+
 void QmlPresenter::ChangeViewScale(int steps)
 {
   int newValue = qMax(50, qMin(200, viewScalePct + 10 * steps));
@@ -129,4 +136,9 @@ void QmlPresenter::AddRoad()
   }
 
   roadUnderConstruction->Clear();
+}
+
+void QmlPresenter::SetQmlRoot(QObject *object)
+{
+  qmlRoot = object;
 }

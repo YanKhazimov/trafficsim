@@ -12,6 +12,7 @@ Shape
     readonly property alias interpolatorX: interpolator.x
     readonly property alias interpolatorY: interpolator.y
     readonly property alias interpolatorAngle: interpolator.angle
+    property alias interpolatorProgress: interpolator.progress
 
     Repeater {
         id: pointRepeater
@@ -89,11 +90,11 @@ Shape
 
             interpolator.update()
 
-            var distanceLast = root.model.GetDistanceTo(root.model.rowCount() - 1)
             if (size === 1) {
                 interpolator.progress = 1.0
             }
             else {
+                var distanceLast = root.model.GetDistanceTo(root.model.rowCount() - 1)
                 var distancePreLast = root.model.GetDistanceTo(root.model.rowCount() - 2)
                 interpolator.progress = distancePreLast / distanceLast
             }
@@ -125,7 +126,8 @@ Shape
         progress: 1.0
         path: Path {
             id: motionPath
-            startX: shapePath.startX; startY: shapePath.startY
+            startX: shapePath.startX
+            startY: shapePath.startY
         }
         NumberAnimation on progress {
             id: anim; running: false; from: 0; to: 1; duration: 5000
@@ -139,17 +141,13 @@ Shape
     }
 
     TSButton {
-        width: 30
-        height: 30
         radius: 5
-        x: motionPath.startX - width/2
-        y: motionPath.startY - height/2
-        text: "test"
+        x: 0
+        y: 0
+        text: "Animate"
         visible: root.model.rowCount() > 0
         callback: function () {
-            motionPath.startX = shapePath.startX
-            motionPath.startY = shapePath.startY
-            motionPath.pathElements = shapePath.pathElements
+            interpolator.update()
             anim.start()
         }
     }

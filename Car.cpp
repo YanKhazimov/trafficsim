@@ -42,6 +42,7 @@ Car::Car(int _width, int _length, QUrl _source, int _sourceDirection, QObject *p
 
 void Car::MoveAlongRoute()
 {
+  // just teleport to the next route point
   if (route.empty())
   {
     qWarning() << "empty route";
@@ -53,6 +54,40 @@ void Car::MoveAlongRoute()
 
   SetPosition(route[reachedRoutePoint].first.x(), route[reachedRoutePoint].first.y());
   setDirection(route[reachedRoutePoint].second);
+}
+
+void Car::MoveAlongRoadLane(QObject *qmlRoot)
+{
+  int currentRoadLane = 1;
+
+  QVariant accuracy = 0.02;
+  QVariant accurateTotalLength = 0.0;
+  QMetaObject::invokeMethod(qmlRoot, "roadLaneLength",
+                            Q_RETURN_ARG(QVariant, accurateTotalLength),
+                            Q_ARG(QVariant, currentRoadLane),
+                            Q_ARG(QVariant, accuracy));
+
+  static int counter = -1;
+  counter = counter + 1;
+  qreal moveDistance = qMin(counter * 20.0, accurateTotalLength.value<qreal>()); // TODO replace 20 with tick travel distance
+
+  qreal moveProgress = moveDistance / accurateTotalLength.value<qreal>();
+  QVariant coordsVariant;
+  // TODO get coords from the currentLane
+  QMetaObject::invokeMethod(qmlRoot, "roadLaneCoords",
+                            Q_RETURN_ARG(QVariant, coordsVariant),
+                            Q_ARG(QVariant, currentRoadLane),
+                            Q_ARG(QVariant, moveProgress));
+
+  QVariantMap coords = coordsVariant.value<QVariantMap>();
+  Q_ASSERT(coords.contains("x") && coords.contains("y") && coords.contains("rotation"));
+  int x = coords.value("x").toInt();
+  int y = coords.value("y").toInt();
+  // interpolation rotation is clockwise
+  int angle = -(coords.value("rotation").toInt());
+
+  SetPosition(x, y);
+  setDirection(angle);
 }
 
 void Car::AddRouteNode(Node* node)
