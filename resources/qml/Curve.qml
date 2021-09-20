@@ -6,13 +6,43 @@ import "Constants"
 Shape
 {
     id: root
-    property RoadLaneModel model
+    property var model // must be a Curve class instance
     property color shapeColor: Colors.lane
     property Item view
     readonly property alias interpolatorX: interpolator.x
     readonly property alias interpolatorY: interpolator.y
     readonly property alias interpolatorAngle: interpolator.angle
     property alias interpolatorProgress: interpolator.progress
+    property real length: 0.0
+
+    function updateLength(accuracy) {
+        if (accuracy === undefined)
+            accuracy = 0.02
+
+        var calculatedLength = 0.0
+
+        if (root.model.rowCount() > 1)
+        {
+            interpolatorProgress = 0.0
+            var intervalStartX = interpolatorX
+            var intervalStartY = interpolatorY
+            var intervalEndX, intervalEndY
+
+            while (interpolatorProgress < 1.0)
+            {
+                interpolatorProgress = Math.min(1.0, interpolatorProgress + accuracy)
+                intervalEndX = interpolatorX
+                intervalEndY = interpolatorY
+
+                calculatedLength += Qt.vector2d(intervalStartX - intervalEndX, intervalStartY - intervalEndY).length()
+
+                intervalStartX = intervalEndX
+                intervalStartY = intervalEndY
+            }
+        }
+
+        root.length = calculatedLength
+    }
 
     Repeater {
         id: pointRepeater
@@ -60,6 +90,7 @@ Shape
         }
 
         interpolator.update()
+        updateLength()
     }
 
     Connections {
@@ -70,6 +101,8 @@ Shape
             pointRepeater.model = root.model
 
             var size = root.model.rowCount()
+            interpolator.progress = 1.0
+
             if (size < 1) {
                 console.log("Trajectory size < 1")
                 return
@@ -89,19 +122,18 @@ Shape
             }
 
             interpolator.update()
+            updateLength()
 
-            if (size === 1) {
-                interpolator.progress = 1.0
-            }
-            else {
+            if (size > 1) {
+                // changing the angle of the second to last point
                 var distanceLast = root.model.GetDistanceTo(root.model.rowCount() - 1)
                 var distancePreLast = root.model.GetDistanceTo(root.model.rowCount() - 2)
                 interpolator.progress = distancePreLast / distanceLast
+                root.model.SetAngle(root.model.rowCount() - 2, root.interpolatorAngle)
             }
-            engine.RoadUnderConstruction.SetAngle(root.model.rowCount() - 2, root.interpolatorAngle)
 
             interpolator.progress = 1.0
-            engine.RoadUnderConstruction.SetAngle(root.model.rowCount() - 1, root.interpolatorAngle)
+            root.model.SetAngle(root.model.rowCount() - 1, root.interpolatorAngle)
         }
 
         function onTrajectoryReset() {

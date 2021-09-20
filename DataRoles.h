@@ -14,5 +14,6 @@ enum DataRoles {
   RoadPointData,
   NodeCrossroadSide,
   NodeCrossroadLane,
-  DistanceAlongRoad
+  DistanceAlongCurve,
+  IsPassageHighlighted
 };

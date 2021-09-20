@@ -1,8 +1,9 @@
 #pragma once
 #include <QObject>
 #include <QTextStream>
+#include "Curve.h"
 
-class Passage : public QObject
+class Passage : public Curve
 {
   Q_OBJECT
   Q_DISABLE_COPY(Passage)
@@ -14,25 +15,37 @@ class Passage : public QObject
 
   Q_PROPERTY(bool IsHighlighted MEMBER isHighlighted NOTIFY isHighlightedChanged)
 
+  bool isHighlighted = false;
+
 public:
   Passage(QObject* parent = nullptr);
-  Passage(int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex, QObject* parent = nullptr);
+  Passage(const QList<std::shared_ptr<CurvePoint>>& _curve,
+          int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex,
+          QObject* parent = nullptr);
 
   int inSideIndex = -1;
   int inLaneIndex = -1;
   int outSideIndex = -1;
   int outLaneIndex = -1;
 
-  bool isHighlighted = false;
+  bool IsHighlighted() const;
+  void SetHighlighted(bool value);
 
   void SetInLane(int sideIndex, int laneIndex);
   void SetOutLane(int sideIndex, int laneIndex);
-  void Reset();
+  Q_INVOKABLE void Clear() override;
 
   void Serialize(QTextStream& stream) const;
+
+  Q_INVOKABLE bool AppendNewPoint(QPoint point);
+  Q_INVOKABLE bool AppendExistingPoint(int side, int lane, QPoint position);
+  Q_INVOKABLE bool RemoveLastPoint() override;
 
 signals:
   void parametersChanged();
   void isHighlightedChanged();
+
+  void trajectoryReset();
+  void pointAppended();
 };
 Q_DECLARE_METATYPE(Passage*)

@@ -24,21 +24,46 @@ QVariant CrossroadPassagesModel::data(const QModelIndex &index, int role) const
   if (role == DataRoles::CrossroadPassageData)
     return QVariant::fromValue(passages[row].get());
 
+  if (role == DataRoles::IsPassageHighlighted)
+    return QVariant::fromValue(passages[row]->IsHighlighted());
+
   return QVariant();
+}
+
+bool CrossroadPassagesModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+  int row = index.row();
+
+  if (row < 0 || row >= rowCount()) {
+    qWarning() << "Cannot set data for row" << row;
+    return false;
+  }
+
+  DataRoles dataRole = static_cast<DataRoles>(role);
+
+  if (dataRole == DataRoles::IsPassageHighlighted)
+  {
+    passages[row]->SetHighlighted(value.toBool());
+    emit dataChanged(this->index(row, 0), this->index(row, 0), { role });
+    return true;
+  }
+
+  qDebug() << "CrossroadPassagesModel::setData" << "unsupported role" << dataRole;
+  return false;
 }
 
 QHash<int, QByteArray> CrossroadPassagesModel::roleNames() const
 {
   return {
-    { DataRoles::CrossroadPassageData, "RolePassageData" }
+    { DataRoles::CrossroadPassageData, "RolePassageData" },
+    { DataRoles::IsPassageHighlighted, "RoleIsHighlighted" }
   };
 }
 
-void CrossroadPassagesModel::AddPassage(Passage* newPassage)
+void CrossroadPassagesModel::AddPassage(const QList<std::shared_ptr<CurvePoint>>& points, int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex)
 {
   beginInsertRows(QModelIndex(), passages.count(), passages.count());
-  passages.insert(passages.count(), std::make_shared<Passage>(newPassage->inSideIndex, newPassage->inLaneIndex,
-                                                              newPassage->outSideIndex, newPassage->outLaneIndex));
+  passages.insert(passages.count(), std::make_shared<Passage>(points, inSideIndex, inLaneIndex, outSideIndex, outLaneIndex));
   endInsertRows();
 }
 

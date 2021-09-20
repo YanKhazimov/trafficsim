@@ -5,10 +5,13 @@
 #include "Node.h"
 #include "RegularCrossroad.h"
 
-class RoadPoint : public QObject {
+class RoadPoint : public QObject
+{
   Q_OBJECT
 
   QPoint pos;
+  qreal angle = 0.0;
+
 public:
   explicit RoadPoint(QObject* parent = nullptr);
   RoadPoint(Node::NodeType type, int x, int y, qreal distanceTo, qreal angle = 0.0, QObject* parent = nullptr);
@@ -17,12 +20,12 @@ public:
   Node::NodeType type = Node::None;
   int crossroadSide = -1;
   int crossroadLane = -1;
-  qreal angle = 0.0;
   RegularCrossroad* crossroad = nullptr;
   qreal distanceTo = 0.0;
 
   QPoint GetPosition() const;
   qreal GetAngle() const;
+  void SetAngle(qreal counterClockwiseValue);
 
   void Serialize(QTextStream& stream) const;
 };

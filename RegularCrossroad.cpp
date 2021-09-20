@@ -14,11 +14,10 @@ CrossroadPassagesModel *RegularCrossroad::getPassages()
   return &passages;
 }
 
-bool RegularCrossroad::AddPassage(int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex)
+bool RegularCrossroad::AddPassage(const QList<std::shared_ptr<CurvePoint>>& trajectory, int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex)
 {
   bool validPassageParams = true;
-  std::unique_ptr<Passage> newPassage = std::make_unique<Passage>(inSideIndex, inLaneIndex, outSideIndex, outLaneIndex);
-  passages.AddPassage(newPassage.get());
+  passages.AddPassage(trajectory, inSideIndex, inLaneIndex, outSideIndex, outLaneIndex);
   return validPassageParams;
 }
 
@@ -152,7 +151,7 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
   for (int i = 0; i < passagesCount; ++i)
   {
     QStringList passageParameters = stream.readLine().split(' ', Qt::SkipEmptyParts);
-    if (passageParameters.count() != 4)
+    if (passageParameters.count() != 5)
     {
       result = false;
       break;
@@ -162,7 +161,24 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
     int inLaneIndex = passageParameters[1].toInt(&result);
     int outSideIndex = passageParameters[2].toInt(&result);
     int outLaneIndex = passageParameters[3].toInt(&result);
-    result &= AddPassage(inSideIndex, inLaneIndex, outSideIndex, outLaneIndex);
+    int pointCount = passageParameters[4].toInt(&result);
+
+    QList<std::shared_ptr<CurvePoint>> points;
+    for (int p = 0; p < pointCount; ++p)
+    {
+      QStringList pointParameters = stream.readLine().split(' ', Qt::SkipEmptyParts);
+      if (pointParameters.count() != 3)
+      {
+        result = false;
+        break;
+      }
+      int x = pointParameters[0].toInt(&result);
+      int y = pointParameters[1].toInt(&result);
+      qreal angle = pointParameters[2].toDouble(&result);
+      points.append(std::make_shared<CurvePoint>(x, y, angle));
+    }
+
+    result &= AddPassage(points, inSideIndex, inLaneIndex, outSideIndex, outLaneIndex);
   }
 
   if (!result)
@@ -179,20 +195,12 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
   return result;
 }
 
-void RegularCrossroad::SetNewPassageInLane(int sideIndex, int laneIndex)
+void RegularCrossroad::AddConstructedPassage()
 {
-  passageUnderConstruction.SetInLane(sideIndex, laneIndex);
-}
-
-void RegularCrossroad::SetNewPassageOutLane(int sideIndex, int laneIndex)
-{
-  passageUnderConstruction.SetOutLane(sideIndex, laneIndex);
-}
-
-void RegularCrossroad::ConstructPassage()
-{
-  passages.AddPassage(&passageUnderConstruction);
-  passageUnderConstruction.Reset();
+  passages.AddPassage(passageUnderConstruction.getPoints(),
+                      passageUnderConstruction.inSideIndex, passageUnderConstruction.inLaneIndex,
+                      passageUnderConstruction.outSideIndex, passageUnderConstruction.outLaneIndex);
+  passageUnderConstruction.Clear();
 }
 
 QPoint RegularCrossroad::AtStopLine(int sideIndex, int laneIndex) const

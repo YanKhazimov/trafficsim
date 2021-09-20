@@ -13,33 +13,12 @@ ApplicationWindow {
     title: qsTr("Hello World")
     color: "#666666"
 
-    function roadLaneLength(laneIndex, accuracy) {
+    function roadLaneLength(laneIndex) {
         if (laneIndex >= 0 && laneIndex < roadLanes.count)
         {
-            var length = 0.0
-            var lane = roadLanes.itemAt(laneIndex)
-
-            var progress = 0.0
-            lane.interpolatorProgress = progress
-            var intervalStartX = Sizes.mapXToModel(lane.interpolatorX, displayArea)
-            var intervalStartY = Sizes.mapYToModel(lane.interpolatorY, displayArea)
-            var intervalEndX, intervalEndY
-
-            while (progress < 1.0)
-            {
-                progress = Math.min(1.0, progress + accuracy)
-                lane.interpolatorProgress = progress
-                intervalEndX = Sizes.mapXToModel(lane.interpolatorX, displayArea)
-                intervalEndY = Sizes.mapYToModel(lane.interpolatorY, displayArea)
-
-                length += Qt.vector2d(intervalStartX - intervalEndX, intervalStartY - intervalEndY).length()
-
-                intervalStartX = intervalEndX
-                intervalStartY = intervalEndY
-            }
-
-            return length
+            return roadLanes.itemAt(laneIndex).length
         }
+
         console.warn("Can't get length for road lane", laneIndex)
         return 0
     }
@@ -58,6 +37,31 @@ ApplicationWindow {
         return []
     }
 
+    function passageLength(laneIndex) {
+        if (laneIndex >= 0 && laneIndex < constructedPassages.count)
+        {
+            return constructedPassages.itemAt(laneIndex).length
+        }
+
+        console.warn("Can't get length for passage", laneIndex)
+        return 0
+    }
+
+    function passageCoords(laneIndex, laneProgress) {
+        if (laneIndex >= 0 && laneIndex < constructedPassages.count)
+        {
+            var lane = constructedPassages.itemAt(laneIndex)
+            lane.interpolatorProgress = laneProgress
+            var map = {}
+            map["x"] = Sizes.mapXToModel(lane.interpolatorX, displayArea)
+            map["y"] = Sizes.mapYToModel(lane.interpolatorY, displayArea)
+            map["rotation"] = lane.interpolatorAngle
+            return map
+        }
+        console.warn("Can't get coords for passage", laneIndex)
+        return []
+    }
+
     Row {
     TSButton {
         text: "Next frame"
@@ -66,9 +70,15 @@ ApplicationWindow {
         }
     }
     TSButton {
-        text: "Move along lane"
+        text: "Move along lane 1"
         callback: function () {
             engine.MoveAlongLane()
+        }
+    }
+    TSButton {
+        text: "Move along passage 0"
+        callback: function () {
+            engine.MoveAlongPassage0()
         }
     }
     }
@@ -128,7 +138,7 @@ ApplicationWindow {
         Repeater {
             id: roadLanes
             model: engine.RoadLanes
-            delegate: RoadLane {
+            delegate: Curve {
                 model: RoleRoadLaneData
                 view: displayArea
             }
@@ -154,10 +164,31 @@ ApplicationWindow {
             }
         }
 
-        RoadLane {
+        Curve {
             id: roadUnderConstruction
             model: engine.RoadUnderConstruction
             shapeColor: "#88FF0000"
+            view: displayArea
+        }
+
+        MouseArea {
+            id: passageDrawingArea
+            visible: engine.EditorState == EditorState.PassageCreation
+            anchors.fill: parent
+            cursorShape: Qt.CrossCursor
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: {
+                if (mouse.button == Qt.LeftButton)
+                    engine.Crossroad.PassageUnderConstruction.AppendNewPoint(Sizes.mapPointToModel(Qt.point(mouseX, mouseY), displayArea))
+                else if (mouse.button == Qt.RightButton)
+                    engine.Crossroad.PassageUnderConstruction.RemoveLastPoint()
+            }
+        }
+
+        Curve {
+            id: passageUnderConstruction
+            model: engine.Crossroad.PassageUnderConstruction
+            shapeColor: "#8800FF00"
             view: displayArea
         }
 
@@ -165,8 +196,9 @@ ApplicationWindow {
             id: graphNodes
             model: engine.Graph.Nodes
             delegate: Rectangle {
-                visible: engine.EditorState == EditorState.RouteCreation ||
-                         engine.EditorState == EditorState.RoadCreation
+                visible: engine.EditorState === EditorState.RouteCreation ||
+                         engine.EditorState === EditorState.RoadCreation ||
+                         engine.EditorState === EditorState.PassageCreation
                 width: 10
                 height: 10
                 radius: 5
@@ -180,10 +212,12 @@ ApplicationWindow {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        if (engine.EditorState == EditorState.RouteCreation)
+                        if (engine.EditorState === EditorState.RouteCreation)
                             engine.SelectedCar.AddRouteNode(RoleNodeData)
-                        else if (engine.EditorState == EditorState.RoadCreation)
+                        else if (engine.EditorState === EditorState.RoadCreation)
                             engine.RoadUnderConstruction.AppendExistingPoint(RoleNodeSide, RoleNodeLane, RoleNodeType, RoleNodeAngle, RoleNodeCrossroad, RoleNodePosition)
+                        else if (engine.EditorState === EditorState.PassageCreation)
+                            engine.Crossroad.PassageUnderConstruction.AppendExistingPoint(RoleNodeSide, RoleNodeLane, RoleNodePosition)
                     }
                 }
             }

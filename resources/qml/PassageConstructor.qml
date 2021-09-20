@@ -23,11 +23,6 @@ ScrollView {
             color: "grey"
             clip: true
 
-            property bool inSourceSelected: engine.Crossroad.PassageUnderConstruction.InSideIndex !== -1 &&
-                                            engine.Crossroad.PassageUnderConstruction.InLaneIndex !== -1
-            property bool outSourceSelected: engine.Crossroad.PassageUnderConstruction.OutSideIndex !== -1 &&
-                                             engine.Crossroad.PassageUnderConstruction.OutLaneIndex !== -1
-
             Behavior on height {
                 PropertyAnimation {}
             }
@@ -41,20 +36,11 @@ ScrollView {
 
                     TSButton {
                         id: icon
-                        property bool open: false
-                        img: open ? "qrc:/images/done.svg" : "qrc:/images/plus.svg"
+                        img: (engine.EditorState === EditorState.PassageCreation) ? "qrc:/images/done.svg" : "qrc:/images/plus.svg"
                         width: 20
                         height: 20
                         callback: function() {
-                            inRow.visible = !open
-                            outRow.visible = !open
-
-                            if (open) {
-                                engine.Crossroad.ConstructPassage()
-                                engine.EditorState = EditorState.NotEditing
-                            }
-
-                            open = !open
+                            engine.EditorState = EditorState.PassageCreation
                         }
                     }
                     Text {
@@ -68,51 +54,21 @@ ScrollView {
                 }
 
                 RowLayout {
-                    id: inRow
-                    visible: false
-                    spacing: Sizes.minMargin
-
-                    Text {
-                        text: "In lane:"
-                        font.pointSize: 14
-                        color: "white"
-                    }
-
-                    Text {
-                        visible: newPathInfo.inSourceSelected
-                        text: engine.Crossroad.PassageUnderConstruction.InSideIndex + ":" + engine.Crossroad.PassageUnderConstruction.InLaneIndex
-                    }
+                    id: passageResultButtonsRow
+                    visible: engine.EditorState === EditorState.PassageCreation
 
                     TSButton {
-                        id: inLaneSelector
-                        text: newPathInfo.inSourceSelected ? "Change" : "Select"
+                        text: "Cancel"
                         callback: function() {
-                            engine.EditorState = EditorState.InLaneSelection
+                            engine.Crossroad.PassageUnderConstruction.Clear()
+                            engine.EditorState = EditorState.NotEditing
                         }
                     }
-                }
-
-                RowLayout {
-                    id: outRow
-                    visible: false
-                    spacing: Sizes.minMargin
-
-                    Text {
-                        text: "Out lane:"
-                        font.pointSize: 14
-                        color: "white"
-                    }
-
-                    Text {
-                        visible: newPathInfo.outSourceSelected
-                        text: engine.Crossroad.PassageUnderConstruction.OutSideIndex + ":" + engine.Crossroad.PassageUnderConstruction.OutLaneIndex
-                    }
-
                     TSButton {
-                        id: outLaneSelector
-                        text: newPathInfo.outSourceSelected ? "Change" : "Select"
+                        text: "Create"
                         callback: function() {
-                            engine.EditorState = EditorState.OutLaneSelection
+                            engine.Crossroad.AddConstructedPassage()
+                            engine.EditorState = EditorState.NotEditing
                         }
                     }
                 }
@@ -138,10 +94,11 @@ ScrollView {
                 height: passageInfo.height
                 hoverEnabled: true
 
-                Binding {
-                    target: RolePassageData
-                    property: "IsHighlighted"
-                    value: delegateMouseArea.containsMouse
+                Connections {
+                    target: delegateMouseArea
+                    function onContainsMouseChanged() {
+                        RoleIsHighlighted = delegateMouseArea.containsMouse
+                    }
                 }
 
                 Rectangle {

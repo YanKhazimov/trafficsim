@@ -23,10 +23,11 @@ class RegularCrossroad : public QObject
   CrossroadPassagesModel passages;
 
   CrossroadSidesModel* getSides();
-  Passage* getPassageUnderConstruction();
+  Passage *getPassageUnderConstruction();
   CrossroadPassagesModel* getPassages();
 
-  bool AddPassage(int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex);
+  bool AddPassage(const QList<std::shared_ptr<CurvePoint>>& trajectory,
+                  int inSideIndex, int inLaneIndex, int outSideIndex, int outLaneIndex);
 
   QString id;
   int x = 0, y = 0;
@@ -41,9 +42,7 @@ public:
   Q_INVOKABLE bool Validate() const;
   void Serialize(QTextStream& stream) const;
   bool Deserialize(QTextStream& stream);
-  Q_INVOKABLE void SetNewPassageInLane(int sideIndex, int laneIndex);
-  Q_INVOKABLE void SetNewPassageOutLane(int sideIndex, int laneIndex);
-  Q_INVOKABLE void ConstructPassage();
+  Q_INVOKABLE void AddConstructedPassage();
   Q_INVOKABLE QPoint AtStopLine(int sideIndex, int laneIndex) const;
   Q_INVOKABLE QPoint AtExit(int sideIndex, int laneIndex) const;
   int CountSides() const;

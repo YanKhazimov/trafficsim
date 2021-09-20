@@ -62,8 +62,6 @@ Item {
             model: modelData
             x: Sizes.scaleToView(modelData.StartX)
             y: Sizes.scaleToView(modelData.StartY)
-            onInLaneClicked: engine.Crossroad.SetNewPassageInLane(index, laneIndex)
-            onOutLaneClicked: engine.Crossroad.SetNewPassageOutLane(index, laneIndex)
             onXChanged: crossroadId.fill("x")
             onYChanged: crossroadId.fill("y")
         }
@@ -79,18 +77,20 @@ Item {
         function onPassagesChanged() {
             passagesRepeater.model = []
             passagesRepeater.model = engine.Crossroad.Passages
+            for (var i = 0; i < passagesRepeater.count; ++i) {
+                passagesRepeater.itemAt(i).update()
+            }
         }
     }
 
     Repeater {
         id: passagesRepeater
         model: engine.Crossroad.Passages
-        delegate: Passage {
+        delegate: Curve {
             model: RolePassageData
-            startX: Sizes.scaleToView(engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).x)
-            startY: Sizes.scaleToView(engine.Crossroad.AtStopLine(RolePassageData.InSideIndex, RolePassageData.InLaneIndex).y)
-            endX: Sizes.scaleToView(engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).x)
-            endY: Sizes.scaleToView(engine.Crossroad.AtExit(RolePassageData.OutSideIndex, RolePassageData.OutLaneIndex).y)
+            view: root
+            shapeColor: "#DDDDDD"
+            visible: RoleIsHighlighted
         }
     }
 

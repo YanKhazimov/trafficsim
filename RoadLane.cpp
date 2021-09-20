@@ -25,7 +25,7 @@ QVariant RoadLane::data(const QModelIndex &index, int role) const
   {
     return QVariant::fromValue(trajectory[row].get());
   }
-  else if (role == DataRoles::DistanceAlongRoad)
+  else if (role == DataRoles::DistanceAlongCurve)
   {
     return trajectory[row]->distanceTo;
   }
@@ -57,7 +57,7 @@ void RoadLane::AppendNewPoint(QPoint point, Node::NodeType type)
   int distanceTo = 0.0;
   if (count > 0)
   {
-    distanceTo = index(count - 1, 0).data(DataRoles::DistanceAlongRoad).toDouble() +
+    distanceTo = index(count - 1, 0).data(DataRoles::DistanceAlongCurve).toDouble() +
         QLineF(point, index(count - 1, 0).data(DataRoles::NodePosition).toPointF()).length();
   }
   trajectory.append(std::make_shared<RoadPoint>(type, point.x(), point.y(), distanceTo));
@@ -81,7 +81,7 @@ void RoadLane::AppendExistingPoint(int side, int lane, Node::NodeType type, qrea
     else if (type == Node::RoadJoint)
       prevPosition = position;
 
-    distanceTo = index(count - 1, 0).data(DataRoles::DistanceAlongRoad).toDouble() +
+    distanceTo = index(count - 1, 0).data(DataRoles::DistanceAlongCurve).toDouble() +
         QLineF(prevPosition, index(count - 1, 0).data(DataRoles::NodePosition).toPointF()).length();
   }
 
@@ -134,8 +134,7 @@ void RoadLane::SetAngle(int row, qreal angle)
   }
 
   // angle is clockwise; transforming to counter-clockwise
-
-  trajectory[row]->angle = (-(int)angle + 360) % 360;
+  trajectory[row]->SetAngle((-(int)angle + 360) % 360);
   emit dataChanged(index(row, 0), index(row, 0), { DataRoles::RoadPointAngle });
 }
 
@@ -216,6 +215,11 @@ qreal RoadPoint::GetAngle() const
 
   qWarning() << "angle for unsupported point type";
   return 0.0;
+}
+
+void RoadPoint::SetAngle(qreal counterClockwiseValue)
+{
+  angle = counterClockwiseValue;
 }
 
 void RoadPoint::Serialize(QTextStream &stream) const

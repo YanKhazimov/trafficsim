@@ -51,7 +51,8 @@ public:
     InLaneSelection,
     OutLaneSelection,
     RouteCreation,
-    RoadCreation
+    RoadCreation,
+    PassageCreation
   };
   Q_ENUMS(EditorState)
 
@@ -62,6 +63,7 @@ public:
 
   Q_INVOKABLE void GoToNextFrame();
   Q_INVOKABLE void MoveAlongLane();
+  Q_INVOKABLE void MoveAlongPassage0();
 
   Q_INVOKABLE void ChangeViewScale(int steps);
 

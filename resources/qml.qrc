@@ -30,6 +30,6 @@
         <file>qml/MapRuler.qml</file>
         <file>images/magnifier.svg</file>
         <file>images/road.svg</file>
-        <file>qml/RoadLane.qml</file>
+        <file>qml/Curve.qml</file>
     </qresource>
 </RCC>

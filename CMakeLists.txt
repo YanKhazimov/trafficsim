@@ -23,6 +23,23 @@ set(SOURCE_FILES
     "Node.cpp"
     "RoadLane.cpp"
     "RoadLanesModel.cpp"
+    "Curve.cpp"
+    "DataRoles.h"
+    "RegularCrossroad.h"
+    "CrossroadSide.h"
+    "QmlPresenter.h"
+    "Lane.h"
+    "CrossroadSidesModel.h"
+    "Car.h"
+    "Passage.h"
+    "CrossroadPassagesModel.h"
+    "CarsModel.h"
+    "MapGraph.h"
+    "NodesModel.h"
+    "Node.h"
+    "RoadLane.h"
+    "RoadLanesModel.h"
+    "Curve.h"
     )
 
 add_executable(${PROJECT_NAME} "main.cpp" ${SOURCE_FILES} "resources/qml.qrc")

@@ -60,12 +60,10 @@ void Car::MoveAlongRoadLane(QObject *qmlRoot)
 {
   int currentRoadLane = 1;
 
-  QVariant accuracy = 0.02;
   QVariant accurateTotalLength = 0.0;
   QMetaObject::invokeMethod(qmlRoot, "roadLaneLength",
                             Q_RETURN_ARG(QVariant, accurateTotalLength),
-                            Q_ARG(QVariant, currentRoadLane),
-                            Q_ARG(QVariant, accuracy));
+                            Q_ARG(QVariant, currentRoadLane));
 
   static int counter = -1;
   counter = counter + 1;
@@ -73,10 +71,40 @@ void Car::MoveAlongRoadLane(QObject *qmlRoot)
 
   qreal moveProgress = moveDistance / accurateTotalLength.value<qreal>();
   QVariant coordsVariant;
-  // TODO get coords from the currentLane
   QMetaObject::invokeMethod(qmlRoot, "roadLaneCoords",
                             Q_RETURN_ARG(QVariant, coordsVariant),
                             Q_ARG(QVariant, currentRoadLane),
+                            Q_ARG(QVariant, moveProgress));
+
+  QVariantMap coords = coordsVariant.value<QVariantMap>();
+  Q_ASSERT(coords.contains("x") && coords.contains("y") && coords.contains("rotation"));
+  int x = coords.value("x").toInt();
+  int y = coords.value("y").toInt();
+  // interpolation rotation is clockwise
+  int angle = -(coords.value("rotation").toInt());
+
+  SetPosition(x, y);
+  setDirection(angle);
+}
+
+void Car::MoveAlongPassage(QObject *qmlRoot)
+{
+  int currentPassage = 0;
+
+  QVariant accurateTotalLength = 0.0;
+  QMetaObject::invokeMethod(qmlRoot, "passageLength",
+                            Q_RETURN_ARG(QVariant, accurateTotalLength),
+                            Q_ARG(QVariant, currentPassage));
+
+  static int counter = -1;
+  counter = counter + 1;
+  qreal moveDistance = qMin(counter * 20.0, accurateTotalLength.value<qreal>()); // TODO replace 20 with tick travel distance
+
+  qreal moveProgress = moveDistance / accurateTotalLength.value<qreal>();
+  QVariant coordsVariant;
+  QMetaObject::invokeMethod(qmlRoot, "passageCoords",
+                            Q_RETURN_ARG(QVariant, coordsVariant),
+                            Q_ARG(QVariant, currentPassage),
                             Q_ARG(QVariant, moveProgress));
 
   QVariantMap coords = coordsVariant.value<QVariantMap>();

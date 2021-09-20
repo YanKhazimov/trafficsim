@@ -116,6 +116,13 @@ void QmlPresenter::MoveAlongLane()
     selectedCar->MoveAlongRoadLane(qmlRoot);
 }
 
+void QmlPresenter::MoveAlongPassage0()
+{
+  Car* selectedCar = getSelectedCar();
+  if (selectedCar)
+    selectedCar->MoveAlongPassage(qmlRoot);
+}
+
 void QmlPresenter::ChangeViewScale(int steps)
 {
   int newValue = qMax(50, qMin(200, viewScalePct + 10 * steps));

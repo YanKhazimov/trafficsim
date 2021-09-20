@@ -40,6 +40,7 @@ public:
   explicit Car(int width, int length, QUrl source, int sourceDirection, QObject *parent = nullptr);
   Q_INVOKABLE void MoveAlongRoute();
   Q_INVOKABLE void MoveAlongRoadLane(QObject *qmlRoot);
+  Q_INVOKABLE void MoveAlongPassage(QObject *qmlRoot);
   Q_INVOKABLE void AddRouteNode(Node* node);
   void SetPosition(int x, int y);
   void SetRoute(const QList<QPair<QPoint, int>> &route);
