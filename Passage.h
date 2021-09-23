@@ -35,7 +35,7 @@ public:
   void SetOutLane(int sideIndex, int laneIndex);
   Q_INVOKABLE void Clear() override;
 
-  void Serialize(QTextStream& stream) const;
+  void Serialize(QTextStream& stream) const override;
 
   Q_INVOKABLE bool AppendNewPoint(QPoint point);
   Q_INVOKABLE bool AppendExistingPoint(int side, int lane, QPoint position);
@@ -44,8 +44,5 @@ public:
 signals:
   void parametersChanged();
   void isHighlightedChanged();
-
-  void trajectoryReset();
-  void pointAppended();
 };
 Q_DECLARE_METATYPE(Passage*)

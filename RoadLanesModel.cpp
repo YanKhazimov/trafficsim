@@ -98,7 +98,7 @@ bool RoadLanesModel::Deserialize(QTextStream &stream, RegularCrossroad* crossroa
   // add new roadlanes
   for (int i = 0; i < lanesCount; ++i)
   {
-    QList<std::shared_ptr<RoadPoint>> trajectory;
+    QList<std::shared_ptr<CurvePoint>> trajectory;
     for (int j = 0; j < lanes[i].count(); ++j)
     {
       Node::NodeType type = (Node::NodeType)std::get<0>(lanes[i][j]);
@@ -135,7 +135,7 @@ bool RoadLanesModel::Deserialize(QTextStream &stream, RegularCrossroad* crossroa
 void RoadLanesModel::AddRoadLane(RoadLane* roadLane)
 {
   beginInsertRows(QModelIndex(), roadLanes.count(), roadLanes.count());
-  const auto& trajectory = roadLane->GetTrajectory();
+  const auto& trajectory = roadLane->GetPoints();
   roadLanes.insert(roadLanes.count(), std::make_shared<RoadLane>(trajectory));
   endInsertRows();
 }

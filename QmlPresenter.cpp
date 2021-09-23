@@ -135,7 +135,7 @@ void QmlPresenter::ChangeViewScale(int steps)
 
 void QmlPresenter::AddRoad()
 {
-  const auto& trajectory = roadUnderConstruction->GetTrajectory();
+  const auto& trajectory = roadUnderConstruction->GetPoints();
   if (!trajectory.empty())
   {
     roadLanes.AddRoadLane(roadUnderConstruction.get());

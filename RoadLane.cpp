@@ -3,164 +3,48 @@
 #include <QDebug>
 #include <QLineF>
 
-int RoadLane::rowCount(const QModelIndex &parent) const
-{
-  Q_UNUSED(parent);
-  return trajectory.count();
-}
-
-QVariant RoadLane::data(const QModelIndex &index, int role) const
-{
-  int row = index.row();
-  if (row < 0 || row >= rowCount()) {
-    qWarning() << "requesting data for road point" << row;
-    return QVariant();
-  }
-
-  if (role == DataRoles::NodePosition)
-  {
-    return QVariant::fromValue(trajectory[row]->GetPosition());
-  }
-  else if (role == DataRoles::RoadPointData)
-  {
-    return QVariant::fromValue(trajectory[row].get());
-  }
-  else if (role == DataRoles::DistanceAlongCurve)
-  {
-    return trajectory[row]->distanceTo;
-  }
-
-  return QVariant();
-}
-
-QHash<int, QByteArray> RoadLane::roleNames() const
-{
-  return {
-    { DataRoles::NodePosition, "RoleNodePosition" }
-  };
-}
-
-RoadLane::RoadLane(QObject *parent) : QAbstractListModel(parent)
+RoadLane::RoadLane(QObject *parent) : Curve(parent)
 {
 }
 
-RoadLane::RoadLane(const QList<std::shared_ptr<RoadPoint>>& _trajectory, QObject *parent) : QAbstractListModel(parent)
+RoadLane::RoadLane(const QList<std::shared_ptr<CurvePoint>>& _trajectory, QObject *parent)
+  : Curve(_trajectory, parent)
 {
-  for (const std::shared_ptr<RoadPoint>& point : _trajectory)
-    trajectory.append(point);
 }
 
 void RoadLane::AppendNewPoint(QPoint point, Node::NodeType type)
 {
-  int count = rowCount();
-  beginInsertRows(QModelIndex(), count, count);
-  int distanceTo = 0.0;
-  if (count > 0)
-  {
-    distanceTo = index(count - 1, 0).data(DataRoles::DistanceAlongCurve).toDouble() +
-        QLineF(point, index(count - 1, 0).data(DataRoles::NodePosition).toPointF()).length();
-  }
-  trajectory.append(std::make_shared<RoadPoint>(type, point.x(), point.y(), distanceTo));
-  emit pointAppended();
-  endInsertRows();
+  AddPoint(std::make_shared<RoadPoint>(type, point.x(), point.y(), CalculateDistanceTo(point.x(), point.y())));
 }
 
 void RoadLane::AppendExistingPoint(int side, int lane, Node::NodeType type, qreal angle, RegularCrossroad *crossroad, QPoint position)
 {
-  int count = rowCount();
-  beginInsertRows(QModelIndex(), count, count);
+  QPoint newPointPosition;
+  if (type == Node::CrossroadIn)
+    newPointPosition = crossroad->AtStopLine(side, lane);
+  else if (type == Node::CrossroadOut)
+    newPointPosition = crossroad->AtExit(side, lane);
+  else if (type == Node::RoadJoint)
+    newPointPosition = position;
 
-  int distanceTo = 0.0;
-  if (count > 0)
-  {
-    QPoint prevPosition;
-    if (type == Node::CrossroadIn)
-      prevPosition = crossroad->AtStopLine(side, lane);
-    else if (type == Node::CrossroadOut)
-      prevPosition = crossroad->AtExit(side, lane);
-    else if (type == Node::RoadJoint)
-      prevPosition = position;
-
-    distanceTo = index(count - 1, 0).data(DataRoles::DistanceAlongCurve).toDouble() +
-        QLineF(prevPosition, index(count - 1, 0).data(DataRoles::NodePosition).toPointF()).length();
-  }
+  int distanceTo = CalculateDistanceTo(newPointPosition.x(), newPointPosition.y());
+  std::shared_ptr<CurvePoint> newPoint;
 
   if (type == Node::CrossroadIn || type == Node::CrossroadOut)
   {
-    trajectory.append(std::make_shared<RoadPoint>(type, angle, crossroad, side, lane, distanceTo));
-    emit pointAppended();
+      newPoint = std::make_shared<RoadPoint>(type, angle, crossroad, side, lane, distanceTo);
   }
   else if (type == Node::RoadJoint)
   {
-    trajectory.append(std::make_shared<RoadPoint>(type, position.x(), position.y(), distanceTo));
-    emit pointAppended();
+      newPoint = std::make_shared<RoadPoint>(type, position.x(), position.y(), distanceTo);
   }
   else
   {
-    qWarning() << "appending point of unsupported type";
-  }
-
-  endInsertRows();
-}
-
-void RoadLane::RemoveLastPoint()
-{
-  if (!trajectory.empty())
-  {
-    int count = rowCount();
-    beginRemoveRows(QModelIndex(), count - 1, count - 1);
-    trajectory.pop_back();
-    emit trajectoryReset();
-    endRemoveRows();
-  }
-}
-
-void RoadLane::Clear()
-{
-  beginResetModel();
-  if (!trajectory.empty())
-  {
-    trajectory.clear();
-    emit trajectoryReset();
-  }
-  endResetModel();
-}
-
-void RoadLane::SetAngle(int row, qreal angle)
-{
-  if (row < 0 || row >= rowCount()) {
-    qWarning() << "setting angle for road point" << row;
+    qWarning() << "appending point of unsupported type" << type;
     return;
   }
 
-  // angle is clockwise; transforming to counter-clockwise
-  trajectory[row]->SetAngle((-(int)angle + 360) % 360);
-  emit dataChanged(index(row, 0), index(row, 0), { DataRoles::RoadPointAngle });
-}
-
-const QList<std::shared_ptr<RoadPoint>> &RoadLane::GetTrajectory() const
-{
-  return trajectory;
-}
-
-QPoint RoadLane::GetPoint(int row) const
-{
-  if (row < 0 || row >= rowCount()) {
-    qWarning() << "getting road point " << row;
-    return QPoint();
-  }
-
-  return trajectory[row]->GetPosition();
-}
-
-qreal RoadLane::GetDistanceTo(int row) const
-{
-  if (row < 0 || row >= rowCount()) {
-    qWarning() << "getting distance to road point" << row;
-    return 0.0;
-  }
-
-  return trajectory[row]->distanceTo;
+  AddPoint(newPoint);
 }
 
 void RoadLane::Serialize(QTextStream &stream) const
@@ -170,24 +54,16 @@ void RoadLane::Serialize(QTextStream &stream) const
     data(index(i, 0), DataRoles::RoadPointData).value<RoadPoint*>()->Serialize(stream);
 }
 
-bool RoadLane::Deserialize(QTextStream &stream)
-{
-  return false;
-}
-
-RoadPoint::RoadPoint(QObject *parent)
-  : QObject(parent)
-{
-}
-
 RoadPoint::RoadPoint(Node::NodeType _type, int x, int y, qreal _distanceTo, qreal _angle, QObject* parent)
-  : QObject(parent), pos(x, y), type(_type), angle(_angle), distanceTo(_distanceTo)
+  : CurvePoint(x, y, _distanceTo, _angle, parent),
+    type(_type)
   // angle is set separately
 {
 }
 
 RoadPoint::RoadPoint(Node::NodeType _type, qreal _angle, RegularCrossroad* _crossroad, int _side, int _lane, qreal _distanceTo, QObject* parent)
-  : QObject(parent), type(_type), crossroadSide(_side), crossroadLane(_lane), angle(_angle), crossroad(_crossroad), distanceTo(_distanceTo)
+  : CurvePoint(0, 0, _distanceTo, _angle, parent),
+    type(_type), crossroadSide(_side), crossroadLane(_lane), crossroad(_crossroad)
 {
 }
 
@@ -215,11 +91,6 @@ qreal RoadPoint::GetAngle() const
 
   qWarning() << "angle for unsupported point type";
   return 0.0;
-}
-
-void RoadPoint::SetAngle(qreal counterClockwiseValue)
-{
-  angle = counterClockwiseValue;
 }
 
 void RoadPoint::Serialize(QTextStream &stream) const

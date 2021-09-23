@@ -28,11 +28,6 @@ qreal CurvePoint::GetDistanceTo() const
   return distanceTo;
 }
 
-void CurvePoint::SetDistanceTo(qreal distance)
-{
-  distanceTo = distance;
-}
-
 void CurvePoint::Serialize(QTextStream &stream) const
 {
   stream << pos.x() << " " << pos.y() << " " << angle << Qt::endl;
@@ -58,7 +53,7 @@ QVariant Curve::data(const QModelIndex &index, int role) const
 {
   int row = index.row();
   if (row < 0 || row >= rowCount()) {
-    qWarning() << "requesting data for curve point" << row;
+    qWarning() << "requesting data by role" << role << "for curve point" << row;
     return QVariant();
   }
 
@@ -85,42 +80,43 @@ QHash<int, QByteArray> Curve::roleNames() const
   };
 }
 
-const QList<std::shared_ptr<CurvePoint>>& Curve::getPoints()
+const QList<std::shared_ptr<CurvePoint>>& Curve::GetPoints()
 {
   return points;
 }
 
 void Curve::Clear()
 {
-  beginResetModel();
-  points.clear();
-  endResetModel();
+  if (!points.empty())
+  {
+    beginResetModel();
+    points.clear();
+    endResetModel();
+    emit trajectoryReset();
+  }
 }
 
-void Curve::AddPoint(int x, int y)
+void Curve::AddPoint(std::shared_ptr<CurvePoint> point)
 {
-  qreal distanceTo = 0.0;
-  int count = rowCount();
-  if (count > 0)
-  {
-    distanceTo = index(count - 1, 0).data(DataRoles::DistanceAlongCurve).toDouble() +
-        QLineF(QPoint(x, y), index(count - 1, 0).data(DataRoles::NodePosition).toPointF()).length();
-  }
-
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
-  points.append(std::make_shared<CurvePoint>(x, y, distanceTo));
+  points.append(point);
   endInsertRows();
+
+  emit pointAppended();
 }
 
 bool Curve::RemoveLastPoint()
 {
-  if (rowCount() == 0)
+  int count = rowCount();
+
+  if (count == 0)
     return false;
 
-  beginRemoveRows(QModelIndex(), rowCount() - 1, rowCount() - 1);
+  beginRemoveRows(QModelIndex(), count - 1, count - 1);
   points.removeLast();
   endRemoveRows();
 
+  emit trajectoryReset();
   return true;
 }
 
@@ -138,20 +134,22 @@ void Curve::SetAngle(int row, qreal angle)
 
 QPoint Curve::GetPoint(int row) const
 {
-  if (row < 0 || row >= rowCount()) {
-    qWarning() << "getting curve point " << row;
-    return QPoint();
-  }
-
-  return points[row]->GetPosition();
+  return data(index(row, 0), DataRoles::NodePosition).value<QPoint>();
 }
 
 qreal Curve::GetDistanceTo(int row) const
 {
-  if (row < 0 || row >= rowCount()) {
-    qWarning() << "getting curve point " << row;
-    return 0.0;
-  }
+  return data(index(row, 0), DataRoles::DistanceAlongCurve).value<qreal>();
+}
 
-  return points[row]->GetDistanceTo();
+qreal Curve::CalculateDistanceTo(int x, int y)
+{
+    qreal distance = 0.0;
+    int count = rowCount();
+    if (count > 0)
+    {
+      distance = index(count - 1, 0).data(DataRoles::DistanceAlongCurve).toDouble() +
+          QLineF(QPoint(x, y), index(count - 1, 0).data(DataRoles::NodePosition).toPointF()).length();
+    }
+    return distance;
 }

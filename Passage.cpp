@@ -52,12 +52,12 @@ void Passage::SetOutLane(int sideIndex, int laneIndex)
 
 void Passage::Clear()
 {
+  Curve::Clear();
+
   inSideIndex = -1;
   inLaneIndex = -1;
   outSideIndex = -1;
   outLaneIndex = -1;
-  Curve::Clear();
-  emit trajectoryReset();
   emit parametersChanged();
 }
 
@@ -84,9 +84,9 @@ bool Passage::AppendNewPoint(QPoint point)
     return false; // can't be after the last point
   }
 
-  AddPoint(point.x(), point.y());
+  int distanceTo = CalculateDistanceTo(point.x(), point.y());
+  AddPoint(std::make_shared<CurvePoint>(point.x(), point.y(), distanceTo));
 
-  emit pointAppended();
   emit parametersChanged();
   return true;
 }
@@ -97,9 +97,8 @@ bool Passage::AppendExistingPoint(int side, int lane, QPoint position)
   {
     inSideIndex = side;
     inLaneIndex = lane;
-    AddPoint(position.x(), position.y());
+    AddPoint(std::make_shared<CurvePoint>(position.x(), position.y(), 0.0));
 
-    emit pointAppended();
     emit parametersChanged();
     return true;
   }
@@ -108,9 +107,9 @@ bool Passage::AppendExistingPoint(int side, int lane, QPoint position)
   {
     outSideIndex = side;
     outLaneIndex = lane;
-    AddPoint(position.x(), position.y());
+    int distanceTo = CalculateDistanceTo(position.x(), position.y());
+    AddPoint(std::make_shared<CurvePoint>(position.x(), position.y(), distanceTo));
 
-    emit pointAppended();
     emit parametersChanged();
     return true;
   }
@@ -141,7 +140,6 @@ bool Passage::RemoveLastPoint()
     inLaneIndex = -1;
   }
 
-  emit trajectoryReset();
   emit parametersChanged();
   return true;
 }

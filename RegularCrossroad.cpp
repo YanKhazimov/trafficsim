@@ -197,7 +197,7 @@ bool RegularCrossroad::Deserialize(QTextStream &stream)
 
 void RegularCrossroad::AddConstructedPassage()
 {
-  passages.AddPassage(passageUnderConstruction.getPoints(),
+  passages.AddPassage(passageUnderConstruction.GetPoints(),
                       passageUnderConstruction.inSideIndex, passageUnderConstruction.inLaneIndex,
                       passageUnderConstruction.outSideIndex, passageUnderConstruction.outLaneIndex);
   passageUnderConstruction.Clear();

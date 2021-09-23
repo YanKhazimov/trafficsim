@@ -23,7 +23,6 @@
         <file>images/open.svg</file>
         <file>images/next.svg</file>
         <file>qml/PassageConstructor.qml</file>
-        <file>qml/Passage.qml</file>
         <file>qml/CarInfo.qml</file>
         <file>qml/Car.qml</file>
         <file>images/truck.png</file>
