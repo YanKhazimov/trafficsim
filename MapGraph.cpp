@@ -30,7 +30,7 @@ void MapGraph::RegisterCrossroad(RegularCrossroad* crossroad)
 
 void MapGraph::RegisterRoadlane(RoadLane* roadlane)
 {
-  qWarning() << QString("from nodes=%1, edges=%2").arg(nodes.rowCount(), edges.size());
+  //qDebug() << QString("from nodes=%1, edges=%2").arg(nodes.rowCount()).arg(edges.size());
   roadlanes.append(roadlane);
 
   QList<Node*> roadNodesInGraph;
@@ -88,7 +88,7 @@ void MapGraph::RegisterRoadlane(RoadLane* roadlane)
 
   emit edgesChanged();
 
-  qWarning() << QString("to nodes=%1, edges=%2").arg(nodes.rowCount(), edges.size());
+  //qDebug() << QString("to nodes=%1, edges=%2").arg(nodes.rowCount()).arg(edges.size());
 }
 
 QList<Node*> MapGraph::AccessibleNodes(const Node* from) const

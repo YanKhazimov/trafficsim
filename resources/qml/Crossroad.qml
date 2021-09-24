@@ -74,24 +74,6 @@ Item {
             sidesRepeater.model = engine.Crossroad.Sides
             crossroadId.fill("sides")
         }
-        function onPassagesChanged() {
-            passagesRepeater.model = []
-            passagesRepeater.model = engine.Crossroad.Passages
-            for (var i = 0; i < passagesRepeater.count; ++i) {
-                passagesRepeater.itemAt(i).update()
-            }
-        }
-    }
-
-    Repeater {
-        id: passagesRepeater
-        model: engine.Crossroad.Passages
-        delegate: Curve {
-            model: RolePassageData
-            view: root
-            shapeColor: "#DDDDDD"
-            visible: RoleIsHighlighted
-        }
     }
 
     Rectangle {

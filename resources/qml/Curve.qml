@@ -6,9 +6,9 @@ import "Constants"
 Shape
 {
     id: root
-    property var model // must be a Curve class instance
+    property CurveModel model // must be a Curve class instance // should be required but creating through repeater causes warnings
     property color shapeColor: Colors.lane
-    property Item view
+    property Item view // should be required but creating through repeater causes warnings
     readonly property alias interpolatorX: interpolator.x
     readonly property alias interpolatorY: interpolator.y
     readonly property alias interpolatorAngle: interpolator.angle
@@ -44,6 +44,14 @@ Shape
         root.length = calculatedLength
     }
 
+    ShapePath {
+        id: shapePath
+
+        strokeWidth: Sizes.scaleToView(Sizes.laneWidth)
+        strokeColor: root.shapeColor
+        fillColor: "transparent"
+    }
+
     Repeater {
         id: pointRepeater
         model: []
@@ -56,24 +64,16 @@ Shape
         }
     }
 
-    ShapePath {
-        id: shapePath
-
-        strokeWidth: Sizes.scaleToView(Sizes.laneWidth)
-        strokeColor: root.shapeColor
-        fillColor: "transparent"
-    }
-
     function update() {
         pointRepeater.model = []
         pointRepeater.model = root.model
 
         shapePath.pathElements = []
-        shapePath.startX = 0
-        shapePath.startY = 0
 
         var size = root.model.rowCount()
         if (size < 1) {
+            shapePath.startX = 0
+            shapePath.startY = 0
             return
         }
 

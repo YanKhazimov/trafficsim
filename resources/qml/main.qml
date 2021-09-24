@@ -16,7 +16,7 @@ ApplicationWindow {
     function roadLaneLength(laneIndex) {
         if (laneIndex >= 0 && laneIndex < roadLanes.count)
         {
-            return roadLanes.itemAt(laneIndex).length
+            return Sizes.scaleToMap(roadLanes.itemAt(laneIndex).length)
         }
 
         console.warn("Can't get length for road lane", laneIndex)
@@ -26,11 +26,12 @@ ApplicationWindow {
     function roadLaneCoords(laneIndex, laneProgress) {
         if (laneIndex >= 0 && laneIndex < roadLanes.count)
         {
-            roadLanes.itemAt(laneIndex).interpolatorProgress = laneProgress
+            var lane = roadLanes.itemAt(laneIndex)
+            lane.interpolatorProgress = laneProgress
             var map = {}
-            map["x"] = Sizes.mapXToModel(roadLanes.itemAt(laneIndex).interpolatorX, displayArea)
-            map["y"] = Sizes.mapYToModel(roadLanes.itemAt(laneIndex).interpolatorY, displayArea)
-            map["rotation"] = roadLanes.itemAt(laneIndex).interpolatorAngle
+            map["x"] = Sizes.mapXToModel(lane.interpolatorX, displayArea)
+            map["y"] = Sizes.mapYToModel(lane.interpolatorY, displayArea)
+            map["rotation"] = lane.interpolatorAngle
             return map
         }
         console.warn("Can't get coords for road lane", laneIndex)
@@ -38,9 +39,9 @@ ApplicationWindow {
     }
 
     function passageLength(laneIndex) {
-        if (laneIndex >= 0 && laneIndex < constructedPassages.count)
+        if (laneIndex >= 0 && laneIndex < passagesRepeater.count)
         {
-            return constructedPassages.itemAt(laneIndex).length
+            return Sizes.scaleToMap(passagesRepeater.itemAt(laneIndex).length)
         }
 
         console.warn("Can't get length for passage", laneIndex)
@@ -48,9 +49,9 @@ ApplicationWindow {
     }
 
     function passageCoords(laneIndex, laneProgress) {
-        if (laneIndex >= 0 && laneIndex < constructedPassages.count)
+        if (laneIndex >= 0 && laneIndex < passagesRepeater.count)
         {
-            var lane = constructedPassages.itemAt(laneIndex)
+            var lane = passagesRepeater.itemAt(laneIndex)
             lane.interpolatorProgress = laneProgress
             var map = {}
             map["x"] = Sizes.mapXToModel(lane.interpolatorX, displayArea)
@@ -144,11 +145,33 @@ ApplicationWindow {
             }
         }
 
+        /* a crossroad start */
         Crossroad {
             id: crossroadId
             x: Sizes.mapXToView(engine.Crossroad.X, displayArea)
             y: Sizes.mapYToView(engine.Crossroad.Y, displayArea)
         }
+        Repeater {
+            id: passagesRepeater
+            model: engine.Crossroad.Passages
+            delegate: Curve {
+                model: RolePassageData
+                view: displayArea
+                shapeColor: "#DDDDDD"
+                visible: RoleIsHighlighted
+            }
+        }
+        Connections {
+            target: engine.Crossroad
+            function onPassagesChanged() {
+                passagesRepeater.model = []
+                passagesRepeater.model = engine.Crossroad.Passages
+                for (var i = 0; i < passagesRepeater.count; ++i) {
+                    passagesRepeater.itemAt(i).update()
+                }
+            }
+        }
+        /* a crossroad end */
 
         MouseArea {
             id: laneDrawingArea
@@ -247,10 +270,6 @@ ApplicationWindow {
                 model: modelData
                 viewItem: displayArea
                 onClicked: engine.Cars.Select(index)
-
-                //x: roadUnderConstruction.interpolatorX
-                //y: roadUnderConstruction.interpolatorY
-                //rotation: roadUnderConstruction.interpolatorAngle + 45
             }
         }
     }
