@@ -3,11 +3,16 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QResource>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
+
+  if (!QResource::registerResource("D:/QtProjects/trafficsim/resources/meshes.rcc"))
+      qWarning() << "Cannot load external resources";
 
   QQmlApplicationEngine engine;
   const QUrl url(QStringLiteral("qrc:/qml/main.qml"));

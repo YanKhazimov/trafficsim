@@ -30,5 +30,10 @@
         <file>images/magnifier.svg</file>
         <file>images/road.svg</file>
         <file>qml/Curve.qml</file>
+        <file>models3d/a45/A45.qml</file>
+        <file>qml/Car3DView.qml</file>
+        <file>qml/CarScene3D.qml</file>
+        <file>models3d/xc70/XC70.qml</file>
+        <file>images/xc70.PNG</file>
     </qresource>
 </RCC>

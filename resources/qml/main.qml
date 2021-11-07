@@ -293,4 +293,29 @@ ApplicationWindow {
             }, Qt.size(displayArea.width, displayArea.height))
         }
     }
+
+    CarInfo {
+        id: carInfo
+        model: engine.SelectedCar
+        anchors {
+            right: controlPanel.right
+            bottom: controlPanel.bottom
+            margins: 20
+        }
+
+        height: carViewPopped ? (root.height - 2 * 20) : implicitHeight
+        width: carViewPopped ? (root.width - 2 * 20) : (controlPanel.width - 2 * 20)
+
+        Behavior on width {
+            NumberAnimation {
+                duration: 300
+            }
+        }
+
+        Behavior on height {
+            NumberAnimation {
+                duration: 300
+            }
+        }
+    }
 }

@@ -34,11 +34,11 @@ QHash<int, QByteArray> CarsModel::roleNames() const
   };
 }
 
-void CarsModel::AddCar(int width, int length, QUrl source, int sourceDirection)
+void CarsModel::AddCar(int width, int length, QUrl source3d, QUrl source, int sourceDirection)
 {
   int idx = rowCount();
   beginInsertRows(QModelIndex(), idx, idx);
-  cars.insert(idx, std::make_shared<Car>(width, length, source, sourceDirection));
+  cars.insert(idx, std::make_shared<Car>(width, length, source3d, source, sourceDirection));
   cars[idx]->SetPosition((idx + 1) * 100, 0);
   endInsertRows();
 }

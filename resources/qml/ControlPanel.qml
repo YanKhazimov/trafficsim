@@ -9,6 +9,7 @@ Rectangle {
     color: "#BBBBBB"
 
     readonly property bool sideConstructionMode: constructorPanel.visible && constructorPanel.currentIndex === 0
+
     signal crossroadValidated()
     signal crossroadImageSaveRequested()
 
@@ -112,7 +113,7 @@ Rectangle {
         anchors.top: buttonsRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: carInfo.top
+        height: 400
         anchors.margins: 20
         clip: true
 
@@ -131,17 +132,6 @@ Rectangle {
                 anchors.fill: parent
                 anchors.margins: Sizes.minMargin
             }
-        }
-    }
-
-    CarInfo {
-        id: carInfo
-        model: engine.SelectedCar
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-            margins: 20
         }
     }
 }

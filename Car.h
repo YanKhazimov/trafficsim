@@ -18,12 +18,14 @@ class Car : public QObject
   Q_PROPERTY(int Width MEMBER width CONSTANT)
   Q_PROPERTY(int Length MEMBER length CONSTANT)
   Q_PROPERTY(QUrl Source MEMBER source CONSTANT)
+  Q_PROPERTY(QUrl Source3d MEMBER source3d CONSTANT)
   Q_PROPERTY(int SourceDirection MEMBER sourceDirection CONSTANT)
 
   Q_PROPERTY(QList<QPoint> RoutePoints READ getRoutePoints NOTIFY routeChanged)
   Q_PROPERTY(int ReachedRoutePoint MEMBER reachedRoutePoint NOTIFY reachedRoutePointChanged)
 
   int width, length;
+  QUrl source3d;
   QUrl source; int sourceDirection;
   int x = 0, y = 0;
   int direction = 45; // rounded in degrees
@@ -37,7 +39,7 @@ class Car : public QObject
   QList<QPoint> getRoutePoints() const;
 
 public:
-  explicit Car(int width, int length, QUrl source, int sourceDirection, QObject *parent = nullptr);
+  explicit Car(int width, int length, QUrl source3d, QUrl source, int sourceDirection, QObject *parent = nullptr);
   Q_INVOKABLE void MoveAlongRoute();
   Q_INVOKABLE void MoveAlongRoadLane(QObject *qmlRoot);
   Q_INVOKABLE void MoveAlongPassage(QObject *qmlRoot);
