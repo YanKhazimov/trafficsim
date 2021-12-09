@@ -16,59 +16,59 @@ Node {
 
     DirectionalLight {
         id: dl
-        ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+        ambientColor: Qt.rgba(0.02, 0.02, 0.02, 1.0)
         rotation: Qt.quaternion(1, -1, 0, 0)
     }
 
-//    Node {
-//        PointLight {
-//            id: topLight
-//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-//            position: Qt.vector3d(0, 100, 0)
-//            brightness: 100
-//        }
-//    }
+    Node {
+        PointLight {
+            id: topLight
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+            position: Qt.vector3d(0, 100, 0)
+            brightness: 10
+        }
+    }
 
-//    Node {
-//        PointLight {
-//            id: leftLight
-//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-//            position: Qt.vector3d(0, 0, 500)
-//            brightness: 100
-//        }
-//    }
+    Node {
+        PointLight {
+            id: leftLight
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+            position: Qt.vector3d(0, 0, 500)
+            brightness: 10
+        }
+    }
 
-//    Node {
-//        PointLight {
-//            id: rightLight
-//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-//            position: Qt.vector3d(0, 0, -500)
-//            brightness: 100
-//        }
-//    }
+    Node {
+        PointLight {
+            id: rightLight
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+            position: Qt.vector3d(0, 0, -500)
+            brightness: 10
+        }
+    }
 
-//    Node {
-//        PointLight {
-//            id: frontLight
-//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-//            position: Qt.vector3d(500, 0, 0)
-//            brightness: 100
-//        }
-//    }
+    Node {
+        PointLight {
+            id: frontLight
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+            position: Qt.vector3d(500, 0, 0)
+            brightness: 10
+        }
+    }
 
-//    Node {
-//        PointLight {
-//            id: backLight
-//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-//            position: Qt.vector3d(-500, 0, 0)
-//            brightness: 100
-//        }
-//    }
+    Node {
+        PointLight {
+            id: backLight
+            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+            position: Qt.vector3d(-500, 0, 0)
+            brightness: 10
+        }
+    }
 
     Loader3D {
         id: loader3d

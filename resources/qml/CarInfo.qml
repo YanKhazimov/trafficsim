@@ -30,25 +30,15 @@ Rectangle {
         }
     }
 
-    Binding {
-        // passing user color to 2D image
-        target: root.model
-        property: "UserColor"
-        value: Qt.rgba(colorRSlider.value,
-                       colorGSlider.value,
-                       colorBSlider.value,
-                       150.0/255)
-    }
-
     QtObject {
         id: carAppearance
-        // passing user color to 3D scene
         property real metalness: metalnessSlider.value
         property real roughness: roughnessSlider.value
-        property color color: Qt.rgba(colorRSlider.value,
-                                      colorGSlider.value,
-                                      colorBSlider.value,
-                                      colorASlider.value)
+        property color color: !root.model ? "transparent" :
+                                            Qt.rgba(root.model.UserColor.r,
+                                                    root.model.UserColor.g,
+                                                    root.model.UserColor.b,
+                                                    1)
     }
 
     CarScene3D {
@@ -61,107 +51,261 @@ Rectangle {
         }
     }
 
-    ColumnLayout {
-        spacing: 5
-        visible: model != null
-        anchors.fill: parent
-        anchors.margins: Sizes.minMargin
+    Item {
+        id: rightHalf
 
-        RowLayout {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
+        height: parent.height
+        width: parent.width / 2
+        anchors.right: parent.right
 
-            Rectangle {
-                Layout.fillHeight: true
+        ColumnLayout {
+            spacing: 5
+            visible: model != null
+            anchors.fill: parent
+            anchors.margins: Sizes.minMargin
+
+            ScrollView {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter
-                color: "transparent"
-                border.color: "black"
+                Layout.fillHeight: true
+                visible: root.carViewPopped
+                clip: true
 
-                Car3DView {
-                    id: view3d
-                    importScene: scene
-                    camera: scene.perspectiveCam
+                Flow {
+                    id: flow
                     anchors.fill: parent
-                    anchors.margins: 2
+                    spacing: 10
+
+                    TSButton {
+                        text: "Check All"
+                        callback: function() {
+                            for (var i = 0; i < meshRepeater.count; ++i)
+                                meshRepeater.itemAt(i).checked = true
+                        }
+                    }
+
+                    TSButton {
+                        text: "Uncheck All"
+                        callback: function() {
+                            for (var i = 0; i < meshRepeater.count; ++i)
+                                meshRepeater.itemAt(i).checked = false
+                        }
+                    }
+
+                    TSButton {
+                        text: "Snap"
+                        callback: function() {
+                            snapRect.grabToImage(function(grabResult) {
+                                grabResult.saveToFile("snap.png")
+                            }, Qt.size(snapRect.width, snapRect.height))
+                        }
+                    }
+
+                    Repeater {
+                        id: meshRepeater
+                        delegate: CheckBox {
+                            height: 10
+                            text: engine.CropFilename(modelData.source)
+                            checked: true
+                            onCheckedChanged: modelData.visible = checked
+                        }
+                    }
                 }
             }
 
-            Rectangle {
-                id: snapRect
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter
-                color: "transparent"
-                border.color: "black"
+            Column {
+                id: info
+                visible: !root.carViewPopped
 
-                Car3DView {
-                    id: viewTop
-                    state: "topDown"
-                    importScene: scene
-                    camera: scene.topViewCam
-                    anchors.fill: parent
-                    anchors.margins: 2
+                Text {
+                    text: root.model ? ("x: " + root.model.X) : ""
+                }
 
-                    Component.onCompleted: scene.topViewCam.lookAt(Qt.vector3d(0, 0, 0))
+                Text {
+                    text: root.model ? ("y: " + root.model.Y) : ""
+                }
+
+                Text {
+                    text: root.model ? ("direction: " + root.model.DirectionDegrees) : ""
+                }
+
+                Text {
+                    text: root.model ? ("route completion: %1/%2".arg(root.model.ReachedRoutePoint + 1).arg(root.model.RoutePoints.length)) : ""
+                }
+
+                TSButton {
+                    text: "Assign route"
+                    callback: function() {
+                        engine.EditorState = EditorState.RouteCreation
+                    }
                 }
             }
         }
+    }
 
-        Flow {
-            id: flow
-            visible: root.carViewPopped
-            Layout.fillWidth: true
-            spacing: 10
+    Item {
+        id: leftHalf
 
-            Button {
-                text: "Check All"
-                onClicked: {
-                    for (var i = 0; i < meshRepeater.count; ++i)
-                        meshRepeater.itemAt(i).checked = true
+        height: parent.height
+        width: parent.width / 2
+        anchors.left: parent.left
+
+        ColumnLayout {
+            spacing: 5
+            visible: model != null
+            anchors.fill: parent
+            anchors.margins: Sizes.minMargin
+
+            ColumnLayout {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                Rectangle {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: "transparent"
+                    border.color: "black"
+
+                    Car3DView {
+                        id: view3d
+                        importScene: scene
+                        camera: scene.perspectiveCam
+                        anchors.fill: parent
+                        anchors.margins: 2
+                    }
+                }
+
+                Rectangle {
+                    id: snapRect
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: "transparent"
+                    border.color: "black"
+                    visible: root.carViewPopped
+
+                    Car3DView {
+                        id: viewTop
+                        state: "topDown"
+                        importScene: scene
+                        camera: scene.topViewCam
+                        anchors.fill: parent
+                        anchors.margins: 2
+
+                        Component.onCompleted: scene.topViewCam.lookAt(Qt.vector3d(0, 0, 0))
+                    }
                 }
             }
 
-            Button {
-                text: "Uncheck All"
-                onClicked: {
-                    for (var i = 0; i < meshRepeater.count; ++i)
-                        meshRepeater.itemAt(i).checked = false
+            Flow {
+                id: palette
+                spacing: 5
+                Layout.fillWidth: true
+
+                Repeater {
+                    model: [
+                        Colors.whiteCar,
+                        Colors.silverCar,
+                        Colors.greyCar,
+                        Colors.cherryCar,
+                        Colors.redCar,
+                        Colors.orangeCar,
+                        Colors.brownCar,
+                        Colors.yellowCar,
+                        Colors.biegeCar,
+                        Colors.purpleCar,
+                        Colors.blueCar,
+                        Colors.cyanCar,
+                        Colors.emeraldCar,
+                        Colors.tealCar,
+                        Colors.darkBlueCar,
+                        Colors.blackCar
+                    ]
+
+                    delegate: Rectangle {
+                        width: 20
+                        height: 20
+                        color: modelData
+
+                        Rectangle {
+                            anchors.fill: parent
+                            anchors.margins: -5
+                            color: "transparent"
+                            border.width: 2
+                            border.color: "black"
+                            visible: root.model && Qt.colorEqual(Qt.rgba(modelData.r, modelData.g, modelData.b),
+                                                                 Qt.rgba(root.model.UserColor.r, root.model.UserColor.g, root.model.UserColor.b))
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.model.UserColor = modelData
+                        }
+                    }
                 }
             }
 
-            Repeater {
-                id: meshRepeater
-                delegate: CheckBox {
-                    height: 10
-                    text: modelData.source.toString().slice(26, -5)
-                    checked: true
-                    onCheckedChanged: modelData.visible = checked
+            Rectangle {
+                id: lightingSwitch
+
+                visible: !root.carViewPopped
+                height: 20
+                width: 100
+                radius: 5
+                color: "grey"
+                property bool on: false
+
+                Binding {
+                    target: root.model
+                    property: "Lighting"
+                    value: lightingSwitch.on
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: lightingSwitch.on = !lightingSwitch.on
+                }
+
+                Rectangle {
+                    anchors {
+                        top: parent.top
+                        bottom: parent.bottom
+                        margins: 2
+                    }
+
+                    x: lightingSwitch.on ? (lightingSwitch.width - anchors.margins - width) : anchors.margins
+                    Behavior on x {
+                        NumberAnimation {
+                            duration: 300
+                        }
+                    }
+
+                    radius: 5
+                    color: "lightgrey"
+                    width: 70
+
+                    Text {
+                        text: "Lighting" + (lightingSwitch.on ? " ON" : " OFF")
+                        anchors.centerIn: parent
+                    }
                 }
             }
 
-            Button {
-                text: "Snap"
-                onClicked: {
-                    snapRect.grabToImage(function(grabResult) {
-                        grabResult.saveToFile("snap.png")
-                    }, Qt.size(snapRect.width, snapRect.height))
-                }
-            }
-        }
+            RowLayout {
+                Layout.fillWidth: true
+                visible: root.carViewPopped
 
-        Column {
-            id: materialControl
-            visible: root.carViewPopped
-
-            Row {
                 Text {
                     text: "metalness"
                 }
                 Slider {
                     id: metalnessSlider
+                    Layout.fillWidth: true
                     from: 0.0
                     to: 1.0
+                    value: 0.3
                 }
 
                 Text {
@@ -169,79 +313,10 @@ Rectangle {
                 }
                 Slider {
                     id: roughnessSlider
+                    Layout.fillWidth: true
                     from: 0.0
                     to: 1.0
-                }
-            }
-
-            Row {
-                Text {
-                    text: "r"
-                }
-                Slider {
-                    id: colorRSlider
-                    enabled: root.carViewPopped
-                    from: 0.0
-                    to: 1.0
-                }
-
-                Text {
-                    text: "g"
-                }
-                Slider {
-                    id: colorGSlider
-                    enabled: root.carViewPopped
-                    from: 0.0
-                    to: 1.0
-                }
-
-                Text {
-                    text: "b"
-                }
-                Slider {
-                    id: colorBSlider
-                    enabled: root.carViewPopped
-                    from: 0.0
-                    to: 1.0
-                }
-
-                Text {
-                    text: "a"
-                }
-                Slider {
-                    id: colorASlider
-                    enabled: root.carViewPopped
-                    from: 0.0
-                    to: 1.0
-                    value: 1.0
-                }
-            }
-        }
-
-        Column {
-            id: info
-            visible: !root.carViewPopped
-
-            Text {
-                text: root.model ? ("x: " + root.model.X) : ""
-            }
-
-            Text {
-                text: root.model ? ("y: " + root.model.Y) : ""
-            }
-
-            Text {
-                text: root.model ? ("direction: " + root.model.DirectionDegrees) : ""
-            }
-
-            Text {
-                text: root.model ? ("route completion: %1/%2".arg(root.model.ReachedRoutePoint + 1).arg(root.model.RoutePoints.length)) : ""
-            }
-
-            TSButton {
-                text: "Assign route"
-                callback: function() {
-                    engine.EditorState = EditorState.RouteCreation
+                    value: 0.4
                 }
             }
         }

@@ -1,5 +1,7 @@
 import QtQuick 2.15
 import QtQuick3D 1.15
+import QtQuick3D.Materials 1.15
+import "../../qml/Constants"
 
 Node {
     id: car_2012_Volvo_XC70__Traffic__N300718_obj
@@ -11,8 +13,18 @@ Node {
     scale: Qt.vector3d(75, 75, 75)
     y: -100
 
+    GlassMaterial {
+        id: material_glass
+        uMinOpacity: 0.9
+        glass_color: Qt.vector3d(0.1, 0.1, 0.1)
+    }
+    DefaultMaterial {
+        id: material_red_lights_glass // lights glass
+        diffuseColor: Qt.rgba(78/255, 12/255, 12/255, 0.85)
+    }
+
     property var meshes: [
-        vol_xc70_12_body_badge_,
+        //vol_xc70_12_body_badge_,
         vol_xc70_12_body_black_glass_, // const
         vol_xc70_12_body_body_, // dynamic
         vol_xc70_12_body_emblem_,
@@ -20,8 +32,8 @@ Node {
         vol_xc70_12_body_matte_colors_, // const
         vol_xc70_12_body_plastic2_, // const
         vol_xc70_12_body_rubber_trim_, // const
-        vol_xc70_12_bumperFrameF_numberplate_,
-        vol_xc70_12_bumperFrameR_numberplate_,
+        //vol_xc70_12_bumperFrameF_numberplate_,
+        //vol_xc70_12_bumperFrameR_numberplate_,
         vol_xc70_12_exhaustLa_chrome_,
         vol_xc70_12_exhaustLa_frame_,
         vol_xc70_12_glassF_glass_, // const
@@ -79,17 +91,17 @@ Node {
         vol_xc70_12_wheel_wheel_tire_03
     ]
 
-    Model {
-        id: vol_xc70_12_body_badge_
-        source: "meshes/vol_xc70_12_body_badge_.mesh"
+//    Model {
+//        id: vol_xc70_12_body_badge_
+//        source: "meshes/vol_xc70_12_body_badge_.mesh"
 
-        DefaultMaterial {
-            id: badge_material
-        }
-        materials: [
-            badge_material
-        ]
-    }
+//        DefaultMaterial {
+//            id: badge_material
+//        }
+//        materials: [
+//            badge_material
+//        ]
+//    }
 
     Model {
         id: vol_xc70_12_body_black_glass_
@@ -134,6 +146,7 @@ Node {
 
         DefaultMaterial {
             id: frame_material
+            diffuseColor: Colors.greyCar
         }
         materials: [
             frame_material
@@ -146,6 +159,7 @@ Node {
 
         DefaultMaterial {
             id: matte_colors_material
+            diffuseColor: Colors.greyCar
         }
         materials: [
             matte_colors_material
@@ -158,6 +172,7 @@ Node {
 
         DefaultMaterial {
             id: plastic2_material
+            diffuseColor: Colors.greyCar
         }
         materials: [
             plastic2_material
@@ -177,25 +192,25 @@ Node {
         ]
     }
 
-    Model {
-        id: vol_xc70_12_bumperFrameF_numberplate_
-        source: "meshes/vol_xc70_12_bumperFrameF_numberplate_.mesh"
+//    Model {
+//        id: vol_xc70_12_bumperFrameF_numberplate_
+//        source: "meshes/vol_xc70_12_bumperFrameF_numberplate_.mesh"
 
-        DefaultMaterial {
-            id: numberplate_material
-        }
-        materials: [
-            numberplate_material
-        ]
-    }
+//        DefaultMaterial {
+//            id: numberplate_material
+//        }
+//        materials: [
+//            numberplate_material
+//        ]
+//    }
 
-    Model {
-        id: vol_xc70_12_bumperFrameR_numberplate_
-        source: "meshes/vol_xc70_12_bumperFrameR_numberplate_.mesh"
-        materials: [
-            numberplate_material
-        ]
-    }
+//    Model {
+//        id: vol_xc70_12_bumperFrameR_numberplate_
+//        source: "meshes/vol_xc70_12_bumperFrameR_numberplate_.mesh"
+//        materials: [
+//            numberplate_material
+//        ]
+//    }
 
     Model {
         id: vol_xc70_12_exhaustLa_chrome_
@@ -228,7 +243,8 @@ Node {
             opacity: 0.4
         }
         materials: [
-            glass_material
+            //glass_material
+            material_glass
         ]
     }
 
@@ -236,7 +252,8 @@ Node {
         id: vol_xc70_12_glassLF_glass_
         source: "meshes/vol_xc70_12_glassLF_glass_.mesh"
         materials: [
-            glass_material
+            //glass_material
+            material_glass
         ]
     }
 
@@ -244,7 +261,8 @@ Node {
         id: vol_xc70_12_glassLM_glass_
         source: "meshes/vol_xc70_12_glassLM_glass_.mesh"
         materials: [
-            glass_material
+            //glass_material
+            material_glass
         ]
     }
 
@@ -252,7 +270,8 @@ Node {
         id: vol_xc70_12_glassLR_glass_
         source: "meshes/vol_xc70_12_glassLR_glass_.mesh"
         materials: [
-            glass_material
+            //glass_material
+            material_glass
         ]
     }
 
@@ -260,7 +279,8 @@ Node {
         id: vol_xc70_12_glassR_glass_
         source: "meshes/vol_xc70_12_glassR_glass_.mesh"
         materials: [
-            glass_material
+            //glass_material
+            material_glass
         ]
     }
 
@@ -268,7 +288,8 @@ Node {
         id: vol_xc70_12_glassRF_glass_
         source: "meshes/vol_xc70_12_glassRF_glass_.mesh"
         materials: [
-            glass_material
+            //glass_material
+            material_glass
         ]
     }
 
@@ -276,7 +297,8 @@ Node {
         id: vol_xc70_12_glassRM_glass_
         source: "meshes/vol_xc70_12_glassRM_glass_.mesh"
         materials: [
-            glass_material
+            //glass_material
+            material_glass
         ]
     }
 
@@ -284,7 +306,8 @@ Node {
         id: vol_xc70_12_glassRR_glass_
         source: "meshes/vol_xc70_12_glassRR_glass_.mesh"
         materials: [
-            glass_material
+            //glass_material
+            material_glass
         ]
     }
 
@@ -439,7 +462,8 @@ Node {
             id: fogred_material
         }
         materials: [
-            fogred_material
+            material_red_lights_glass
+            //fogred_material
         ]
     }
 
@@ -578,7 +602,8 @@ Node {
             id: tail_light_material
         }
         materials: [
-            tail_light_material
+            material_red_lights_glass
+            //tail_light_material
         ]
     }
 
@@ -591,7 +616,8 @@ Node {
             opacity: 0.92
         }
         materials: [
-            taillightst_material
+            material_red_lights_glass
+            //taillightst_material
         ]
     }
 
@@ -603,7 +629,8 @@ Node {
             id: reflector_material
         }
         materials: [
-            reflector_material
+            material_red_lights_glass
+            //reflector_material
         ]
     }
 
@@ -625,6 +652,7 @@ Node {
 
         DefaultMaterial {
             id: undercarriage_material
+            diffuseColor: Colors.greyCar
         }
         materials: [
             undercarriage_material
@@ -637,6 +665,7 @@ Node {
 
         DefaultMaterial {
             id: rim_material
+            diffuseColor: Qt.rgba(106/255, 106/255, 106/255, 1)
         }
         materials: [
             rim_material
@@ -649,6 +678,7 @@ Node {
 
         DefaultMaterial {
             id: tire_material
+            diffuseColor: Qt.rgba(26/255, 26/255, 26/255, 1)
         }
         materials: [
             tire_material
@@ -661,6 +691,7 @@ Node {
 
         DefaultMaterial {
             id: inner_rim_material
+            diffuseColor: Qt.rgba(106/255, 106/255, 106/255, 1)
         }
         materials: [
             inner_rim_material

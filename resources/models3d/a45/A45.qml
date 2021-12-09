@@ -1,5 +1,7 @@
 import QtQuick 2.15
 import QtQuick3D 1.15
+import QtQuick3D.Materials 1.15
+import "../../qml/Constants"
 
 Node {
     id: a45_obj
@@ -10,6 +12,15 @@ Node {
 
     scale: Qt.vector3d(15, 15, 15)
     y: -104
+
+    GlassMaterial {
+        id: material_glass
+        glass_color: Qt.vector3d(0.1, 0.1, 0.1)
+    }
+    DefaultMaterial {
+        id: material_red_lights_glass // lights glass
+        diffuseColor: Qt.rgba(78/255, 12/255, 12/255, 0.85)
+    }
 
     property var meshes: [
         circle_003_Circle_004,
@@ -23,7 +34,7 @@ Node {
         cylinder_001_Cylinder,
         cube_036_Cube_004,
         cube_001_Cube_014,
-        cube_003, // const
+        //cube_003, // const // lights glass
         cube_010_Cube_005, // const
         cube_015_Cube_017,
         cube_014_Cube_020, // const maybe 2nd dynamic
@@ -33,7 +44,7 @@ Node {
         cube_Cube_006,
         tIRE1_Circle_003,
         cube_020_Cube_001, // const maybe 2nd dynamic
-        cube_023_Cube_022, // const
+        //cube_023_Cube_022, // const // lights glass
         node1_Cube_027,
         cube_025_Cube_033,
         cube_026_Cube_015,
@@ -51,9 +62,9 @@ Node {
         cube_043_Cube_052,
         cube_044_Cube_037, // const
         cube_034_Cube_035, // const
-        plane,
+        //plane, // number plate
         cube_021_Cube_039,
-        plane_003,
+        //plane_003, // number plate
         tIRE1_001_Circle_013,
         tIRE1_002_Circle_015,
         tIRE1_003_Circle_016,
@@ -73,7 +84,7 @@ Node {
 
         DefaultMaterial {
             id: material_014_material
-            diffuseColor: "#ff999999"
+            diffuseColor: Colors.greyCar//"#ff999999"
         }
 
         DefaultMaterial {
@@ -104,7 +115,8 @@ Node {
             diffuseColor: "#ff999999"
         }
         materials: [
-            material_007_material
+            //material_007_material
+            material_glass
         ]
     }
 
@@ -130,7 +142,7 @@ Node {
 
         DefaultMaterial {
             id: material_002_material
-            diffuseColor: "#ffaaaaaa"
+            diffuseColor: Colors.blackCar//"#ffaaaaaa"
         }
         materials: [
             material_002_material
@@ -194,18 +206,18 @@ Node {
         ]
     }
 
-    Model {
-        id: cube_003
-        source: "meshes/cube_003.mesh"
+//    Model {
+//        id: cube_003
+//        source: "meshes/cube_003.mesh"
 
-        DefaultMaterial {
-            id: material_019_material
-            diffuseColor: "#ff999999"
-        }
-        materials: [
-            material_019_material
-        ]
-    }
+//        DefaultMaterial {
+//            id: material_019_material
+//            diffuseColor: "#ff999999"
+//        }
+//        materials: [
+//            material_019_material
+//        ]
+//    }
 
     Model {
         id: cube_010_Cube_005
@@ -243,13 +255,16 @@ Node {
         id: cube_019_Cube_024
         source: "meshes/cube_019_Cube_024.mesh"
 
-        DefaultMaterial {
-            id: material_022_material
-            diffuseColor: "#ff999999"
-        }
+//        DefaultMaterial {
+//            id: material_022_material
+//            diffuseColor: "#ff999999"
+//        }
+
         materials: [
-            material_007_material,
-            material_022_material
+//            material_007_material,
+//            material_022_material
+            material_glass,
+            material_glass
         ]
     }
 
@@ -287,12 +302,12 @@ Node {
 
         DefaultMaterial {
             id: material_025_material
-            diffuseColor: "#ff999999"
+            diffuseColor: Colors.blackCar // "#ff999999"
         }
 
         DefaultMaterial {
             id: material_017_material
-            diffuseColor: "#ff999999"
+            diffuseColor: "#ff111111" // "#ff999999"
         }
         materials: [
             material_material,
@@ -310,19 +325,19 @@ Node {
         ]
     }
 
-    Model {
-        id: cube_023_Cube_022
-        source: "meshes/cube_023_Cube_022.mesh"
+//    Model {
+//        id: cube_023_Cube_022
+//        source: "meshes/cube_023_Cube_022.mesh"
 
-        DefaultMaterial {
-            id: material_012_material
-            diffuseColor: "#ff999999"
-        }
-        materials: [
-            material_011_material,
-            material_012_material
-        ]
-    }
+//        DefaultMaterial {
+//            id: material_012_material
+//            diffuseColor: "#ff999999"
+//        }
+//        materials: [
+//            material_011_material,
+//            material_012_material
+//        ]
+//    }
 
     Model {
         id: node1_Cube_027
@@ -368,7 +383,8 @@ Node {
             diffuseColor: "#ff999999"
         }
         materials: [
-            material_008_material,
+            material_red_lights_glass,
+            //material_008_material,
             material_013_material,
             material_021_material
         ]
@@ -394,7 +410,8 @@ Node {
         id: cube_031_Cube
         source: "meshes/cube_031_Cube.mesh"
         materials: [
-            material_008_material
+            material_red_lights_glass
+//            material_008_material
         ]
     }
 
@@ -478,7 +495,8 @@ Node {
         id: cube_044_Cube_037
         source: "meshes/cube_044_Cube_037.mesh"
         materials: [
-            material_007_material
+            //material_007_material
+            material_glass
         ]
     }
 
@@ -486,29 +504,26 @@ Node {
         id: cube_034_Cube_035
         source: "meshes/cube_034_Cube_035.mesh"
 
-        DefaultMaterial {
-            id: material___windshield
-            diffuseColor: "#ff444444"
-        }
         materials: [
             /*material_007_material,
             material_022_material*/
-            material___windshield
+            material_glass,
+            material_glass
         ]
     }
 
-    Model {
-        id: plane
-        source: "meshes/plane.mesh"
+//    Model {
+//        id: plane
+//        source: "meshes/plane.mesh"
 
-        DefaultMaterial {
-            id: material_029_material
-            diffuseColor: "#ff999999"
-        }
-        materials: [
-            material_029_material
-        ]
-    }
+//        DefaultMaterial {
+//            id: material_029_material
+//            diffuseColor: "#ff999999"
+//        }
+//        materials: [
+//            material_029_material
+//        ]
+//    }
 
     Model {
         id: cube_021_Cube_039
@@ -518,13 +533,13 @@ Node {
         ]
     }
 
-    Model {
-        id: plane_003
-        source: "meshes/plane_003.mesh"
-        materials: [
-            material_029_material
-        ]
-    }
+//    Model {
+//        id: plane_003
+//        source: "meshes/plane_003.mesh"
+//        materials: [
+//            material_029_material
+//        ]
+//    }
 
     Model {
         id: tIRE1_001_Circle_013
@@ -590,17 +605,17 @@ Node {
 
         DefaultMaterial {
             id: material_027_material
-            diffuseColor: "#ff999999"
+            diffuseColor: Colors.blackCar//"#ff999999"
         }
 
         DefaultMaterial {
             id: material_042_material
-            diffuseColor: "#ff999999"
+            diffuseColor: Colors.redCar//"#ff999999"
         }
 
         DefaultMaterial {
             id: material_028_material
-            diffuseColor: "#ff999999"
+            diffuseColor: Colors.greyCar//"#ff999999"
         }
         materials: [
             material_027_material,

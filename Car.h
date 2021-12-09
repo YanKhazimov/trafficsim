@@ -21,7 +21,8 @@ class Car : public QObject
   Q_PROPERTY(QUrl Source2dBase MEMBER source2dBase CONSTANT)
   Q_PROPERTY(QUrl Source2dDynamic MEMBER source2dDynamic CONSTANT)
   Q_PROPERTY(QUrl Source3d MEMBER source3d CONSTANT)
-  Q_PROPERTY(QColor UserColor MEMBER userColor NOTIFY userColorChanged)
+  Q_PROPERTY(QColor UserColor READ getUserColor WRITE setUserColor NOTIFY userColorChanged)
+  Q_PROPERTY(bool Lighting MEMBER lighting NOTIFY userColorChanged)
   Q_PROPERTY(int SourceDirection MEMBER sourceDirection CONSTANT)
 
   Q_PROPERTY(QList<QPoint> RoutePoints READ getRoutePoints NOTIFY routeChanged)
@@ -33,6 +34,7 @@ class Car : public QObject
   QUrl source2dDynamic;
   int sourceDirection;
   QColor userColor;
+  bool lighting = false;
   int x = 0, y = 0;
   int direction = 45; // rounded in degrees
 
@@ -43,6 +45,8 @@ class Car : public QObject
   qreal getDirectionInRadians() const;
   void setDirection(int degrees);
   QList<QPoint> getRoutePoints() const;
+  void setUserColor(QColor color);
+  QColor getUserColor() const;
 
 public:
   explicit Car(int width, int length, QUrl source3d, QUrl source2dBase, QUrl source2dColored, int sourceDirection, QObject *parent = nullptr);

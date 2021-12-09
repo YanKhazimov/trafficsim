@@ -71,6 +71,8 @@ public:
 
   void SetQmlRoot(QObject* object);
 
+  Q_INVOKABLE QString CropFilename(QUrl filepath) const;
+
 private:
   EditorState editorState = EditorState::NotEditing;
 

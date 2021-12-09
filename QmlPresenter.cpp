@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QFileInfo>
 
 RegularCrossroad *QmlPresenter::getCrossroad() const
 {
@@ -147,5 +148,10 @@ void QmlPresenter::AddRoad()
 
 void QmlPresenter::SetQmlRoot(QObject *object)
 {
-  qmlRoot = object;
+    qmlRoot = object;
+}
+
+QString QmlPresenter::CropFilename(QUrl filepath) const
+{
+    return QFileInfo(filepath.toString()).fileName();
 }
