@@ -10,24 +10,73 @@ Node {
     property alias rotationAnimation: rotationAnimationId.running
     required property url car3dSource
     required property QtObject carLook
+    property alias model3d: loader3d.item
+
+    signal loaded(string source)
 
     DirectionalLight {
+        id: dl
         ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+        rotation: Qt.quaternion(1, -1, 0, 0)
     }
 
-    Node {
-        PointLight {
-            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-            position: Qt.vector3d(500, 0, 0)
-            brightness: 3000
-        }
-    }
+//    Node {
+//        PointLight {
+//            id: topLight
+//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+//            position: Qt.vector3d(0, 100, 0)
+//            brightness: 100
+//        }
+//    }
+
+//    Node {
+//        PointLight {
+//            id: leftLight
+//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+//            position: Qt.vector3d(0, 0, 500)
+//            brightness: 100
+//        }
+//    }
+
+//    Node {
+//        PointLight {
+//            id: rightLight
+//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+//            position: Qt.vector3d(0, 0, -500)
+//            brightness: 100
+//        }
+//    }
+
+//    Node {
+//        PointLight {
+//            id: frontLight
+//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+//            position: Qt.vector3d(500, 0, 0)
+//            brightness: 100
+//        }
+//    }
+
+//    Node {
+//        PointLight {
+//            id: backLight
+//            color: Qt.rgba(0.2, 0.2, 0.2, 1.0)
+//            ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+//            position: Qt.vector3d(-500, 0, 0)
+//            brightness: 100
+//        }
+//    }
 
     Loader3D {
         id: loader3d
         source: root.car3dSource
-        onLoaded: console.log("loaded", source)
+        onLoaded: {
+            console.log("loaded", source)
+            root.loaded(source)
+        }
     }
 
     Binding {

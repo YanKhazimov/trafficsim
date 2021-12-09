@@ -11,8 +11,11 @@ int main(int argc, char *argv[])
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
 
-  if (!QResource::registerResource("D:/QtProjects/trafficsim/resources/meshes.rcc"))
-      qWarning() << "Cannot load external resources";
+  if (!QResource::registerResource("D:/QtProjects/trafficsim/resources/meshes_xc70.rcc"))
+      qWarning() << "Cannot load external resources meshes_xc70.rcc";
+
+  if (!QResource::registerResource("D:/QtProjects/trafficsim/resources/meshes_a45.rcc"))
+      qWarning() << "Cannot load external resources meshes_a45.rcc";
 
   QQmlApplicationEngine engine;
   const QUrl url(QStringLiteral("qrc:/qml/main.qml"));

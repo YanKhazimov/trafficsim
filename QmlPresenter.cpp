@@ -46,8 +46,8 @@ QmlPresenter::QmlPresenter(QObject *parent) : QObject(parent)
 
   roadUnderConstruction = std::make_unique<RoadLane>();
 
-  cars.AddCar(30, 75, QUrl("qrc:/models3d/xc70/XC70.qml"), QUrl("qrc:/images/xc70.PNG"), 270);
-  cars.AddCar(40, 100, QUrl("qrc:/models3d/a45/A45.qml"), QUrl("qrc:/images/truck.png"), 180);
+  cars.AddCar(30, 65, QUrl("qrc:/models3d/xc70/XC70.qml"), QUrl("qrc:/images/xc70_base.png"), QUrl("qrc:/images/xc70_dynamic.png"), 270);
+  cars.AddCar(28, 55, QUrl("qrc:/models3d/a45/A45.qml"), QUrl("qrc:/images/a45_base.png"), QUrl("qrc:/images/a45_dynamic.png"), 90);
 
   QObject::connect(&cars, &CarsModel::selectionIndexChanged, this, &QmlPresenter::selectedCarChanged);
 

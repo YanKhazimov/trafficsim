@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QTextStream>
+#include <QPoint>
 #include <memory>
 
 class CurvePoint : public QObject

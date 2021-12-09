@@ -1,2 +1,4 @@
-
+*.mesh
 CMakeLists.txt.user
+CMakeLists.txt.user.*
+*.rcc

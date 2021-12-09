@@ -19,7 +19,7 @@ public:
   Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
   QHash<int, QByteArray> roleNames() const;
 
-  void AddCar(int width, int length, QUrl source3d, QUrl source, int sourceDirection);
+  void AddCar(int width, int length, QUrl source3d, QUrl source2dBase, QUrl source2dColored, int sourceDirection);
   Car* GetSelectedCar() const;
   Car* GetCar(int index) const;
   Q_INVOKABLE void Select(int idx);

@@ -11,61 +11,60 @@ Node {
     scale: Qt.vector3d(15, 15, 15)
     y: -104
 
-/*    property var meshes: [
-    circle_003_Circle_004,
-    circle_004_Circle_005,
-    circle_005_Circle_006,
-    circle_007_Circle_012,
-    circle_008_Circle_011,
-    cylinder_Cylinder_001,
-    cube_028_Cube_029,
-    screen_wipers_Cube_002,
-    screen_wipers_Cube_002,
-    cylinder_001_Cylinder,
-    cube_036_Cube_004,
-    cube_001_Cube_014,
-    cube_003,
-    cube_010_Cube_005,
-    cube_015_Cube_017,
-    cube_014_Cube_020,
-    cube_016_Cube_018,
-    cube_019_Cube_024,
-    cube_004_Cube_026,
-    cube_Cube_006,
-    tIRE1_Circle_003,
-    cube_020_Cube_001,
-    cube_023_Cube_022,
-    node1_Cube_027,
-    cube_025_Cube_033,
-    cube_026_Cube_015,
-    cube_027_Cube_023,
-    plane_001,
-    cube_029_Cube_031,
-    cube_031_Cube,
-    cube_032_Cube_030,
-    cube_033_Cube_034,
-    cube_035_Cube_036,
-    cube_039_Cube_038,
-    cube_038_Cube_043,
-    cube_041_Cube_049,
-    cube_040_Cube_051,
-    cube_043_Cube_052,
-    cube_044_Cube_037,
-    cube_034_Cube_035,
-    plane,
-    cube_021_Cube_039,
-    plane_003,
-    tIRE1_001_Circle_013,
-    tIRE1_002_Circle_015,
-    tIRE1_003_Circle_016,
-    cube_002_Cube_012,
-    cube_062_Cube_064,
-    circle_006_Circle_010,
-    cube_009_Cube_011,
-    cube_045_Cube_025,
-    cube_047_Cube_041,
-    circle_009_Circle_014,
-    plane_004,
+    property var meshes: [
+        circle_003_Circle_004,
+        circle_004_Circle_005,
+        circle_005_Circle_006,
+        circle_007_Circle_012,
+        circle_008_Circle_011,
+        cylinder_Cylinder_001,
+        cube_028_Cube_029,
+        screen_wipers_Cube_002, // const
+        cylinder_001_Cylinder,
+        cube_036_Cube_004,
+        cube_001_Cube_014,
+        cube_003, // const
+        cube_010_Cube_005, // const
+        cube_015_Cube_017,
+        cube_014_Cube_020, // const maybe 2nd dynamic
+        cube_016_Cube_018, // const
+        cube_019_Cube_024, // const
+        cube_004_Cube_026, // const
+        cube_Cube_006,
+        tIRE1_Circle_003,
+        cube_020_Cube_001, // const maybe 2nd dynamic
+        cube_023_Cube_022, // const
+        node1_Cube_027,
+        cube_025_Cube_033,
+        cube_026_Cube_015,
+        cube_027_Cube_023,
+        plane_001,
+        cube_029_Cube_031, // const maybe 2nd dynamic
+        cube_031_Cube,
+        cube_032_Cube_030,
+        cube_033_Cube_034,
+        cube_035_Cube_036,
+        cube_039_Cube_038, // dynamic
+        cube_038_Cube_043,
+        cube_041_Cube_049, // const
+        cube_040_Cube_051,
+        cube_043_Cube_052,
+        cube_044_Cube_037, // const
+        cube_034_Cube_035, // const
+        plane,
+        cube_021_Cube_039,
+        plane_003,
+        tIRE1_001_Circle_013,
+        tIRE1_002_Circle_015,
+        tIRE1_003_Circle_016,
+        cube_002_Cube_012,
+        cube_062_Cube_064, // dynamic
+        circle_006_Circle_010,
+        cube_009_Cube_011,
+        cube_045_Cube_025,
+        cube_047_Cube_041,
+        circle_009_Circle_014,
+        plane_004 // const
     ]
 
     Model {
@@ -437,13 +436,8 @@ Node {
         id: cube_039_Cube_038
         source: "meshes/cube_039_Cube_038.mesh"
 
-        DefaultMaterial {
-            id: material_032_material
-            diffuseColor: "#ff999999"
-        }
         materials: [
-            material_material,
-            material_032_material
+            material_004_material
         ]
     }
 
@@ -491,9 +485,15 @@ Node {
     Model {
         id: cube_034_Cube_035
         source: "meshes/cube_034_Cube_035.mesh"
+
+        DefaultMaterial {
+            id: material___windshield
+            diffuseColor: "#ff444444"
+        }
         materials: [
-            material_007_material,
-            material_022_material
+            /*material_007_material,
+            material_022_material*/
+            material___windshield
         ]
     }
 
@@ -570,7 +570,7 @@ Node {
         materials: [
             material_018_material
         ]
-    }*/
+    }
 
     Model {
         id: cube_062_Cube_064
@@ -578,14 +578,13 @@ Node {
 
         PrincipledMaterial {
             id: material_004_material
-            baseColor: "#ff000022"
         }
         materials: [
             material_004_material
         ]
     }
 
-/*    Model {
+    Model {
         id: circle_006_Circle_010
         source: "meshes/circle_006_Circle_010.mesh"
 
@@ -650,5 +649,5 @@ Node {
         materials: [
             material_017_material
         ]
-    }*/
+    }
 }

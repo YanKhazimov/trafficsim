@@ -35,8 +35,9 @@ void Car::SetPosition(int _x, int _y)
   emit parametersChanged();
 }
 
-Car::Car(int _width, int _length, QUrl _source3d, QUrl _source, int _sourceDirection, QObject *parent)
-  : QObject(parent), width(_width), length(_length), source3d(_source3d), source(_source), sourceDirection(_sourceDirection)
+Car::Car(int _width, int _length, QUrl _source3d, QUrl _source2dBase, QUrl _source2dDynamic, int _sourceDirection, QObject *parent)
+  : QObject(parent), width(_width), length(_length), source3d(_source3d), source2dBase(_source2dBase), source2dDynamic(_source2dDynamic),
+    userColor(255, 0, 0, 150), sourceDirection(_sourceDirection)
 {
 }
 

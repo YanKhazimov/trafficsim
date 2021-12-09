@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
-        <file>images/car.png</file>
         <file>qml/Crossroad.qml</file>
         <file>qml/Constants/Sizes.qml</file>
         <file>qml/Constants/qmldir</file>
@@ -25,7 +24,6 @@
         <file>qml/PassageConstructor.qml</file>
         <file>qml/CarInfo.qml</file>
         <file>qml/Car.qml</file>
-        <file>images/truck.png</file>
         <file>qml/MapRuler.qml</file>
         <file>images/magnifier.svg</file>
         <file>images/road.svg</file>
@@ -34,6 +32,9 @@
         <file>qml/Car3DView.qml</file>
         <file>qml/CarScene3D.qml</file>
         <file>models3d/xc70/XC70.qml</file>
-        <file>images/xc70.PNG</file>
+        <file>images/xc70_base.png</file>
+        <file>images/xc70_dynamic.png</file>
+        <file>images/a45_base.png</file>
+        <file>images/a45_dynamic.png</file>
     </qresource>
 </RCC>

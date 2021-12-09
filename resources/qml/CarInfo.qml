@@ -30,29 +30,123 @@ Rectangle {
         }
     }
 
+    Binding {
+        // passing user color to 2D image
+        target: root.model
+        property: "UserColor"
+        value: Qt.rgba(colorRSlider.value,
+                       colorGSlider.value,
+                       colorBSlider.value,
+                       150.0/255)
+    }
+
+    QtObject {
+        id: carAppearance
+        // passing user color to 3D scene
+        property real metalness: metalnessSlider.value
+        property real roughness: roughnessSlider.value
+        property color color: Qt.rgba(colorRSlider.value,
+                                      colorGSlider.value,
+                                      colorBSlider.value,
+                                      colorASlider.value)
+    }
+
+    CarScene3D {
+        id: scene
+        car3dSource: (root.model == null) ? "" : root.model.Source3d
+        carLook: carAppearance
+        onLoaded: {
+            if (scene.model3d)
+                meshRepeater.model = scene.model3d.meshes
+        }
+    }
+
     ColumnLayout {
+        spacing: 5
         visible: model != null
         anchors.fill: parent
         anchors.margins: Sizes.minMargin
 
-        Rectangle {
+        RowLayout {
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter
-            color: "transparent"
 
-            Car3DView {
-                id: view3d
-                car3dSource: (root.model == null) ? "" : root.model.Source3d
-                anchors.fill: parent
-                anchors.margins: 2
+            Rectangle {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter
+                color: "transparent"
+                border.color: "black"
 
-                color: Qt.rgba(colorRSlider.value,
-                                       colorGSlider.value,
-                                       colorBSlider.value,
-                                       colorASlider.value)
-                metalness: metalnessSlider.value
-                roughness: roughnessSlider.value
+                Car3DView {
+                    id: view3d
+                    importScene: scene
+                    camera: scene.perspectiveCam
+                    anchors.fill: parent
+                    anchors.margins: 2
+                }
+            }
+
+            Rectangle {
+                id: snapRect
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter
+                color: "transparent"
+                border.color: "black"
+
+                Car3DView {
+                    id: viewTop
+                    state: "topDown"
+                    importScene: scene
+                    camera: scene.topViewCam
+                    anchors.fill: parent
+                    anchors.margins: 2
+
+                    Component.onCompleted: scene.topViewCam.lookAt(Qt.vector3d(0, 0, 0))
+                }
+            }
+        }
+
+        Flow {
+            id: flow
+            visible: root.carViewPopped
+            Layout.fillWidth: true
+            spacing: 10
+
+            Button {
+                text: "Check All"
+                onClicked: {
+                    for (var i = 0; i < meshRepeater.count; ++i)
+                        meshRepeater.itemAt(i).checked = true
+                }
+            }
+
+            Button {
+                text: "Uncheck All"
+                onClicked: {
+                    for (var i = 0; i < meshRepeater.count; ++i)
+                        meshRepeater.itemAt(i).checked = false
+                }
+            }
+
+            Repeater {
+                id: meshRepeater
+                delegate: CheckBox {
+                    height: 10
+                    text: modelData.source.toString().slice(26, -5)
+                    checked: true
+                    onCheckedChanged: modelData.visible = checked
+                }
+            }
+
+            Button {
+                text: "Snap"
+                onClicked: {
+                    snapRect.grabToImage(function(grabResult) {
+                        grabResult.saveToFile("snap.png")
+                    }, Qt.size(snapRect.width, snapRect.height))
+                }
             }
         }
 
@@ -150,16 +244,6 @@ Rectangle {
                     engine.EditorState = EditorState.RouteCreation
                 }
             }
-        }
-    }
-
-    TSButton {
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        visible: (model != null) && !root.carViewPopped
-        text: view3d.topView ? "rotate" : "topView"
-        callback: function() {
-            view3d.topView = !view3d.topView
         }
     }
 

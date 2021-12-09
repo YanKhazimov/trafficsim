@@ -4,6 +4,7 @@
 #include <QList>
 #include <QPoint>
 #include <QUrl>
+#include <QColor>
 #include "NodesModel.h"
 
 class Car : public QObject
@@ -17,8 +18,10 @@ class Car : public QObject
   Q_PROPERTY(int Y MEMBER y NOTIFY parametersChanged)
   Q_PROPERTY(int Width MEMBER width CONSTANT)
   Q_PROPERTY(int Length MEMBER length CONSTANT)
-  Q_PROPERTY(QUrl Source MEMBER source CONSTANT)
+  Q_PROPERTY(QUrl Source2dBase MEMBER source2dBase CONSTANT)
+  Q_PROPERTY(QUrl Source2dDynamic MEMBER source2dDynamic CONSTANT)
   Q_PROPERTY(QUrl Source3d MEMBER source3d CONSTANT)
+  Q_PROPERTY(QColor UserColor MEMBER userColor NOTIFY userColorChanged)
   Q_PROPERTY(int SourceDirection MEMBER sourceDirection CONSTANT)
 
   Q_PROPERTY(QList<QPoint> RoutePoints READ getRoutePoints NOTIFY routeChanged)
@@ -26,7 +29,10 @@ class Car : public QObject
 
   int width, length;
   QUrl source3d;
-  QUrl source; int sourceDirection;
+  QUrl source2dBase;
+  QUrl source2dDynamic;
+  int sourceDirection;
+  QColor userColor;
   int x = 0, y = 0;
   int direction = 45; // rounded in degrees
 
@@ -39,7 +45,7 @@ class Car : public QObject
   QList<QPoint> getRoutePoints() const;
 
 public:
-  explicit Car(int width, int length, QUrl source3d, QUrl source, int sourceDirection, QObject *parent = nullptr);
+  explicit Car(int width, int length, QUrl source3d, QUrl source2dBase, QUrl source2dColored, int sourceDirection, QObject *parent = nullptr);
   Q_INVOKABLE void MoveAlongRoute();
   Q_INVOKABLE void MoveAlongRoadLane(QObject *qmlRoot);
   Q_INVOKABLE void MoveAlongPassage(QObject *qmlRoot);
@@ -53,6 +59,7 @@ signals:
   void parametersChanged();
   void routeChanged();
   void reachedRoutePointChanged();
+  void userColorChanged();
 
 };
 Q_DECLARE_METATYPE(Car*)

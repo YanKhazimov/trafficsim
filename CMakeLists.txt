@@ -43,8 +43,6 @@ set(SOURCE_FILES
     "Curve.h"
     )
 
-#qt5_add_big_resources(MESH_SOURCE_FILES "resources/meshes.qrc")
-
 add_executable(${PROJECT_NAME} "main.cpp" ${SOURCE_FILES} "resources/qml.qrc" ${MESH_SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Quick)

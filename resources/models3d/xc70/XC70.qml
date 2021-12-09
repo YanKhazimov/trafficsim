@@ -1,8 +1,6 @@
 import QtQuick 2.15
 import QtQuick3D 1.15
 
-//import "models3d/xc70"
-
 Node {
     id: car_2012_Volvo_XC70__Traffic__N300718_obj
 
@@ -13,7 +11,75 @@ Node {
     scale: Qt.vector3d(75, 75, 75)
     y: -100
 
-/*    Model {
+    property var meshes: [
+        vol_xc70_12_body_badge_,
+        vol_xc70_12_body_black_glass_, // const
+        vol_xc70_12_body_body_, // dynamic
+        vol_xc70_12_body_emblem_,
+        vol_xc70_12_body_frame_, // const
+        vol_xc70_12_body_matte_colors_, // const
+        vol_xc70_12_body_plastic2_, // const
+        vol_xc70_12_body_rubber_trim_, // const
+        vol_xc70_12_bumperFrameF_numberplate_,
+        vol_xc70_12_bumperFrameR_numberplate_,
+        vol_xc70_12_exhaustLa_chrome_,
+        vol_xc70_12_exhaustLa_frame_,
+        vol_xc70_12_glassF_glass_, // const
+        vol_xc70_12_glassLF_glass_, // const
+        vol_xc70_12_glassLM_glass_, // const
+        vol_xc70_12_glassLR_glass_, // const
+        vol_xc70_12_glassR_glass_,
+        vol_xc70_12_glassRF_glass_, // const
+        vol_xc70_12_glassRM_glass_, // const
+        vol_xc70_12_glassRR_glass_, // const
+        vol_xc70_12_glassRTL_detail_glass_red_,
+        vol_xc70_12_glassRTL_glass_, // const
+        vol_xc70_12_glassRTL_lights_gls_noemit_,
+        vol_xc70_12_interior_chrome_,
+        vol_xc70_12_interior_interior_, // const
+        vol_xc70_12_mirrorL_body_, // dynamic
+        vol_xc70_12_mirrorL_chrome_, // const
+        vol_xc70_12_mirrorL_frame_,
+        vol_xc70_12_mirrorL_matte_colors_, // const
+        vol_xc70_12_mirrorR_body_, // dynamic
+        vol_xc70_12_mirrorR_chrome_, // const
+        vol_xc70_12_mirrorR_frame_,
+        vol_xc70_12_mirrorR_matte_colors_, // const
+        vol_xc70_12_seatL_interior_,
+        vol_xc70_12_seatR_interior_,
+        vol_xc70_12_steering_wheel_interior_, // const
+        vol_xc70_12_taillightR_fogred_,
+        vol_xc70_12_taillightR_fogwhite_,
+        vol_xc70_12_taillightR_frame_,
+        vol_xc70_12_taillightR_fullbeam_,
+        vol_xc70_12_taillightR_head_light_, // const
+        vol_xc70_12_taillightR_indicator_left_,
+        vol_xc70_12_taillightR_indicator_right_,
+        vol_xc70_12_taillightR_matte_colors_,
+        vol_xc70_12_taillightR_numplate_,
+        vol_xc70_12_taillightR_oldhead_,
+        vol_xc70_12_taillightR_reverse_light_,
+        vol_xc70_12_taillightR_slorange_,
+        vol_xc70_12_taillightR_tail_light_, // const
+        vol_xc70_12_taillightR_taillightst_,
+        vol_xc70_12_taillightR_reflector_, // const
+        vol_xc70_12_taillightR_xenonhead_,
+        vol_xc70_12_undercarriagea_undercarriage_,
+        vol_xc70_12_wheel_wheel_rim_,
+        vol_xc70_12_wheel_wheel_tire_,
+        vol_xc70_12_wheel_wheel_inner_rim_,
+        vol_xc70_12_wheel_wheel_inner_rim_01,
+        vol_xc70_12_wheel_wheel_rim_01,
+        vol_xc70_12_wheel_wheel_tire_01,
+        vol_xc70_12_wheel_wheel_tire_02,
+        vol_xc70_12_wheel_wheel_inner_rim_02,
+        vol_xc70_12_wheel_wheel_rim_03,
+        vol_xc70_12_wheel_wheel_inner_rim_03,
+        vol_xc70_12_wheel_wheel_rim_02,
+        vol_xc70_12_wheel_wheel_tire_03
+    ]
+
+    Model {
         id: vol_xc70_12_body_badge_
         source: "meshes/vol_xc70_12_body_badge_.mesh"
 
@@ -36,7 +102,7 @@ Node {
         materials: [
             black_glass_material
         ]
-    }*/
+    }
 
     Model {
         id: vol_xc70_12_body_body_
@@ -44,14 +110,13 @@ Node {
 
         PrincipledMaterial {
             id: body_material
-            baseColor: "#ff000022"
         }
         materials: [
             body_material
         ]
     }
 
-/*    Model {
+    Model {
         id: vol_xc70_12_body_emblem_
         source: "meshes/vol_xc70_12_body_emblem_.mesh"
 
@@ -672,5 +737,5 @@ Node {
         materials: [
             tire_material
         ]
-    }*/
+    }
 }
