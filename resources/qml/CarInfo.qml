@@ -171,6 +171,36 @@ Rectangle {
                         camera: scene.perspectiveCam
                         anchors.fill: parent
                         anchors.margins: 2
+
+                        MouseArea {
+                            property real pressX
+                            property real pressAngle
+                            anchors.fill: parent
+                            cursorShape: Qt.SizeHorCursor
+                            onPressed: {
+                                scene.rotationAnimation.running = false
+                                pressX = mouseX
+                                pressAngle = scene.rotationAngle.y
+                            }
+                            onMouseXChanged: {
+                                scene.rotationAngle.y = (pressAngle - 360 * (mouseX - pressX)/width) % 360
+                            }
+                        }
+
+                        TSButton {
+                            anchors {
+                                right: parent.right
+                                bottom: parent.bottom
+                                margins: 10
+                            }
+                            text: "Rotate"
+                            visible: root.carViewPopped
+                            callback: function () {
+                                scene.rotationAnimation.from = scene.rotationAngle.y - 360
+                                scene.rotationAnimation.to = scene.rotationAngle.y
+                                scene.rotationAnimation.running = true
+                            }
+                        }
                     }
                 }
 

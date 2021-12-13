@@ -1,13 +1,15 @@
 import QtQuick 2.15
 import QtQuick3D 1.15
 import QtQml 2.15
+import QtQuick3D.Materials 1.15
 
 Node {
     id: root
 
     property alias topViewCam: topViewCamera
     property alias perspectiveCam: perspectiveCamera
-    property alias rotationAnimation: rotationAnimationId.running
+    property alias rotationAngle: perspectiveCamNode.eulerRotation
+    property alias rotationAnimation: rotationAnimationId
     required property url car3dSource
     required property QtObject carLook
     property alias model3d: loader3d.item
@@ -73,10 +75,19 @@ Node {
     Loader3D {
         id: loader3d
         source: root.car3dSource
-        onLoaded: {
-            console.log("loaded", source)
-            root.loaded(source)
-        }
+        onLoaded: root.loaded(source)
+    }
+
+    Model {
+        source: "#Cylinder"
+        y: -104
+        scale: Qt.vector3d(4, 0.05, 4)
+        materials: [
+            GlassMaterial {
+                id: material_glass
+                glass_color: Qt.vector3d(0.1, 0.1, 0.1)
+            }
+        ]
     }
 
     Binding {
@@ -102,14 +113,14 @@ Node {
     }
 
     Node {
-        id: modelNode
+        id: perspectiveCamNode
 
         PerspectiveCamera {
             id: perspectiveCamera
             x: 300
             eulerRotation.x: -30
             eulerRotation.y: 90
-            y: 60
+            y: 30
         }
 
         PropertyAnimation on eulerRotation.y {
